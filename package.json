@@ -34,7 +34,7 @@
     "validate.io-undefined-or-null": "^1.0.0"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.2.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "prisma": "^2.16.1"
   }
 }

@@ -1,0 +1,1027 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+model administracion_iglesias {
+  id               Int       @id @default(autoincrement())
+  persona          String?
+  iglesia          String?
+  fecha_asignacion DateTime  @default(now())
+  iglesias         iglesias? @relation(fields: [iglesia], references: [codigo])
+  personas         personas? @relation(fields: [persona], references: [codigo])
+
+  @@unique([persona, iglesia], name: "persona_iglesia_unique")
+  @@index([iglesia], name: "fk_administracion_iglesia_iglesia_idx")
+  @@index([persona], name: "fk_administracion_iglesias_personas_idx")
+}
+
+model administrador_archivos {
+  id             Int       @id @default(autoincrement())
+  persona        String
+  nombre_archivo String?
+  ruta_archivo   String?
+  extension      String
+  condicion      Boolean   @default(true)
+  fecha_cr       DateTime  @default(now())
+  fecha_uac      DateTime?
+  personas       personas  @relation(fields: [persona], references: [codigo])
+
+  @@index([persona], name: "fk_admin_archivos_persona_idx")
+  @@index([nombre_archivo], name: "nombre_archivo_idx")
+}
+
+model cambios_password {
+  id                 Int       @id @default(autoincrement())
+  usuario            Int
+  correo_electronico String
+  token              String
+  vencimiento        DateTime
+  vigente            Boolean   @default(true)
+  utilizado          Boolean   @default(false)
+  fecha_solicitud    DateTime  @default(now())
+  fecha_utilizado    DateTime?
+  usuarios           usuarios  @relation(fields: [usuario], references: [id])
+
+  @@index([usuario], name: "fk_cambios_pass_usuario_idx")
+}
+
+model cantones {
+  id        Int    @id @default(autoincrement())
+  municipio Int
+  nombre    String
+}
+
+model cargos_ministeriales {
+  id                             Int                              @id @default(autoincrement())
+  codigo                         String
+  nombre                         String
+  tipo                           Int?
+  condicion                      Boolean                          @default(true)
+  detalle_nombramiento_liderazgo detalle_nombramiento_liderazgo[]
+
+  @@index([codigo], name: "codigo_idx")
+}
+
+model departamentos {
+  id                  Int                   @id @default(autoincrement())
+  nombre              String
+  municipios          municipios[]
+  zonas_departamentos zonas_departamentos[]
+}
+
+model detalle_informe_financiero_mensual {
+  id                                Int                        @id @default(autoincrement())
+  informe_financiero                String
+  oficinas_internacionales          Float                      @default(0.00)
+  socios_amip                       Float                      @default(0.00)
+  misiones_mundiales                Float                      @default(0.00)
+  tributos_anuales                  Float                      @default(0.00)
+  ministro_ordenado                 Float                      @default(0.00)
+  pastor_laico                      Float                      @default(0.00)
+  fondo_local                       Float                      @default(0.00)
+  retiro_pastoral                   Float                      @default(0.00)
+  segunda_parte_ofrenda_ministerios Float                      @default(0.00)
+  fondo_emergencia_nacional         Float                      @default(0.00)
+  misiones_nacionales               Float                      @default(0.00)
+  diezmos_ministros                 Float                      @default(0.00)
+  compra_propiedad_nacional         Float                      @default(0.00)
+  construccion_templos_nuevos       Float                      @default(0.00)
+  cotizacion_prestaciones           Float                      @default(0.00)
+  seguro_vida                       Float                      @default(0.00)
+  fondo_solidario_ministerial       Float                      @default(0.00)
+  otros                             Float                      @default(0.00)
+  informe_financiero_mensual        informe_financiero_mensual @relation(fields: [informe_financiero], references: [codigo])
+
+  @@index([informe_financiero], name: "fk_detalle_informe_financiero_mensual_header_informe_financ_idx")
+}
+
+model detalle_informe_mensual_tesorero {
+  id                                                                                Int                     @id @default(autoincrement())
+  informe_mesual_tesorero                                                           String
+  diezmos_recibidos_iglesia                                                         Float                   @default(0.00)
+  diezmo_enviado_oficina                                                            Float                   @default(0.00)
+  diezmos_entregados_pastor                                                         Float                   @default(0.00)
+  membresia_patrimonio_historico                                                    Float                   @default(0.00)
+  ofrenda_misionera_segundo_domingo                                                 Float                   @default(0.00)
+  impulso_misiones                                                                  Float                   @default(0.00)
+  porcentaje_misioneros_oficina                                                     Float                   @default(0.00)
+  misiones_nacionales                                                               Float                   @default(0.00)
+  entrada_fondo_local                                                               Float                   @default(0.00)
+  diezmos_fondo_local                                                               Float                   @default(0.00)
+  fondo_retiro_pastoral                                                             Float                   @default(0.00)
+  dinero_otros_propositos                                                           Float                   @default(0.00)
+  ofrenda_emergencia_nacional                                                       Float                   @default(0.00)
+  fondo_solidario_ministerial                                                       Float                   @default(0.00)
+  total_miembros                                                                    Int                     @default(0)
+  masculinos                                                                        Int                     @default(0)
+  femeninos                                                                         Int                     @default(0)
+  excluidos                                                                         Int                     @default(0)
+  trasladados                                                                       Int                     @default(0)
+  informe_mesual_tesorero_detalle_informe_mensual_tesoreroToinforme_mesual_tesorero informe_mesual_tesorero @relation(fields: [informe_mesual_tesorero], references: [codigo])
+
+  @@index([informe_mesual_tesorero], name: "fk_detalle_infome_tesorero_informe_header_tesorero_idx")
+}
+
+model detalle_informe_ministerial_mensual {
+  id                          Int                         @id @default(autoincrement())
+  informe_ministerial         String
+  mensajes                    Int                         @default(0)
+  convertidos                 Int                         @default(0)
+  santificados                Int                         @default(0)
+  bautismos_agua              Int                         @default(0)
+  bautismos_es                Int                         @default(0)
+  agregados                   Int                         @default(0)
+  hogares_miembros_v          Int                         @default(0)
+  hogares_prospectos_v        Int                         @default(0)
+  diezmo_recibido             Float                       @default(0.00)
+  diezmo_pagado               Float                       @default(0.00)
+  ofrenda_recibida            Float                       @default(0.00)
+  gastos_ministeriales        Float                       @default(0.00)
+  actividades_oracion         Int                         @default(0)
+  vida_oracion                Boolean                     @default(false)
+  actividades_misiones        Int                         @default(0)
+  actividades_liderazgo       Int                         @default(0)
+  liderez_involucrados        Int                         @default(0)
+  mejora_ministerial          Boolean                     @default(false)
+  miembros_activos            Int                         @default(0)
+  miembros_salvos             Int                         @default(0)
+  miembros_santificados       Int                         @default(0)
+  miembros_bautizados_es      Int                         @default(0)
+  promedio_asistencia_adultos Float                       @default(0.00)
+  promedio_asitencia_ni_jov   Float                       @default(0.00)
+  ministerio_alcance_semanal  Boolean                     @default(false)
+  santa_cena                  Int                         @default(0)
+  lavatorio                   Int                         @default(0)
+  informe_ministerial_mensual informe_ministerial_mensual @relation(fields: [informe_ministerial], references: [codigo])
+
+  @@index([informe_ministerial], name: "if_idx")
+}
+
+model detalle_nombramientos_pastorales {
+  id                       Int                       @id @default(autoincrement())
+  nombramiento             Int?
+  pastor                   String
+  iglesia                  String?
+  tipo                     Int                       @default(1)
+  estado                   Int?                      @default(1)
+  iglesias                 iglesias?                 @relation(fields: [iglesia], references: [codigo])
+  nombramientos_pastorales nombramientos_pastorales? @relation(fields: [nombramiento], references: [id])
+  pastores                 pastores                  @relation(fields: [pastor], references: [codigo])
+
+  @@index([nombramiento], name: "fk_detalle_nombramiento_idx")
+  @@index([iglesia], name: "fk_detalle_nombremiento_iglesia_idx")
+  @@index([pastor], name: "fk_detalle_nombremiento_pastor_idx")
+}
+
+model detalle_nombramiento_liderazgo {
+  id                     Int                    @id @default(autoincrement())
+  nombramiento           Int
+  cargo_ministerial      String
+  miembro                String
+  cargos_ministeriales   cargos_ministeriales   @relation(fields: [cargo_ministerial], references: [codigo])
+  miembros               miembros               @relation(fields: [miembro], references: [codigo])
+  nombramiento_liderazgo nombramiento_liderazgo @relation(fields: [nombramiento], references: [id])
+
+  @@index([cargo_ministerial], name: "fk_detalle_nombramiento_cargo_idx")
+  @@index([nombramiento], name: "fk_detalle_nombramiento_liderazgo_idx")
+  @@index([miembro], name: "fk_detalle_nombramiento_miembro_idx")
+}
+
+model estados_civiles {
+  id       Int        @id @default(autoincrement())
+  nombre   String
+  personas personas[]
+}
+
+model expediente_ministerial_pastor {
+  id           Int       @id @default(autoincrement())
+  pastor       String?
+  persona      String
+  iglesia      String?
+  fecha_inicio DateTime?
+  fecha_final  DateTime?
+  estado       Int?
+  condicion    Boolean   @default(true)
+  fecha_cr     DateTime  @default(now())
+  fecha_uac    DateTime?
+  iglesias     iglesias? @relation(fields: [iglesia], references: [codigo])
+  pastores     pastores? @relation(fields: [pastor], references: [codigo])
+
+  @@index([iglesia], name: "fk_expediente_ministerial_idx")
+  @@index([pastor], name: "fk_expediente_ministerial_parstor_idx")
+}
+
+model gestiones {
+  id                          Int                           @id @default(autoincrement())
+  codigo                      String
+  descripcion                 String
+  tipo_gestion                Int
+  estado                      Int?
+  usuario_cr                  String
+  usuario_uac                 String?
+  usuario_publicacion         String?
+  fecha_publicacion           DateTime?
+  fecha_cr                    DateTime                      @default(now())
+  fecha_uac                   DateTime?
+  fecha_recibir_inicio        DateTime                      @default(now())
+  fecha_recibir_fin           DateTime
+  periodo                     String
+  periodo_ministerial         periodo_ministerial           @relation(fields: [codigo], references: [codigo])
+  tipo_gestiones              tipo_gestiones                @relation(fields: [tipo_gestion], references: [id])
+  gestion_informes            gestion_informes[]
+  informes_recibidos_gestion  informes_recibidos_gestion[]
+  informe_financiero_mensual  informe_financiero_mensual[]
+  informe_mesual_tesorero     informe_mesual_tesorero[]
+  informe_ministerial_mensual informe_ministerial_mensual[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([tipo_gestion], name: "fk_tipo_gestion_idx")
+}
+
+model gestion_informes {
+  id                    Int                     @id @default(autoincrement())
+  gestion               String
+  informe               Int
+  fecha_agregacion      DateTime                @default(now())
+  gestiones             gestiones               @relation(fields: [gestion], references: [codigo])
+  maestro_de_informes   maestro_de_informes     @relation(fields: [informe], references: [id])
+  meses_gestion_informe meses_gestion_informe[]
+
+  @@index([gestion], name: "fk_gestion_informe_gestiones_idx")
+  @@index([informe], name: "fk_gestion_informe_tipo_informe_idx")
+}
+
+model historico_detalle_informe_financiero_mensual {
+  id                                   Int                                  @id @default(autoincrement())
+  informe_financiero                   String
+  oficinas_internacionales             Float                                @default(0.00)
+  socios_amip                          Float                                @default(0.00)
+  misiones_mundiales                   Float                                @default(0.00)
+  tributos_anuales                     Float                                @default(0.00)
+  ministro_ordenado                    Float                                @default(0.00)
+  pastor_laico                         Float                                @default(0.00)
+  fondo_local                          Float                                @default(0.00)
+  retiro_pastoral                      Float                                @default(0.00)
+  segunda_parte_ofrenda_ministerios    Float                                @default(0.00)
+  fondo_emergencia_nacional            Float                                @default(0.00)
+  misiones_nacionales                  Float                                @default(0.00)
+  diezmos_ministros                    Float                                @default(0.00)
+  compra_propiedad_nacional            Float                                @default(0.00)
+  construccion_templos_nuevos          Float                                @default(0.00)
+  cotizacion_prestaciones              Float                                @default(0.00)
+  seguro_vida                          Float                                @default(0.00)
+  fondo_solidario_ministerial          Float                                @default(0.00)
+  otros                                Float                                @default(0.00)
+  historico_informe_financiero_mensual historico_informe_financiero_mensual @relation(fields: [informe_financiero], references: [codigo])
+
+  @@index([informe_financiero], name: "fk_detalle_informe_financiero_mensual_header_informe_financ_idx")
+}
+
+model historico_detalle_informe_mensual_tesorero {
+  id                                Int                               @id @default(autoincrement())
+  informe_mesual_tesorero           String
+  diezmos_recibidos_iglesia         Float                             @default(0.00)
+  diezmo_enviado_oficina            Float                             @default(0.00)
+  diezmos_entregados_pastor         Float                             @default(0.00)
+  membresia_patrimonio_historico    Float                             @default(0.00)
+  ofrenda_misionera_segundo_domingo Float                             @default(0.00)
+  impulso_misiones                  Float                             @default(0.00)
+  porcentaje_misioneros_oficina     Float                             @default(0.00)
+  misiones_nacionales               Float                             @default(0.00)
+  entrada_fondo_local               Float                             @default(0.00)
+  diezmos_fondo_local               Float                             @default(0.00)
+  fondo_retiro_pastoral             Float                             @default(0.00)
+  dinero_otros_propositos           Float                             @default(0.00)
+  ofrenda_emergencia_nacional       Float                             @default(0.00)
+  fondo_solidario_ministerial       Float                             @default(0.00)
+  total_miembros                    Int                               @default(0)
+  masculinos                        Int                               @default(0)
+  femeninos                         Int                               @default(0)
+  excluidos                         Int                               @default(0)
+  trasladados                       Int                               @default(0)
+  historico_informe_mesual_tesorero historico_informe_mesual_tesorero @relation(fields: [informe_mesual_tesorero], references: [codigo])
+
+  @@index([informe_mesual_tesorero], name: "fk_detalle_infome_tesorero_informe_header_tesorero_idx")
+}
+
+model historico_detalle_informe_ministerial_mensual {
+  id                                    Int                                   @id @default(autoincrement())
+  informe_ministerial                   String
+  mensajes                              Int                                   @default(0)
+  convertidos                           Int                                   @default(0)
+  santificados                          Int                                   @default(0)
+  bautismos_agua                        Int                                   @default(0)
+  bautismos_es                          Int                                   @default(0)
+  agregados                             Int                                   @default(0)
+  hogares_miembros_v                    Int                                   @default(0)
+  hogares_prospectos_v                  Int                                   @default(0)
+  diezmo_recibido                       Float                                 @default(0.00)
+  diezmo_pagado                         Float                                 @default(0.00)
+  ofrenda_recibida                      Float                                 @default(0.00)
+  gastos_ministeriales                  Float                                 @default(0.00)
+  actividades_oracion                   Int                                   @default(0)
+  vida_oracion                          Boolean                               @default(false)
+  actividades_misiones                  Int                                   @default(0)
+  actividades_liderazgo                 Int                                   @default(0)
+  liderez_involucrados                  Int                                   @default(0)
+  mejora_ministerial                    Boolean                               @default(false)
+  miembros_activos                      Int                                   @default(0)
+  miembros_salvos                       Int                                   @default(0)
+  miembros_santificados                 Int                                   @default(0)
+  miembros_bautizados_es                Int                                   @default(0)
+  promedio_asistencia_adultos           Float                                 @default(0.00)
+  promedio_asitencia_ni_jov             Float                                 @default(0.00)
+  ministerio_alcance_semanal            Boolean                               @default(false)
+  santa_cena                            Int                                   @default(0)
+  lavatorio                             Int                                   @default(0)
+  historico_informe_ministerial_mensual historico_informe_ministerial_mensual @relation(fields: [informe_ministerial], references: [codigo])
+
+  @@index([informe_ministerial], name: "if_idx")
+}
+
+model historico_gestiones {
+  id                                    Int                                     @id @default(autoincrement())
+  codigo                                String
+  descripcion                           String
+  tipo_gestion                          Int
+  estado                                Int?
+  usuario_cr                            String
+  usuario_uac                           String?
+  usuario_publicacion                   String?
+  fecha_publicacion                     DateTime?
+  fecha_cr                              DateTime                                @default(now())
+  fecha_uac                             DateTime?
+  fecha_recibir_inicio                  DateTime                                @default(now())
+  fecha_recibir_fin                     DateTime
+  periodo                               String
+  periodo_ministerial                   periodo_ministerial                     @relation(fields: [codigo], references: [codigo])
+  tipo_gestiones                        tipo_gestiones                          @relation(fields: [tipo_gestion], references: [id])
+  historico_gestion_informes            historico_gestion_informes[]
+  historico_informes_recibidos_gestion  historico_informes_recibidos_gestion[]
+  historico_informe_financiero_mensual  historico_informe_financiero_mensual[]
+  historico_informe_mesual_tesorero     historico_informe_mesual_tesorero[]
+  historico_informe_ministerial_mensual historico_informe_ministerial_mensual[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([tipo_gestion], name: "fk_tipo_gestion_idx")
+}
+
+model historico_gestion_informes {
+  id                              Int                               @id @default(autoincrement())
+  gestion                         String
+  informe                         Int
+  fecha_agregacion                DateTime                          @default(now())
+  historico_gestiones             historico_gestiones               @relation(fields: [gestion], references: [codigo])
+  maestro_de_informes             maestro_de_informes               @relation(fields: [informe], references: [id])
+  historico_meses_gestion_informe historico_meses_gestion_informe[]
+
+  @@index([gestion], name: "fk_historico_gestion_informe_gestiones_idx")
+  @@index([informe], name: "fk_historico_gestion_informe_tipo_informe_idx")
+}
+
+model historico_informes_recibidos_gestion {
+  id                  Int                 @id @default(autoincrement())
+  gestion             String
+  iglesia             String
+  tipo_informe        Int
+  informe_ide         String
+  estado              Int
+  fecha_procesamiento DateTime            @default(now())
+  usuario             String
+  historico_gestiones historico_gestiones @relation(fields: [gestion], references: [codigo])
+  iglesias            iglesias            @relation(fields: [iglesia], references: [codigo])
+
+  @@index([gestion], name: "fk_historico_informes_recibidos_historico_gestion_idx")
+  @@index([iglesia], name: "iglesia_idx")
+}
+
+model historico_informe_financiero_mensual {
+  id                                           Int                                            @id @default(autoincrement())
+  codigo                                       String
+  iglesia                                      String
+  tesorero                                     String
+  nombre_iglesia                               String
+  pastor                                       String
+  nombre_pastor                                String
+  fecha_procesado                              DateTime?
+  usuario_procesado                            String?
+  gestion                                      String
+  mes                                          Int
+  anio                                         Int
+  usuario_cr                                   String
+  fecha_cr                                     DateTime                                       @default(now())
+  fecha_uac                                    DateTime?
+  historico_gestiones                          historico_gestiones                            @relation(fields: [codigo], references: [codigo])
+  iglesias                                     iglesias                                       @relation(fields: [iglesia], references: [codigo])
+  historico_detalle_informe_financiero_mensual historico_detalle_informe_financiero_mensual[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([iglesia], name: "fk_informe_financiero_mensual_iglesia_idx")
+}
+
+model historico_informe_mesual_tesorero {
+  id                                         Int                                          @id @default(autoincrement())
+  codigo                                     String
+  iglesia                                    String
+  tesorero                                   String
+  nombre_iglesia                             String
+  pastor                                     String
+  nombre_pastor                              String
+  fecha_procesado                            DateTime?
+  usuario_procesado                          String?
+  gestion                                    String
+  mes                                        Int
+  anio                                       Int
+  telefono                                   String?
+  direccion                                  String?
+  correo_electronico                         String?
+  usuario_cr                                 String
+  fecha_cr                                   DateTime                                     @default(now())
+  fecha_uac                                  DateTime?
+  historico_gestiones                        historico_gestiones                          @relation(fields: [gestion], references: [codigo])
+  iglesias                                   iglesias                                     @relation(fields: [iglesia], references: [codigo])
+  historico_detalle_informe_mensual_tesorero historico_detalle_informe_mensual_tesorero[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([gestion], name: "fk_historico_informe_mensual_tesorero_gestion_idx")
+  @@index([iglesia], name: "fk_informe_financiero_mensual_iglesia_idx")
+}
+
+model historico_informe_ministerial_mensual {
+  id                                            Int                                             @id @default(autoincrement())
+  codigo                                        String
+  iglesia                                       String
+  nombre_iglesia                                String
+  pastor                                        String
+  nombre_pastor                                 String
+  fecha_procesado                               DateTime?
+  usuario_procesado                             String?
+  gestion                                       String
+  mes                                           Int
+  anio                                          Int
+  usuario_cr                                    String
+  fecha_cr                                      DateTime                                        @default(now())
+  fecha_uac                                     DateTime?
+  estado                                        Int                                             @default(1)
+  historico_gestiones                           historico_gestiones                             @relation(fields: [gestion], references: [codigo])
+  iglesias                                      iglesias                                        @relation(fields: [iglesia], references: [codigo])
+  historico_detalle_informe_ministerial_mensual historico_detalle_informe_ministerial_mensual[]
+
+  @@index([codigo], name: "codigo_index")
+  @@index([gestion], name: "fk_historico_informe_ministerial_mensual_historico_gestion_idx")
+  @@index([iglesia], name: "fk_informe_ministeria_mensual_iglesia_idx")
+}
+
+model historico_membresia {
+  id                 Int       @id @default(autoincrement())
+  codigo             String
+  miembro            String
+  iglesia            String
+  fecha_recibimiento DateTime?
+  lugar_pacto        String?
+  fecha_pacto        DateTime?
+  fecha_fin          DateTime?
+  ministro_pacto     String?
+  estado             Int?
+  condicion          Boolean   @default(true)
+  fecha_cr           DateTime  @default(now())
+  fecha_uac          DateTime?
+  miembros           miembros  @relation(fields: [miembro], references: [codigo])
+
+  @@index([miembro], name: "fk_historico_membresia_persona_idx")
+}
+
+model historico_meses_gestion_informe {
+  id                         Int                        @id @default(autoincrement())
+  mes                        Int
+  gestion_informe            Int
+  historico_gestion_informes historico_gestion_informes @relation(fields: [gestion_informe], references: [id])
+  meses                      meses                      @relation(fields: [mes], references: [id])
+
+  @@index([gestion_informe], name: "fk_historico_gesion_informe_meses_gestion_idx")
+  @@index([mes], name: "fk_meses_gestion_informe_mes_idx")
+}
+
+model iglesias {
+  id                                    Int                                     @id @default(autoincrement())
+  codigo                                String
+  nombre                                String
+  telefono                              String?
+  departamento                          Int
+  municipio                             Int
+  canton                                Int?
+  direccion                             String?
+  distrito                              Int
+  fecha_ordenamiento                    DateTime?
+  tipo_iglesia                          Int
+  zonas                                 String
+  condicion                             Boolean                                 @default(true)
+  fecha_cr                              DateTime                                @default(now())
+  fecha_uac                             DateTime?
+  municipios                            municipios                              @relation(fields: [municipio], references: [id])
+  tipo_iglesias                         tipo_iglesias                           @relation(fields: [tipo_iglesia], references: [id])
+  zonas_iglesiasTozonas                 zonas                                   @relation(fields: [zonas], references: [codigo])
+  administracion_iglesias               administracion_iglesias[]
+  detalle_nombramientos_pastorales      detalle_nombramientos_pastorales[]
+  expediente_ministerial_pastor         expediente_ministerial_pastor[]
+  historico_informes_recibidos_gestion  historico_informes_recibidos_gestion[]
+  historico_informe_financiero_mensual  historico_informe_financiero_mensual[]
+  historico_informe_mesual_tesorero     historico_informe_mesual_tesorero[]
+  historico_informe_ministerial_mensual historico_informe_ministerial_mensual[]
+  iglesias_informes                     iglesias_informes[]
+  informes_recibidos_gestion            informes_recibidos_gestion[]
+  informe_financiero_mensual            informe_financiero_mensual[]
+  informe_mesual_tesorero               informe_mesual_tesorero[]
+  informe_ministerial_mensual           informe_ministerial_mensual[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([municipio], name: "fk_iglesia_municipio_idx")
+  @@index([tipo_iglesia], name: "fk_iglesia_tipo_iglesia_idx")
+  @@index([zonas], name: "fk_iglesia_zona_idx")
+}
+
+model iglesias_informes {
+  id                                           Int           @id @default(autoincrement())
+  iglesia                                      String
+  tipo_informe                                 Int?
+  iglesias                                     iglesias      @relation(fields: [iglesia], references: [codigo])
+  tipo_informe_iglesias_informesTotipo_informe tipo_informe? @relation(fields: [tipo_informe], references: [id])
+
+  @@unique([iglesia, tipo_informe], name: "iglesia_tipo_informe_UNIQUE")
+  @@index([iglesia], name: "fk_iglesia_iglesia_informe_idx")
+  @@index([tipo_informe], name: "fk_iglesias_informe_tipo_informe_idx")
+}
+
+model informes_recibidos_gestion {
+  id                  Int       @id @default(autoincrement())
+  gestion             String
+  iglesia             String
+  tipo_informe        Int
+  informe_ide         String
+  estado              Int       @default(1)
+  fecha_procesamiento DateTime  @default(now())
+  usuario             String
+  gestiones           gestiones @relation(fields: [gestion], references: [codigo])
+  iglesias            iglesias  @relation(fields: [iglesia], references: [codigo])
+
+  @@index([gestion], name: "gestion_idx")
+  @@index([iglesia], name: "iglesia_idx")
+}
+
+model informe_financiero_mensual {
+  id                                 Int                                  @id @default(autoincrement())
+  codigo                             String
+  iglesia                            String
+  tesorero                           String
+  nombre_iglesia                     String
+  pastor                             String
+  nombre_pastor                      String
+  fecha_procesado                    DateTime?
+  usuario_procesado                  String?
+  gestion                            String
+  mes                                Int
+  anio                               Int
+  usuario_cr                         String
+  fecha_cr                           DateTime                             @default(now())
+  fecha_uac                          DateTime?
+  gestiones                          gestiones                            @relation(fields: [gestion], references: [codigo])
+  iglesias                           iglesias                             @relation(fields: [iglesia], references: [codigo])
+  detalle_informe_financiero_mensual detalle_informe_financiero_mensual[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([gestion], name: "fk_informe_financiero_mensual_gestion_idx")
+  @@index([iglesia], name: "fk_informe_financiero_mensual_iglesia_idx")
+}
+
+model informe_mesual_tesorero {
+  id                               Int                                @id @default(autoincrement())
+  codigo                           String
+  iglesia                          String
+  tesorero                         String
+  nombre_iglesia                   String
+  pastor                           String
+  nombre_pastor                    String
+  fecha_procesado                  DateTime?
+  usuario_procesado                String?
+  gestion                          String
+  mes                              Int
+  anio                             Int
+  telefono                         String?
+  direccion                        String?
+  correo_electronico               String?
+  usuario_cr                       String
+  fecha_cr                         DateTime                           @default(now())
+  fecha_uac                        DateTime?
+  gestiones                        gestiones                          @relation(fields: [gestion], references: [codigo])
+  iglesias                         iglesias                           @relation(fields: [iglesia], references: [codigo])
+  detalle_informe_mensual_tesorero detalle_informe_mensual_tesorero[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([gestion], name: "fk_informe_financiero_mensual_gestion_idx")
+  @@index([iglesia], name: "fk_informe_financiero_mensual_iglesia_idx")
+}
+
+model informe_ministerial_mensual {
+  id                                  Int                                   @id @default(autoincrement())
+  codigo                              String
+  iglesia                             String
+  nombre_iglesia                      String
+  pastor                              String
+  nombre_pastor                       String
+  fecha_procesado                     DateTime?
+  usuario_procesado                   String?
+  gestion                             String
+  mes                                 Int
+  anio                                Int
+  usuario_cr                          String
+  estado                              Int                                   @default(1)
+  fecha_cr                            DateTime                              @default(now())
+  fecha_uac                           DateTime?
+  gestiones                           gestiones                             @relation(fields: [gestion], references: [codigo])
+  iglesias                            iglesias                              @relation(fields: [iglesia], references: [codigo])
+  detalle_informe_ministerial_mensual detalle_informe_ministerial_mensual[]
+
+  @@index([codigo], name: "codigo_index")
+  @@index([gestion], name: "fk_informe:ministerial_mensual_gestion_idx")
+  @@index([iglesia], name: "fk_informe_ministeria_mensual_iglesia_idx")
+}
+
+model logs {
+  id                  Int     @id @default(autoincrement())
+  evento              String
+  ip                  String
+  origen              String?
+  usuario             String?
+  metodo              String?
+  url_solicitada      String?
+  protocolo_solicitud String
+  estado_respuesta    String
+  tama_o_respuesta    Int     @map("tamaño_respuesta")
+  agente              String?
+  datos               String?
+}
+
+model maestro_de_informes {
+  id                                             Int                          @id @default(autoincrement())
+  identificador                                  String                       @unique
+  nombre                                         String?                      @unique
+  tipo_informe                                   Int?                         @unique
+  condicion                                      Boolean                      @default(true)
+  fecha_cr                                       DateTime                     @default(now())
+  fecha_uac                                      DateTime?
+  tipo_informe_maestro_de_informesTotipo_informe tipo_informe?                @relation(fields: [tipo_informe], references: [id])
+  gestion_informes                               gestion_informes[]
+  historico_gestion_informes                     historico_gestion_informes[]
+}
+
+model meses {
+  id                              Int                               @id @default(autoincrement())
+  nombre                          String
+  numerico                        Int?
+  historico_meses_gestion_informe historico_meses_gestion_informe[]
+  meses_gestion_informe           meses_gestion_informe[]
+}
+
+model meses_gestion_informe {
+  id               Int              @id @default(autoincrement())
+  mes              Int
+  gestion_informe  Int
+  gestion_informes gestion_informes @relation(fields: [gestion_informe], references: [id])
+  meses            meses            @relation(fields: [mes], references: [id])
+
+  @@index([gestion_informe], name: "fk_gesion_informe_meses_gestion_idx")
+  @@index([mes], name: "fk_meses_gestion_informe_mes_idx")
+}
+
+model miembros {
+  id                                  Int                              @id @default(autoincrement())
+  codigo                              String
+  persona                             String
+  iglesia                             String
+  fecha_recibimiento                  DateTime?
+  tipo_miembro                        Int?
+  bautizado                           Boolean?                         @default(false)
+  lugar_bautismo                      String?
+  ministro_bautismo                   String?
+  nombre_ministro_bautismo            String?
+  conviccion_iglesia                  Boolean                          @default(false)
+  acuerdo_doctrina                    Boolean                          @default(false)
+  areas_trabajo                       String?
+  estado                              Int?
+  fecha_inactivo                      DateTime?
+  fecha_desligado                     DateTime?
+  lugar_pacto                         String?
+  fecha_pacto                         DateTime?
+  ministro_pacto                      String?
+  fecha_promocion_pastor              DateTime?
+  fecha_presentacion                  DateTime?
+  fecha_cr                            DateTime                         @default(now())
+  fecha_uac                           DateTime?
+  personas                            personas                         @relation(fields: [persona], references: [codigo])
+  tipo_miembro_miembrosTotipo_miembro tipo_miembro?                    @relation(fields: [tipo_miembro], references: [id])
+  detalle_nombramiento_liderazgo      detalle_nombramiento_liderazgo[]
+  historico_membresia                 historico_membresia[]
+  miembro_expediente                  miembro_expediente[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([persona], name: "fk_miembro_persona_idx")
+  @@index([tipo_miembro], name: "fk_miembro_tipo_miembro_idx")
+}
+
+model miembro_expediente {
+  id           Int       @id @default(autoincrement())
+  miembro      String
+  evento       String
+  fecha_evento DateTime
+  tipo         Int?
+  fecha_inicio DateTime?
+  fecha_fin    DateTime?
+  condicion    Boolean   @default(true)
+  fecha_cr     DateTime  @default(now())
+  fecha_uac    DateTime?
+  miembros     miembros  @relation(fields: [miembro], references: [codigo])
+
+  @@index([miembro], name: "fk_expediente_personas_idx")
+}
+
+model modulos {
+  id              Int             @id @default(autoincrement())
+  identificador   String          @unique
+  nombre          String
+  es_principal    Boolean         @default(false)
+  nivel_principal Int             @default(0)
+  condicion       Boolean         @default(true)
+  fecha_cr        DateTime        @default(now())
+  fecha_uac       DateTime?
+  roles_modulos   roles_modulos[]
+}
+
+model municipios {
+  id            Int            @id @default(autoincrement())
+  departamento  Int?
+  nombre        String?
+  departamentos departamentos? @relation(fields: [departamento], references: [id])
+  iglesias      iglesias[]
+  personas      personas[]
+}
+
+model nacionalidades {
+  id           Int        @id @default(autoincrement())
+  pais         String
+  nacionalidad String
+  abreviatura  String
+  personas     personas[]
+}
+
+model niveles_academicos_pastorales {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  condicion Boolean    @default(true)
+  fecha_cr  DateTime   @default(now())
+  fecha_uac DateTime?
+  pastores  pastores[]
+}
+
+model nivel_pastor {
+  id          Int        @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  condicion   Boolean    @default(true)
+  fecha_cr    DateTime   @default(now())
+  fecha_uac   DateTime?
+  pastores    pastores[]
+}
+
+model nombramientos_pastorales {
+  id                               Int                                @id @default(autoincrement())
+  descripcion                      String
+  fecha_inicio                     DateTime
+  fecha_fin                        DateTime
+  estado                           Int
+  condicion                        Boolean                            @default(true)
+  fecha_cr                         DateTime                           @default(now())
+  fecha_uac                        DateTime?
+  detalle_nombramientos_pastorales detalle_nombramientos_pastorales[]
+}
+
+model nombramiento_liderazgo {
+  id                             Int                              @id @default(autoincrement())
+  descripcion                    String
+  fecha_inicio                   DateTime
+  fecha_fin                      DateTime
+  tipo                           Int
+  estado                         Int
+  condicion                      Boolean                          @default(true)
+  fecha_cr                       DateTime                         @default(now())
+  fecha_uac                      DateTime?
+  tipo_nombramientos             tipo_nombramientos               @relation(fields: [tipo], references: [id])
+  detalle_nombramiento_liderazgo detalle_nombramiento_liderazgo[]
+
+  @@index([tipo], name: "fk_nombramiento_liderazgo_idx")
+}
+
+model pastores {
+  id                               Int                                @id @default(autoincrement())
+  codigo                           String
+  persona                          String
+  licencia_ministerial             String
+  nivel_pastoral                   Int
+  nivel_academico                  Int
+  fecha_inicio_pastoral            DateTime
+  fecha_retiro                     DateTime?
+  fallecido                        Boolean?
+  status                           Int?
+  biografia                        String?
+  memoria_fallecimiento            String?
+  niveles_academicos_pastorales    niveles_academicos_pastorales      @relation(fields: [nivel_academico], references: [id])
+  nivel_pastor                     nivel_pastor                       @relation(fields: [nivel_pastoral], references: [id])
+  personas                         personas                           @relation(fields: [persona], references: [codigo])
+  detalle_nombramientos_pastorales detalle_nombramientos_pastorales[]
+  expediente_ministerial_pastor    expediente_ministerial_pastor[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([nivel_academico], name: "fk_pastor_nivel_academico_pastoral_idx")
+  @@index([nivel_pastoral], name: "fk_pastor_nivel_idx")
+  @@index([persona], name: "fk_pastor_persona_idx")
+}
+
+model periodo_ministerial {
+  id                  Int                   @id @default(autoincrement())
+  codigo              String
+  descripcion         String
+  anio                Int
+  estado              Int                   @default(1)
+  gestiones           gestiones[]
+  historico_gestiones historico_gestiones[]
+
+  @@index([codigo], name: "codigo_idx")
+}
+
+model personas {
+  id                      Int                       @id @default(autoincrement())
+  codigo                  String
+  nombres                 String?
+  apellidos               String?
+  telefono                String?
+  sexo                    Int?
+  nacionalidad            Int?
+  fecha_nacimiento        DateTime?
+  departemento_nacimiento Int?
+  municipio_nacimiento    Int?
+  canton_nacimiento       Int?
+  departamento_residencia Int?
+  municipio_residencia    Int?
+  canton_residencia       Int?
+  tipo_documento          Int?
+  numero_documeto         String?
+  estado_civil            Int?
+  profesion_oficio        Int?
+  direccion               String?
+  estado                  Int?
+  fecha_fallecimiento     DateTime?
+  condicion               Boolean                   @default(true)
+  fecha_cr                DateTime                  @default(now())
+  fecha_uac               DateTime?
+  estados_civiles         estados_civiles?          @relation(fields: [estado_civil], references: [id])
+  municipios              municipios?               @relation(fields: [municipio_nacimiento], references: [id])
+  nacionalidades          nacionalidades?           @relation(fields: [nacionalidad], references: [id])
+  profesiones             profesiones?              @relation(fields: [profesion_oficio], references: [id])
+  tipos_documentos        tipos_documentos?         @relation(fields: [tipo_documento], references: [id])
+  administracion_iglesias administracion_iglesias[]
+  administrador_archivos  administrador_archivos[]
+  miembros                miembros[]
+  pastores                pastores[]
+  usuarios                usuarios[]
+
+  @@index([codigo], name: "codigo_idx")
+  @@index([estado_civil], name: "fk_personas_estado_civil_idx")
+  @@index([municipio_nacimiento], name: "fk_personas_municipio_idx")
+  @@index([nacionalidad], name: "fk_personas_nacionalidad_idx")
+  @@index([profesion_oficio], name: "fk_personas_profesiones_idx")
+  @@index([tipo_documento], name: "fk_personas_tipo_documento_idx")
+}
+
+model profesiones {
+  id       Int        @id @default(autoincrement())
+  nombre   String
+  personas personas[]
+}
+
+model roles {
+  id            Int             @id @default(autoincrement())
+  nombre        String
+  condicion     Boolean         @default(true)
+  fecha_cr      DateTime        @default(now())
+  fecha_uac     DateTime?
+  roles_modulos roles_modulos[]
+  usuarios      usuarios[]
+}
+
+model roles_modulos {
+  id        Int       @id @default(autoincrement())
+  modulo    Int
+  rol       Int
+  condicion Boolean   @default(true)
+  fecha_cr  DateTime  @default(now())
+  fecha_uac DateTime?
+  modulos   modulos   @relation(fields: [modulo], references: [id])
+  roles     roles     @relation(fields: [rol], references: [id])
+
+  @@unique([modulo, rol], name: "rol_modulo_UNIQUE")
+  @@index([rol], name: "fk_roles_modulos_roles_idx")
+}
+
+model tipos_documentos {
+  id       Int        @id @default(autoincrement())
+  nombre   String
+  defecto  Boolean?   @default(false)
+  personas personas[]
+}
+
+model tipo_gestiones {
+  id                  Int                   @id @default(autoincrement())
+  nombre              String?
+  condicion           Boolean               @default(true)
+  fecha_cr            DateTime              @default(now())
+  fecha_uac           DateTime?
+  gestiones           gestiones[]
+  historico_gestiones historico_gestiones[]
+}
+
+model tipo_iglesias {
+  id       Int        @id @default(autoincrement())
+  nombre   String
+  iglesias iglesias[]
+}
+
+model tipo_informe {
+  id                  Int                  @id @default(autoincrement())
+  nombre              String
+  condicion           Boolean              @default(true)
+  fecha_cr            DateTime             @default(now())
+  fecha_uac           DateTime?
+  iglesias_informes   iglesias_informes[]
+  maestro_de_informes maestro_de_informes?
+}
+
+model tipo_miembro {
+  id       Int        @id @default(autoincrement())
+  nombre   String
+  miembros miembros[]
+}
+
+model tipo_nombramientos {
+  id                     Int                      @id @default(autoincrement())
+  nombre                 String
+  nombramiento_liderazgo nombramiento_liderazgo[]
+}
+
+model usuarios {
+  id                 Int                @id @default(autoincrement())
+  persona            String
+  correo_electronico String
+  password           String
+  estado             Int
+  rol                Int
+  alias              String
+  ultimo_login       DateTime           @default(now())
+  fecha_cr           DateTime           @default(now())
+  password_defecto   Boolean            @default(true)
+  ultimo_cambio      DateTime?
+  personas           personas           @relation(fields: [persona], references: [codigo])
+  roles              roles              @relation(fields: [rol], references: [id])
+  cambios_password   cambios_password[]
+
+  @@index([persona], name: "fk_usuario_persona_idx")
+  @@index([rol], name: "fk_usuario_rol_idx")
+}
+
+model zonas {
+  id                  Int                   @id @default(autoincrement())
+  codigo              String
+  nombre              String
+  condicion           Boolean               @default(true)
+  fecha_cr            DateTime              @default(now())
+  fecha_uac           DateTime?
+  iglesias            iglesias[]
+  zonas_departamentos zonas_departamentos[]
+
+  @@index([codigo], name: "codigo_idx")
+}
+
+model zonas_departamentos {
+  id            Int           @id @default(autoincrement())
+  zona          String
+  departamento  Int
+  departamentos departamentos @relation(fields: [departamento], references: [id])
+  zonas         zonas         @relation(fields: [zona], references: [codigo])
+
+  @@unique([zona, departamento], name: "zona_depto_Unique")
+  @@index([departamento], name: "fk_zona_dpto_deptos_idx")
+  @@index([zona], name: "fk_zona_dpto_zona_idx")
+}
