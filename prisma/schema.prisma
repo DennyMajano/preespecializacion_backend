@@ -870,6 +870,7 @@ model personas {
   apellidos               String?
   telefono                String?
   sexo                    Int?
+  avatar                  String
   nacionalidad            Int?
   fecha_nacimiento        DateTime?
   departemento_nacimiento Int?
