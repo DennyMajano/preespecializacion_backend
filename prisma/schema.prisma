@@ -43,6 +43,7 @@ model cambios_password {
   vencimiento        DateTime
   vigente            Boolean   @default(true)
   utilizado          Boolean   @default(false)
+  tipo_cambio        Int?
   fecha_solicitud    DateTime  @default(now())
   fecha_utilizado    DateTime?
   usuarios           usuarios  @relation(fields: [usuario], references: [id])
@@ -984,6 +985,7 @@ model tipo_nombramientos {
 model usuarios {
   id                 Int                @id @default(autoincrement())
   persona            String
+  iglesia            String?
   correo_electronico String
   password           String
   estado             Int
