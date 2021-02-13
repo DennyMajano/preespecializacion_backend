@@ -989,7 +989,7 @@ model usuarios {
   iglesia            String?
   correo_electronico String
   password           String
-  estado             Int
+  estado             Int                @default(1)
   rol                Int
   alias              String
   ultimo_login       DateTime           @default(now())
