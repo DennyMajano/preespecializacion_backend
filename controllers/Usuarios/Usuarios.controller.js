@@ -12,11 +12,11 @@ module.exports = () => {
     console.log(data);
     try {
       if (
-        !isUndefinedOrNull(data.nombre) &&
-        !isUndefinedOrNull(data.alias) &&
-        !isUndefinedOrNull(data.correo) &&
+        !isUndefinedOrNull(data.persona) &&
+        !isUndefinedOrNull(data.iglesia) &&
+        !isUndefinedOrNull(data.correo_electronico) &&
         !isUndefinedOrNull(data.rol) &&
-        !isUndefinedOrNull(data.user)
+        !isUndefinedOrNull(data.alias)
       ) {
         let result = await modelUsuarios.create(data, imagen);
         if (result.errno) {

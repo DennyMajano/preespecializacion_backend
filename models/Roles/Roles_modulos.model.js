@@ -51,7 +51,7 @@ module.exports = {
       transaction = await database.Transaction(db, async () => {
         if (filter != "") {
           filter = filter.split(" ");
-          let query = `SELECT rm.id, m.nombre, rm.condicion AS status, m.es_principal AS e_padre, (SELECT nombre FROM modulos WHERE id= m.nivel_principal) AS nivel_principal, DATE_FORMAT(rm.create_time,"%W %d de %M del %Y, %I:%i %p") AS fecha_creacion, rm.update_time AS fecha_actualizacion FROM roles_modulos rm LEFT JOIN modulos m ON rm.modulo=m.id WHERE rm.rol=${rol} AND`;
+          let query = `SELECT rm.id, m.nombre, rm.condicion AS status, m.es_principal AS e_padre, (SELECT nombre FROM modulos WHERE id= m.nivel_principal) AS nivel_principal, DATE_FORMAT(rm.fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS fecha_creacion, rm.fecha_uac AS fecha_actualizacion FROM roles_modulos rm LEFT JOIN modulos m ON rm.modulo=m.id WHERE rm.rol=${rol} AND`;
 
           for (let i = 0; i < filter.length; i++) {
             query += `  (m.nombre LIKE '%${filter[i]}%') ${
@@ -63,7 +63,7 @@ module.exports = {
           );
         } else {
           roles_modulos = await db.query(
-            `SELECT rm.id, m.nombre, rm.condicion AS status, m.es_principal AS e_padre, (SELECT nombre FROM modulos WHERE id= m.nivel_principal) AS nivel_principal, DATE_FORMAT(rm.create_time,"%W %d de %M del %Y, %I:%i %p") AS fecha_creacion, rm.update_time AS fecha_actualizacion FROM roles_modulos rm LEFT JOIN modulos m ON rm.modulo=m.id WHERE rm.rol=${rol} ORDER BY m.nombre ASC LIMIT 100`
+            `SELECT rm.id, m.nombre, rm.condicion AS status, m.es_principal AS e_padre, (SELECT nombre FROM modulos WHERE id= m.nivel_principal) AS nivel_principal, DATE_FORMAT(rm.fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS fecha_creacion, rm.fecha_uac AS fecha_actualizacion FROM roles_modulos rm LEFT JOIN modulos m ON rm.modulo=m.id WHERE rm.rol=${rol} ORDER BY m.nombre ASC LIMIT 100`
           );
         }
 
@@ -104,8 +104,9 @@ module.exports = {
           "SELECT id, (SELECT rol FROM roles_modulos WHERE id=?) AS rol, es_principal FROM modulos WHERE id=(SELECT modulo FROM roles_modulos WHERE id=?)",
           [code, code]
         );
-
-        if (es_principal[0].es_principal === 1) {
+        let esprincipal =
+          es_principal.length > 0 ? es_principal[0].es_principal : 0;
+        if (esprincipal === 1) {
           modulos_p = await db.query(
             "SELECT id FROM modulos WHERE nivel_principal=?",
             [es_principal[0].id]

@@ -7,7 +7,7 @@ const GeneratePassword = require("../../helpers/GeneratePassword");
 const NombreTrim = require("../../helpers/NombreTrim");
 module.exports = {
   create: async (data, imagen) => {
-    const { nombre, alias, rol, correo, user } = data;
+    const { persona, iglesia, correo_electronico, rol, alias } = data;
 
     let usuario;
 
@@ -16,33 +16,34 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         usuario = await db.query(
-          `INSERT INTO usuarios(nombre_completo, nombre_sistema, rol, correo, user_name, avatar, password) VALUES (?,?,?,?,?,?,?)`,
+          `INSERT INTO usuarios(persona, iglesia, correo_electronico, password, rol, alias) VALUES (?,?,?,?,?,?)`,
           [
-            nombre,
-            alias,
+            persona,
+            iglesia,
+            correo_electronico,
+            //aqui va password generate
+            password_encryption.encrypt_password("12345"),
             rol,
-            correo,
-            user,
-            imagen,
-            password_encryption.encrypt_password(password_generate),
+            alias,
           ]
         );
 
         //Aqui enviar el correo
 
-        let info = await mail.send(
-          "Bienvenido al SISTEMA",
-          correo,
-          "ASIGNACION DE CONTRASEÑA",
-          `Bienvenido al sistema ${nombre} esta es tu contraseña: ${password_generate}`
-        );
+        // let info = await mail.send(
+        //   "Bienvenido al SISTEMA",
+        //   correo,
+        //   "ASIGNACION DE CONTRASEÑA",
+        //   `Bienvenido al sistema ${nombre} esta es tu contraseña: ${password_generate}`
+        // );
 
-        console.log(info);
+        // console.log(info);
       });
     } catch (error) {
       return error;
     }
 
+    console.log(transaction);
     return usuario !== undefined ? usuario : transaction;
   },
 

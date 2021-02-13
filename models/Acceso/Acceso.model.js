@@ -3,7 +3,7 @@ const db = require("../../config/conexion");
 
 module.exports = {
   acceso: async (data) => {
-    const { user_name } = data;
+    const { correo_electronico } = data;
     let acceso;
     let transaction;
     let modulos;
@@ -11,8 +11,8 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         acceso = await db.query(
-          `SELECT id, nombre_completo, nombre_sistema, rol, correo, user_name, password FROM usuarios WHERE (user_name=? OR correo=?) AND (condicion=1 AND bloqueo=0) LIMIT 1`,
-          [user_name, user_name]
+          `SELECT id, persona, iglesia, correo_electronico, rol, password, alias FROM usuarios WHERE correo_electronico=? AND password_defecto=0 AND estado=1 LIMIT 1`,
+          [correo_electronico]
         );
 
         modulos = await db.query(

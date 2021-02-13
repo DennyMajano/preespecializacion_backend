@@ -10,7 +10,7 @@ module.exports = {
    *  @description Esta funcion es para encriptar la contraseña
    */
   encrypt_password: (text_password) => {
-    const hash = bcrypt.hashSync(text_password, salt);
+    const hash = bcrypt.hashSync(String(text_password), salt);
 
     return hash;
   },

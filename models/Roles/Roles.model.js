@@ -42,7 +42,7 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(create_time,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(update_time,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles WHERE`;
+          let query = `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(fecha_uac,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles WHERE`;
 
           for (let i = 0; i < filter.length; i++) {
             query += ` (nombre LIKE '%${filter[i]}%' OR id LIKE '%${
@@ -53,7 +53,7 @@ module.exports = {
           roles = await db.query(`${query} ORDER BY nombre ASC LIMIT 100`);
         } else {
           roles = await db.query(
-            `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(create_time,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(update_time,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles ORDER BY nombre ASC LIMIT 100`
+            `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(fecha_uac,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles ORDER BY nombre ASC LIMIT 100`
           );
         }
 

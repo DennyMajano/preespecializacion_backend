@@ -53,7 +53,7 @@ module.exports = {
       transaction = await database.Transaction(db, async () => {
         if (filter != "") {
           filter = filter.split(" ");
-          let query = `SELECT m.id AS modulo_id, m.identificador AS code, m.nombre AS name, m.create_time AS date,md.nombre as padre, m.es_principal, m.condicion AS status FROM modulos m LEFT JOIN modulos md ON m.nivel_principal=md.id WHERE`;
+          let query = `SELECT m.id AS modulo_id, m.identificador AS code, m.nombre AS name, m.fecha_cr AS date,md.nombre as padre, m.es_principal, m.condicion AS status FROM modulos m LEFT JOIN modulos md ON m.nivel_principal=md.id WHERE`;
 
           for (let i = 0; i < filter.length; i++) {
             query += `  (m.nombre LIKE '%${filter[i]}%' OR md.nombre LIKE '%${
@@ -63,7 +63,7 @@ module.exports = {
           modulo = await db.query(`${query} ORDER BY m.nombre ASC LIMIT 100`);
         } else {
           modulo = await db.query(
-            `SELECT m.id AS modulo_id, m.identificador AS code, m.nombre AS name, m.create_time AS date,md.nombre as padre,m.es_principal, m.condicion AS status FROM modulos m LEFT JOIN modulos md ON m.nivel_principal=md.id ORDER BY m.nombre ASC LIMIT 100`
+            `SELECT m.id AS modulo_id, m.identificador AS code, m.nombre AS name, m.fecha_cr AS date,md.nombre as padre,m.es_principal, m.condicion AS status FROM modulos m LEFT JOIN modulos md ON m.nivel_principal=md.id ORDER BY m.nombre ASC LIMIT 100`
           );
         }
 
@@ -139,7 +139,7 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         modulo = await db.query(
-          `SELECT id AS modulo_id, nombre AS name,create_time AS fechacr FROM modulos WHERE nivel_principal=? ORDER BY nombre ASC LIMIT 100`,
+          `SELECT id AS modulo_id, nombre AS name,fecha_cr AS fechacr FROM modulos WHERE nivel_principal=? ORDER BY nombre ASC LIMIT 100`,
           [id_padre]
         );
 

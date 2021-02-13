@@ -11,7 +11,7 @@ module.exports = () => {
 
     try {
       if (
-        !isUndefinedOrNull(data.user_name) &&
+        !isUndefinedOrNull(data.correo_electronico) &&
         !isUndefinedOrNull(data.password)
       ) {
         let result = await modelAcceso.acceso(data);
@@ -22,7 +22,9 @@ module.exports = () => {
             String(
               Token.createToken({
                 usuario: result.acceso[0].id,
-                username: result.acceso[0].user_name,
+                correo: result.acceso[0].correo_electronico,
+                codigo_persona: result.acceso[0].persona,
+                codigo_iglesia: result.acceso[0].iglesia,
                 rol: result.acceso[0].rol,
                 modulos: result.modulos.map((x) => {
                   return x.modulo;
@@ -32,9 +34,9 @@ module.exports = () => {
           );
           data_send = {
             usuario: result.acceso[0].id,
-            user_name: result.acceso[0].user_name,
-            alias: result.acceso[0].nombre_sistema,
-            correo: result.acceso[0].correo,
+            correo: result.acceso[0].correo_electronico,
+            alias: result.acceso[0].alias,
+
             modulos: result.modulos.map((x) => {
               return x.modulo;
             }),
