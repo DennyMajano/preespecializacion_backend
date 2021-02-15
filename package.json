@@ -5,9 +5,9 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "restro":"npx prisma introspect",
-    "generate":"npx prisma generate",
-    "prisma":"npm run restro && npm run generate"
+    "restro": "npx prisma introspect",
+    "generate": "npx prisma generate",
+    "prisma": "npm run restro && npm run generate"
   },
   "dependencies": {
     "@prisma/client": "^2.16.1",
@@ -35,6 +35,8 @@
     "public-ip": "4.0.2",
     "pug": "^3.0.0",
     "random-codes": "0.0.10",
+    "swagger-jsdoc": "^6.0.2",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.2.0",
     "validate.io-undefined-or-null": "^1.0.0"
   },
