@@ -38,7 +38,7 @@ module.exports = () => {
     "/generales/tipo_proyecto/all",
     generalesController.getSelectTipoProyecto
   );
-  router.get("/generales/mail/:mensaje", generalesController.mail);
+  router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
   // router.get("/cargos/all/:filter", generalesController.getAll);
   // router.get("/cargos/select", generalesController.getSelect);
   // router.get("/cargos/select/:filter", generalesController.getSelect);

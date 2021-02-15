@@ -129,12 +129,12 @@ module.exports = () => {
     }
   };
   generales.mail = async (req, res) => {
-    const { mensaje } = req.params;
+    const { mensaje, correo } = req.params;
 
     try {
       let info = await mail.send(
         "Mensaje de prueba",
-        "arielopez229422@gmail.com",
+        correo,
         "PRUEBA",
         mensaje
       );
