@@ -884,7 +884,7 @@ model personas {
   estado_civil            Int?
   profesion_oficio        Int?
   direccion               String?
-  estado                  Int?
+  estado                  Int?                      @default(1)
   fecha_fallecimiento     DateTime?
   condicion               Boolean                   @default(true)
   fecha_cr                DateTime                  @default(now())

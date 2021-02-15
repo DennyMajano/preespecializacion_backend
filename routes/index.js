@@ -4,6 +4,7 @@ const generalesRouter = require("./Generales/Generales.router")();
 const accesoRouter = require("./Acceso/Acceso.router")();
 const usuariosRouter = require("./Usuarios/Usuarios.router")();
 const tipoDocumentoRouter = require("./TipoDocumento/TipoDocumento.router")();
+const personasRouter = require("./Personas/Personas.router")();
 
 module.exports = function (app) {
   //rutas configuracion
@@ -13,5 +14,6 @@ module.exports = function (app) {
   app.use("/api", accesoRouter);
   app.use("/api", usuariosRouter);
   app.use("/api", tipoDocumentoRouter);
+  app.use("/api", personasRouter);
   //other routes..
 };
