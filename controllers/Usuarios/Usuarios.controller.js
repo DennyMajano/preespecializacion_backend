@@ -218,5 +218,26 @@ module.exports = () => {
       console.log(error);
     }
   };
+  usuarios.requestEmailToChangePassword = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (!isUndefinedOrNull(data.correo)) {
+        let result = await modelUsuarios.requestEmailToChangePassword(data);
+        console.log(result);
+        if (result.errno) {
+          res.status(500).json("Error de servidor");
+        } else if (result) {
+          res.status(200).json("Se envió un correo electrónico a la dirección");
+        } else{
+          res.status(200).json("NO Se envió un correo electrónico a la dirección");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return usuarios;
 };

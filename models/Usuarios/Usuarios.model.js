@@ -5,6 +5,8 @@ const password_encryption = require("../../services/encrytion/PasswordEncryption
 const mail = require("../../services/email/Mail");
 const GeneratePassword = require("../../helpers/GeneratePassword");
 const NombreTrim = require("../../helpers/NombreTrim");
+const { PrismaClient } = require("@prisma/client");
+const GenerateUID = require("../../helpers/UID");
 module.exports = {
   create: async (data, imagen) => {
     const { persona, iglesia, correo_electronico, rol, alias } = data;
@@ -267,5 +269,65 @@ module.exports = {
     }
 
     return usuario !== undefined ? usuario : transaction;
+  },
+  requestEmailToChangePassword: async (data) => {
+    const { correo } = data;
+
+    const password_generate = GeneratePassword();
+
+    
+    try{
+      const prisma = new PrismaClient();
+      const userToChangeSendEmail = await prisma.usuarios.findFirst({
+        where:{
+          correo_electronico: correo
+        }
+      });
+      console.log(userToChangeSendEmail);
+      if(userToChangeSendEmail){
+        let temp_password = GeneratePassword();
+        temp_password = password_encryption.encrypt_password(temp_password);
+        console.log("temp_pass: "+temp_password);
+        const uidChange = GenerateUID();
+        console.log("uid: "+uidChange);
+        expire = new Date();
+        expire.setMinutes(expire.getMinutes()+10); //Arreglar hora
+        console.log(expire);
+        
+        const updateUser = await prisma.usuarios.update({
+          where:{
+            id: userToChangeSendEmail.id
+          },
+          data: {
+            password_defecto: true,
+            password: temp_password,
+            cambios_password:{
+              create:{
+                correo_electronico: userToChangeSendEmail.correo_electronico,
+                token: uidChange,
+                vencimiento: expire,
+                tipo_cambio: 1
+              }
+            }
+          }
+        });
+        if(updateUser){
+          const mailSend = await mail.send(
+            "Control de seguridad",
+            correo,
+            "Restablecimiento de contraseña",
+            `Estimado su contraseña es: ${temp_password}`
+          );
+        }
+        
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    catch(error){
+      return error;
+    }
   },
 };
