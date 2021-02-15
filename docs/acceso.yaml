@@ -1,0 +1,38 @@
+paths:
+  /login: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Acceso # Value of the tag
+      summary: Login en la plataforma
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Login # name of request, can be any name
+          description: Esta es la data para login del sistema
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/login"
+      responses: # server responses
+        200:
+          description: inicio exitoso
+        401:
+          description: Correo o contraseña no son correctas
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+definitions: # Schema defination for request body
+  login:
+    type: object
+    properties:
+      correo_electronico:
+        type: string
+        description: correo del usuario
+        example: arielopez229422@gmail.com
+      password:
+        type: string
+        description: contraseña asignada
+        example: "12345"

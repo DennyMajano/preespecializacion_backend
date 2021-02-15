@@ -1,0 +1,204 @@
+paths:
+  /roles: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Crear un nuevo rol
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo rol
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/create"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+    #Update de rol
+    put: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Actualizar un  Módulo
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Update # name of request, can be any name
+          description: Esto es para actualizar un rol
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/update"
+      responses: # server responses
+        200:
+          description: se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    #Update de módulos
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Activar y desactivar un rol
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: delete # name of request, can be any name
+          description: json para desactivar o activar un rol
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete"
+      responses: # server responses
+        200:
+          description: se activo o desactivo con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+  #get de roles por id
+  /roles/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Obtiene un rol por id
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id del rol a consultar
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: integer
+            minimum: 1
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o lógica en código
+    #get de módulos padres
+  /roles/select:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Obtiene todos los roles
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los módulos principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de módulos padres
+  /roles/select/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Obtiene los roles que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre de módulo en este caso
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /roles/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Obtiene todos los roles
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los módulos principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de módulos padres
+  /roles/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Roles # Value of the tag
+      summary: Obtiene los roles  que coincidan con el filtro de búsqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre de roles en este caso
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+definitions: # Schema defination for request body
+  create:
+    type: object
+    properties:
+      name:
+        type: string
+        description: nombre del módulo
+      principal:
+        type: integer
+        description: 1 si es módulo principal(padre) 0 si no es módulo principal(padre)
+      modulo_principal:
+        type: integer
+        description: Si es módulo hijo se establece el id del módulo padre
+  update:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Código del módulo
+      name:
+        type: string
+        description: nombre del módulo
+      principal:
+        type: integer
+        description: 1 si es módulo principal(padre) 0 si no es módulo principal(padre)
+      modulo_principal:
+        type: integer
+        description: Si es módulo hijo se establece el id del módulo padre
+  delete:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Código del módulo
+      status:
+        type: integer
+        description: 1 si desea activar 0 si desactivar
