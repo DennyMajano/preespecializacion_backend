@@ -1,0 +1,233 @@
+paths:
+  /usuarios: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Crear un nuevo Usuario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es la data para crear un nuevo Usuario
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/create"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+  #   #Update de módulos
+  #   put: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Actualizar un  Módulo
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: body # request body
+  #         name: Update # name of request, can be any name
+  #         description: Esto es para actualizar un módulo
+  #         required: false # can also be true depending on user preference
+  #         schema: # Schema definition
+  #           $ref: "#/definitions/update"
+  #     responses: # server responses
+  #       200:
+  #         description: se actualizó con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #       400:
+  #         description: no se pudo crear por que faltan datos obligatorios
+  #   #Update de módulos
+  #   delete: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Activar y desactivar un módulo
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: body # request body
+  #         name: delete # name of request, can be any name
+  #         description: json para desactivar o activar el módulo
+  #         required: false # can also be true depending on user preference
+  #         schema: # Schema definition
+  #           $ref: "#/definitions/delete"
+  #     responses: # server responses
+  #       200:
+  #         description: se activo o desactivo con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #       400:
+  #         description: no se pudo crear por que faltan datos obligatorios
+
+  # #get de módulos por id
+  # /modulos/{code}:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene un módulo por id
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: path # request body
+  #         name: code # name of request, can be any name
+  #         description: Id del módulo a consultar
+  #         required: true # can also be true depending on user preference
+  #         schema: # Schema definition
+  #           type: integer
+  #           minimum: 1
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+  #   #get de módulos padres
+  # /modulos/select:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene todos los módulos padres
+  #     produces:
+  #       - application/json
+  #     # parameters: # request parameters
+  #     #   - in: path # request body
+  #     #     name: code # name of request, can be any name
+  #     #     description: Get para obtener los módulos principales o padres
+  #     #     required: false # can also be true depending on user preference
+
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+  #     #get de módulos padres
+  # /modulos/select/{filter}:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene los módulos padres que coincidan con el filtro de busqueda
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: path # request body
+  #         name: filter # name of request, can be any name
+  #         description: Valor a buscar nombre de módulo en este caso
+  #         required: true # can also be true depending on user preference
+
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  # /modulos/all:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene todos los módulos
+  #     produces:
+  #       - application/json
+  #     # parameters: # request parameters
+  #     #   - in: path # request body
+  #     #     name: code # name of request, can be any name
+  #     #     description: Get para obtener los módulos principales o padres
+  #     #     required: false # can also be true depending on user preference
+
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+  #     #get de módulos padres
+  # /modulos/all/{filter}:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene los módulos  que coincidan con el filtro de búsqueda
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: path # request body
+  #         name: filter # name of request, can be any name
+  #         description: Valor a buscar nombre de módulo en este caso
+  #         required: true # can also be true depending on user preference
+
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+  # /modulos/children/{code}:
+  #   get: # endpoint request type (put request)
+  #     tags: # Tag property
+  #       - Modulos # Value of the tag
+  #     summary: Obtiene los módulos hijos que tenga un módulo principal(padre)
+  #     produces:
+  #       - application/json
+  #     parameters: # request parameters
+  #       - in: path # request body
+  #         name: code # name of request, can be any name
+  #         description: Código del módulo principal
+  #         required: true # can also be true depending on user preference
+
+  #     responses: # server responses
+  #       200:
+  #         description: Datos consultados con éxito
+  #       500:
+  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+definitions: # Schema defination for request body
+  create:
+    type: object
+    properties:
+      persona:
+        type: string
+        description: nombre del código generado por el sistema de la persona
+        example: P-454354
+      iglesia:
+        type: string
+        description: Codigo generado por el sistema de la iglesia
+        example: IG_TEST
+      correo_electronico:
+        type: string
+        description: correo del usuario esté será su correo de login
+        example: corre@dominio.com
+      rol:
+        type: integer
+        description: id autoincremental del rol
+        example: 1
+      alias:
+        type: string
+        description: Este es el nombre que se va a mostrar en el sistema para el usuario
+        example: Juan Perez
+  update:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Código del módulo
+      name:
+        type: string
+        description: nombre del módulo
+      principal:
+        type: integer
+        description: 1 si es módulo principal(padre) 0 si no es módulo principal(padre)
+      modulo_principal:
+        type: integer
+        description: Si es módulo hijo se establece el id del módulo padre
+  delete:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Código del módulo
+      status:
+        type: integer
+        description: 1 si desea activar 0 si desactivar
