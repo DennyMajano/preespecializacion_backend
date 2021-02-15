@@ -123,7 +123,7 @@ module.exports = () => {
 
   acceso.checkTokenToChangePassword = async(req, res) =>{
     const {token} = req.params;
-    //console.log(token);
+    console.log(token);
     try{
       const result = await modelAcceso.checkTokenToChangePassword(token);
       if(result.errno){

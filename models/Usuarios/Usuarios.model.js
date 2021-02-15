@@ -271,7 +271,7 @@ module.exports = {
     return usuario !== undefined ? usuario : transaction;
   },
   requestEmailToChangePassword: async (data) => {
-    const { correo } = data;
+    const { correo, tipo } = data;
 
     const password_generate = GeneratePassword();
 
@@ -286,11 +286,11 @@ module.exports = {
       console.log(userToChangeSendEmail);
       if(userToChangeSendEmail){
         let temp_password = GeneratePassword();
-        temp_password = password_encryption.encrypt_password(temp_password);
         console.log("temp_pass: "+temp_password);
         const uidChange = GenerateUID();
         console.log("uid: "+uidChange);
         expire = new Date();
+        console.log(expire)
         expire.setMinutes(expire.getMinutes()+10); //Arreglar hora
         console.log(expire);
         
@@ -300,27 +300,31 @@ module.exports = {
           },
           data: {
             password_defecto: true,
-            password: temp_password,
+            password: password_encryption.encrypt_password(temp_password),
             cambios_password:{
               create:{
                 correo_electronico: userToChangeSendEmail.correo_electronico,
                 token: uidChange,
                 vencimiento: expire,
-                tipo_cambio: 1
+                tipo_cambio: parseInt(tipo)
               }
             }
           }
         });
-        if(updateUser){
+        if(updateUser.id){
           const mailSend = await mail.send(
             "Control de seguridad",
             correo,
-            "Restablecimiento de contraseña",
-            `Estimado su contraseña es: ${temp_password}`
+            "Restablecimiento de contraseña","",
+            `Estimado su contraseña es: ${temp_password} \n
+            <a href='http://localhost:9700/restaurar/${uidChange}'>Enlace</a>
+            `
           );
+          return mailSend?true:false;
         }
-        
-        return true;
+        else{
+          return false;
+        }
       }
       else{
         return false;
