@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 const app = express();
+process.env.TZ = "America/El_Salvador";
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 //import autentication middleware
@@ -49,6 +50,7 @@ const options = {
 const swaggerOpt = {
   swaggerOptions: {
     defaultModelsExpandDepth: -1,
+    docExpansion: false,
   },
 };
 
