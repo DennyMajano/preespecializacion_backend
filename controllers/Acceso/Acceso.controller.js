@@ -1,8 +1,8 @@
 const modelAcceso = require("../../models/Acceso/Acceso.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 const password_encryption = require(`../../services/encrytion/PasswordEncryption`);
-const { PrismaClient } = require("@prisma/client");
-const Encrytion = require("../../services/encrytion/Encrytion");
+const encryption = require("../../services/encrytion/Encrytion");
+const Token = require("../../services/security/Token");
 
 module.exports = () => {
   let acceso = {};
