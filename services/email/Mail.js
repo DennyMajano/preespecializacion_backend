@@ -14,7 +14,7 @@ module.exports = {
           pass: process.env.CORREO_PASSWORD, // generated ethereal password
         },
         tls: {
-          ciphers: "SSLv3",
+          rejectUnauthorized: false,
         },
       });
 
