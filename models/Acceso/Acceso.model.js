@@ -1,5 +1,7 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
+const { PrismaClient } = require("@prisma/client");
+const Encrytion = require("../../services/encrytion/Encrytion");
 
 module.exports = {
   acceso: async (data) => {
@@ -37,4 +39,35 @@ module.exports = {
       ? data_out
       : transaction;
   },
+
+  checkTokenToChangePassword: async(token) => {
+    result= "";
+    try{
+      //token = Encrytion.decrypt(token); //Desencriptamos el token
+      
+      const prisma = new PrismaClient();
+      const dbTokenRegister = await prisma.cambios_password.findFirst({
+        where:{
+          token 
+        }
+      });
+      console.log(dbTokenRegister);
+      if(dbTokenRegister && dbTokenRegister.vigente){ //Comprobamos que el token exista y esté vigente   
+        if(dbTokenRegister.vencimiento > Date.now()){ //Comprobamos sino esta vencido
+          result = "usable";
+        }
+        else{
+          result = "vencido"
+        } 
+      }
+      else{
+       result = "invalido"
+      }
+    }
+    catch(error){
+      return error;
+    }
+    
+    return result;
+  }
 };

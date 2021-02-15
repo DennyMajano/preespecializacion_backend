@@ -1,8 +1,8 @@
 const modelAcceso = require("../../models/Acceso/Acceso.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 const password_encryption = require(`../../services/encrytion/PasswordEncryption`);
-const encryption = require("../../services/encrytion/Encrytion");
-const Token = require("../../services/security/Token");
+const { PrismaClient } = require("@prisma/client");
+const Encrytion = require("../../services/encrytion/Encrytion");
 
 module.exports = () => {
   let acceso = {};
@@ -78,5 +78,67 @@ module.exports = () => {
     }
   };
 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  acceso.checkTokenToChangePassword = async(req, res) =>{
+    const {token} = req.params;
+    //console.log(token);
+    try{
+      const result = await modelAcceso.checkTokenToChangePassword(token);
+      if(result.errno){
+        res.status(500).json("Error de servidor");
+      }
+      else{
+        res.status(200).json({
+          estado: result 
+        });
+      }
+    }
+    catch(error){
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  }
   return acceso;
 };
