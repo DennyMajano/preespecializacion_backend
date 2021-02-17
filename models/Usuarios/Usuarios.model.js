@@ -5,7 +5,6 @@ const password_encryption = require("../../services/encrytion/PasswordEncryption
 const mail = require("../../services/email/Mail");
 const GeneratePassword = require("../../helpers/GeneratePassword");
 const NombreTrim = require("../../helpers/NombreTrim");
-const { PrismaClient } = require("@prisma/client");
 const GenerateUID = require("../../helpers/UID");
 const Datetime = require("../../services/Date/Datetime");
 
@@ -287,6 +286,7 @@ module.exports = {
 
     return usuario !== undefined ? usuario : transaction;
   },
+  /*
   requestEmailToChangePassword: async (data) => {
     const { correo, tipo } = data;
 
@@ -347,5 +347,5 @@ module.exports = {
     } catch (error) {
       return error;
     }
-  },
+  }, */
 };

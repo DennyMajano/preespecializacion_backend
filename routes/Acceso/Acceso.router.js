@@ -4,6 +4,6 @@ module.exports = () => {
   const accesoController = require("../../controllers/Acceso/Acceso.controller")();
 
   router.post("/login", accesoController.login);
-  router.get("/verificar_token_pass/:token", accesoController.checkTokenToChangePassword);
+  router.get("/verify_token/:token", accesoController.checkTokenToChangePassword);
   return router;
 };

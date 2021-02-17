@@ -1,6 +1,5 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
-const { PrismaClient } = require("@prisma/client");
 const Encrytion = require("../../services/encrytion/Encrytion");
 
 module.exports = {
@@ -41,33 +40,42 @@ module.exports = {
   },
 
   checkTokenToChangePassword: async(token) => {
-    result= "";
+    let result;
+    let tokenRegisterRow;
+    let transactionResult; // Almacena el resultado de la transaccion, error en caso fallido, los resultados de la transaccion en caso contrario
     try{
-      //token = Encrytion.decrypt(token); //Desencriptamos el token
-      
-      const prisma = new PrismaClient();
-      const dbTokenRegister = await prisma.cambios_password.findFirst({
-        where:{
-          token 
-        }
+      transactionResult = await database.Transaction(db, async () => {
+        tokenRegisterRow = await db.query(
+          "SELECT  `vencimiento`, `vigente`, `utilizado` FROM `cambios_password` WHERE `token` = ?",
+          [token]
+          );
+
       });
-      console.log(dbTokenRegister);
-      if(dbTokenRegister && dbTokenRegister.vigente){ //Comprobamos que el token exista y esté vigente   
-        if(dbTokenRegister.vencimiento > Date.now()){ //Comprobamos sino esta vencido
-          result = "usable";
+      console.log("Token result");
+      console.log(tokenRegisterRow);
+      console.log("Transaction result");
+      console.log(transactionResult);
+
+      if(!transactionResult.errno){
+        if(tokenRegisterRow.length>0 && tokenRegisterRow[0].vigente == 1){
+          if(tokenRegisterRow[0].vencimiento > Date.now()){
+            result = 1;
+          }
+          else{
+            result = 0;
+          }
         }
         else{
-          result = "vencido"
-        } 
+          result = -1;
+        }
+        return result;
       }
       else{
-       result = "invalido"
+        throw transactionResult;
       }
     }
     catch(error){
       return error;
     }
-    
-    return result;
   }
 };

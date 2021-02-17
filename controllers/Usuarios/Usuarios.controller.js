@@ -197,6 +197,7 @@ module.exports = () => {
       console.log(error);
     }
   };
+  /*
   usuarios.requestEmailToChangePassword = async (req, res) => {
     const data = req.body;
 
@@ -217,6 +218,6 @@ module.exports = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }; */
   return usuarios;
 };

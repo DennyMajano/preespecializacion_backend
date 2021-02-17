@@ -77,57 +77,14 @@ module.exports = () => {
       console.log(error);
     }
   };
-
-
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   acceso.checkTokenToChangePassword = async(req, res) =>{
     const {token} = req.params;
     console.log(token);
     try{
       const result = await modelAcceso.checkTokenToChangePassword(token);
       if(result.errno){
-        res.status(500).json("Error de servidor");
+        throw result;
       }
       else{
         res.status(200).json({
