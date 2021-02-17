@@ -9,7 +9,10 @@ module.exports = () => {
   //   router.get("/cargos/select", usuariosController.getSelect);
   //   router.get("/cargos/select/:filter", usuariosController.getSelect);
   router.get("/usuarios/profile/:code", usuariosController.getImagen);
-  router.get("/usuarios/validar/user/:valor", usuariosController.validar_user);
+  router.get(
+    "/usuarios/validar/persona/:valor",
+    usuariosController.validar_persona
+  );
   router.get("/usuarios/:code", usuariosController.getById);
 
   router.get(
@@ -23,8 +26,11 @@ module.exports = () => {
   );
   router.put("/usuarios", usuariosController.updateOne);
   router.put("/usuarios/restablecer_pass", usuariosController.reset_pass);
-  router.put("/usuarios/change_password", usuariosController.requestEmailToChangePassword);
-  router.put("/usuarios/disable_enable", usuariosController.desactivarActivar);
+  router.put(
+    "/usuarios/change_password",
+    usuariosController.requestEmailToChangePassword
+  );
+
   router.post("/usuarios/bloqueo", usuariosController.BloquearDesbloquear);
 
   return router;

@@ -7,14 +7,17 @@ const GeneratePassword = require("../../helpers/GeneratePassword");
 const NombreTrim = require("../../helpers/NombreTrim");
 const { PrismaClient } = require("@prisma/client");
 const GenerateUID = require("../../helpers/UID");
+const Datetime = require("../../services/Date/Datetime");
+
 module.exports = {
-  create: async (data, imagen) => {
+  create: async (data) => {
     const { persona, iglesia, correo_electronico, rol, alias } = data;
 
     let usuario;
 
     let transaction;
     const password_generate = GeneratePassword();
+    const uidChange = GenerateUID();
     try {
       transaction = await database.Transaction(db, async () => {
         usuario = await db.query(
@@ -24,22 +27,36 @@ module.exports = {
             iglesia,
             correo_electronico,
             //aqui va password generate
-            password_encryption.encrypt_password("12345"),
+            password_encryption.encrypt_password(password_generate),
             rol,
             alias,
           ]
         );
 
-        //Aqui enviar el correo
+        if (!usuario.errno) {
+          if (usuario.affectedRows) {
+            await db.query(
+              `INSERT INTO cambios_password(usuario, correo_electronico, token, vencimiento, tipo_cambio) VALUES (?,?,?,?,?)`,
+              [
+                usuario.insertId,
+                correo_electronico,
+                uidChange,
+                Datetime.vencimiento_minutos(25),
+                2,
+              ]
+            );
 
-        // let info = await mail.send(
-        //   "Bienvenido al SISTEMA",
-        //   correo,
-        //   "ASIGNACION DE CONTRASEÑA",
-        //   `Bienvenido al sistema ${nombre} esta es tu contraseña: ${password_generate}`
-        // );
+            //Aqui enviar el correo
 
-        // console.log(info);
+            let info = mail.send(
+              "Bienvenido al SISTEMA",
+              correo_electronico,
+              "ASIGNACION DE CONTRASEÑA",
+              `Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} \n
+            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>`
+            );
+          }
+        }
       });
     } catch (error) {
       return error;
@@ -50,15 +67,15 @@ module.exports = {
   },
 
   update: async (data) => {
-    const { nombre, alias, rol, correo, code } = data;
+    const { iglesia, correo_electronico, rol, alias, code } = data;
     let usuario;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
         usuario = await db.query(
-          `UPDATE usuarios SET nombre_completo=?,nombre_sistema=?,rol=?,correo=? WHERE id=?`,
-          [nombre, alias, rol, correo, code]
+          `UPDATE usuarios SET iglesia=?,correo_electronico=?,rol=?,alias=? WHERE id=?`,
+          [iglesia, correo_electronico, rol, alias, code]
         );
       });
     } catch (error) {
@@ -78,38 +95,44 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT U.id, U.nombre_completo, U.nombre_sistema, R.nombre AS rol, U.correo, U.user_name, U.condicion, U.bloqueo, U.motivo_bloqueo FROM usuarios U LEFT JOIN roles R ON U.rol=R.id WHERE `;
+          let query = `SELECT U.id,P.codigo AS persona_codigo, CONCAT(P.nombres,' ',P.apellidos) AS nombre, I.nombre AS iglesia_nombre, U.correo_electronico, R.nombre AS rol_nombre, DATE_FORMAT(U.ultimo_login,'%d/%m/%Y %r') AS ultimo_login, DATE_FORMAT(U.fecha_cr,'%d/%m/%Y %r') AS fecha_registro, U.password_defecto, U.estado FROM usuarios U LEFT JOIN iglesias I ON U.iglesia=I.codigo LEFT JOIN roles R ON U.rol=R.id LEFT JOIN personas P ON U.persona= P.codigo WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` (U.nombre_completo LIKE '%${
+            query += ` (P.nombres LIKE '%${filter[i]}%' OR P.apellidos LIKE '%${
               filter[i]
-            }%' OR U.nombre_sistema LIKE '%${
+            }%' OR P.codigo LIKE '%${
               filter[i]
-            }%' OR U.user_name LIKE '%${filter[i]}%' OR R.nombre LIKE '%${
+            }%' OR P.numero_documento LIKE '%${
               filter[i]
-            }%') ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
+            }%' OR I.nombre LIKE '%${
+              filter[i]
+            }%' OR U.correo_electronico LIKE '%${filter[i]}%') ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
           }
 
           usuarios = await db.query(`${query}`);
         } else {
           usuarios = await db.query(
-            `SELECT U.id, U.nombre_completo, U.nombre_sistema, R.nombre AS rol, U.correo, U.user_name, U.condicion, U.bloqueo, U.motivo_bloqueo FROM usuarios U LEFT JOIN roles R ON U.rol=R.id`
+            `SELECT U.id,P.codigo AS persona_codigo, CONCAT(P.nombres,' ',P.apellidos) AS nombre, I.nombre AS iglesia_nombre, U.correo_electronico, R.nombre AS rol_nombre, DATE_FORMAT(U.ultimo_login,'%d/%m/%Y %r') AS ultimo_login, DATE_FORMAT(U.fecha_cr,'%d/%m/%Y %r') AS fecha_registro, U.password_defecto, U.estado FROM usuarios U LEFT JOIN iglesias I ON U.iglesia=I.codigo LEFT JOIN roles R ON U.rol=R.id LEFT JOIN personas P ON U.persona= P.codigo ORDER BY U.fecha_cr DESC LIMIT 50`
           );
         }
         if (!usuarios.errno) {
           data_usuarios = usuarios.map((element) => {
             return {
               id: element.id,
+              persona_codigo: element.persona_codigo,
 
-              rol: element.rol,
+              rol: element.rol_nombre,
 
-              user_name: element.user_name,
-              nombre_sistema: element.nombre_sistema,
-              nombre: NombreTrim(element.nombre_completo),
-              condicion: element.condicion,
-              bloqueo: element.bloqueo,
-              correo: element.correo,
-              m_bloqueo: element.motivo_bloqueo,
+              nombre: element.nombre,
+              iglesia: element.iglesia_nombre,
+              correo_electronico: element.correo_electronico,
+
+              ultimo_login: element.ultimo_login,
+              fecha_registro: element.fecha_registro,
+              password_defecto: element.password_defecto,
+              estado: element.estado,
             };
           });
         }
@@ -132,17 +155,27 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         usuario = await db.query(
-          `SELECT U.nombre_completo, U.nombre_sistema, U.correo, U.rol AS rol_id, R.nombre AS rol_name FROM usuarios U LEFT JOIN roles R ON U.rol=R.id WHERE U.id=?`,
+          `SELECT U.id, U.iglesia AS iglesia_codigo, I.id AS iglesia_id, I.nombre AS iglesia_nombre, U.correo_electronico,  U.rol AS rol_id, R.nombre AS rol_nombre, U.alias FROM usuarios U LEFT JOIN iglesias I ON U.iglesia=I.codigo LEFT JOIN roles R ON U.rol=R.id WHERE U.id=?`,
           [code]
         );
 
         if (!usuario.errno) {
           data_usuarios = usuario.map((element) => {
             return {
-              nombre: element.nombre_completo,
-              alias: element.nombre_sistema,
-              correo: element.correo,
-              rol: { label: element.rol_name, value: element.rol_id },
+              iglesia:
+                element.iglesia_id !== null
+                  ? {
+                      label: element.iglesia_nombre,
+                      value: element.iglesia_id,
+                      codigo: element.iglesia_codigo,
+                    }
+                  : "",
+              alias: element.alias,
+              correo_electronico: element.correo_electronico,
+              rol:
+                element.rol_id !== null
+                  ? { label: element.rol_nombre, value: element.rol_id }
+                  : "",
             };
           });
         }
@@ -234,39 +267,23 @@ module.exports = {
 
     return usuario !== undefined ? usuario : transaction;
   },
-  desactivarActivar: async (data) => {
-    const { status, code } = data;
+
+  bloquearDesbloquear: async (data) => {
+    const { estado, code } = data;
     let usuario;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
-        usuario = await db.query(`UPDATE usuarios SET condicion=? WHERE id=?`, [
-          status,
+        usuario = await db.query(`UPDATE usuarios SET estado=? WHERE id=?`, [
+          estado,
           code,
         ]);
       });
     } catch (error) {
       return error;
     }
-
-    return usuario !== undefined ? usuario : transaction;
-  },
-  bloquearDesbloquear: async (data) => {
-    const { bloqueo, code, motivo } = data;
-    let usuario;
-    let transaction;
-
-    try {
-      transaction = await database.Transaction(db, async () => {
-        usuario = await db.query(
-          `UPDATE usuarios SET bloqueo=?, motivo_bloqueo=? WHERE id=?`,
-          [bloqueo, bloqueo === 1 ? motivo : null, code]
-        );
-      });
-    } catch (error) {
-      return error;
-    }
+    console.log(usuario);
 
     return usuario !== undefined ? usuario : transaction;
   },
@@ -275,62 +292,59 @@ module.exports = {
 
     const password_generate = GeneratePassword();
 
-    
-    try{
+    try {
       const prisma = new PrismaClient();
       const userToChangeSendEmail = await prisma.usuarios.findFirst({
-        where:{
-          correo_electronico: correo
-        }
+        where: {
+          correo_electronico: correo,
+        },
       });
       console.log(userToChangeSendEmail);
-      if(userToChangeSendEmail){
+      if (userToChangeSendEmail) {
         let temp_password = GeneratePassword();
-        console.log("temp_pass: "+temp_password);
+        console.log("temp_pass: " + temp_password);
         const uidChange = GenerateUID();
-        console.log("uid: "+uidChange);
+        console.log("uid: " + uidChange);
         expire = new Date();
-        console.log(expire)
-        expire.setMinutes(expire.getMinutes()+10); //Arreglar hora
         console.log(expire);
-        
+        expire.setMinutes(expire.getMinutes() + 10); //Arreglar hora
+        console.log(expire);
+
         const updateUser = await prisma.usuarios.update({
-          where:{
-            id: userToChangeSendEmail.id
+          where: {
+            id: userToChangeSendEmail.id,
           },
           data: {
             password_defecto: true,
             password: password_encryption.encrypt_password(temp_password),
-            cambios_password:{
-              create:{
+            cambios_password: {
+              create: {
                 correo_electronico: userToChangeSendEmail.correo_electronico,
                 token: uidChange,
                 vencimiento: expire,
-                tipo_cambio: parseInt(tipo)
-              }
-            }
-          }
+                tipo_cambio: parseInt(tipo),
+              },
+            },
+          },
         });
-        if(updateUser.id){
+        if (updateUser.id) {
           const mailSend = await mail.send(
             "Control de seguridad",
             correo,
-            "Restablecimiento de contraseña","",
+            "Restablecimiento de contraseña",
+            "",
             `Estimado su contraseña es: ${temp_password} \n
             <a href='http://localhost:9700/restaurar/${uidChange}'>Enlace</a>
             `
           );
-          return mailSend?true:false;
-        }
-        else{
+          return mailSend ? true : false;
+        } else {
           return false;
         }
-      }
-      else{
+      } else {
         return false;
       }
-    }
-    catch(error){
+    } catch (error) {
       return error;
     }
   },

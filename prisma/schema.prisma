@@ -992,7 +992,7 @@ model usuarios {
   estado             Int                @default(1)
   rol                Int
   alias              String
-  ultimo_login       DateTime           @default(now())
+  ultimo_login       DateTime?
   fecha_cr           DateTime           @default(now())
   password_defecto   Boolean            @default(true)
   ultimo_cambio      DateTime?
@@ -1000,8 +1000,10 @@ model usuarios {
   roles              roles              @relation(fields: [rol], references: [id])
   cambios_password   cambios_password[]
 
+  @@index([correo_electronico], name: "correo_idx")
   @@index([persona], name: "fk_usuario_persona_idx")
   @@index([rol], name: "fk_usuario_rol_idx")
+  @@index([persona], name: "persona_idex")
 }
 
 model zonas {

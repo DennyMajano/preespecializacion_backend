@@ -22,28 +22,28 @@ paths:
         400:
           description: no se pudo crear por que faltan datos obligatorios
 
-  #   #Update de módulos
-  #   put: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Actualizar un  Módulo
-  #     produces:
-  #       - application/json
-  #     parameters: # request parameters
-  #       - in: body # request body
-  #         name: Update # name of request, can be any name
-  #         description: Esto es para actualizar un módulo
-  #         required: false # can also be true depending on user preference
-  #         schema: # Schema definition
-  #           $ref: "#/definitions/update"
-  #     responses: # server responses
-  #       200:
-  #         description: se actualizó con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+    #Update de módulos
+    put: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Actualizar un  usuario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Update # name of request, can be any name
+          description: objeto para actualizar un usuario
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/update"
+      responses: # server responses
+        200:
+          description: se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #       400:
-  #         description: no se pudo crear por que faltan datos obligatorios
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
   #   #Update de módulos
   #   delete: # endpoint request type (put request)
   #     tags: # Tag property
@@ -67,46 +67,90 @@ paths:
   #       400:
   #         description: no se pudo crear por que faltan datos obligatorios
 
-  # #get de módulos por id
-  # /modulos/{code}:
-  #   get: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Obtiene un módulo por id
-  #     produces:
-  #       - application/json
-  #     parameters: # request parameters
-  #       - in: path # request body
-  #         name: code # name of request, can be any name
-  #         description: Id del módulo a consultar
-  #         required: true # can also be true depending on user preference
-  #         schema: # Schema definition
-  #           type: integer
-  #           minimum: 1
-  #     responses: # server responses
-  #       200:
-  #         description: Datos consultados con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
-  #   #get de módulos padres
-  # /modulos/select:
-  #   get: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Obtiene todos los módulos padres
-  #     produces:
-  #       - application/json
-  #     # parameters: # request parameters
-  #     #   - in: path # request body
-  #     #     name: code # name of request, can be any name
-  #     #     description: Get para obtener los módulos principales o padres
-  #     #     required: false # can also be true depending on user preference
+  #get de módulos por id
+  /usuarios/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Obtiene un usuario por id
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id del usuario a consultar
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: integer
+            minimum: 1
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+    #get de módulos padres
+  /modulos/select:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Modulos # Value of the tag
+      summary: Obtiene todos los módulos padres
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los módulos principales o padres
+      #     required: false # can also be true depending on user preference
 
-  #     responses: # server responses
-  #       200:
-  #         description: Datos consultados con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get para validar correo
+  /usuarios/validar/correo/{valor}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Se Obtiene un valor numerico que indica la cantidad de registro que hay con ese correo, si el valor es 1, ya existe si el valor es 0, no existe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: valor # name of request, can be any name
+          description: Correo eletrónico a buscar
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+      responses: # server responses
+        200:
+          description: Datos con valor del numero de registros
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get para validar persona
+  /usuarios/validar/persona/{valor}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Se Obtiene un valor numerico que indica la cantidad de registro que hay con ese codigo de persona, si el valor es 1, ya existe si el valor es 0, no existe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: valor # name of request, can be any name
+          description: código de persona
+          example: P-454354
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+      responses: # server responses
+        200:
+          description: Datos con valor del numero de registros
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
   #     #get de módulos padres
   # /modulos/select/{filter}:
   #   get: # endpoint request type (put request)
@@ -127,43 +171,43 @@ paths:
   #       500:
   #         description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  # /modulos/all:
-  #   get: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Obtiene todos los módulos
-  #     produces:
-  #       - application/json
-  #     # parameters: # request parameters
-  #     #   - in: path # request body
-  #     #     name: code # name of request, can be any name
-  #     #     description: Get para obtener los módulos principales o padres
-  #     #     required: false # can also be true depending on user preference
+  /usuarios/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Obtiene todos los usuarios
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los módulos principales o padres
+      #     required: false # can also be true depending on user preference
 
-  #     responses: # server responses
-  #       200:
-  #         description: Datos consultados con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
-  #     #get de módulos padres
-  # /modulos/all/{filter}:
-  #   get: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Obtiene los módulos  que coincidan con el filtro de búsqueda
-  #     produces:
-  #       - application/json
-  #     parameters: # request parameters
-  #       - in: path # request body
-  #         name: filter # name of request, can be any name
-  #         description: Valor a buscar nombre de módulo en este caso
-  #         required: true # can also be true depending on user preference
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de módulos padres
+  /usuarios/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Obtiene los usuarios  que coincidan con el filtro de búsqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar es posible por nombres, apellidos, código persona, número documento, nombre de la iglesia, correo eletrónico
+          required: true # can also be true depending on user preference
 
-  #     responses: # server responses
-  #       200:
-  #         description: Datos consultados con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
   # /modulos/children/{code}:
   #   get: # endpoint request type (put request)
   #     tags: # Tag property
@@ -182,6 +226,30 @@ paths:
   #         description: Datos consultados con éxito
   #       500:
   #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+  /usuarios/bloqueo: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Bloquear o desbloquear un usuario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Bloqueo # name of request, can be any name
+          description: Esto es la data para bloquear o desbloquear un usuario
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/bloqueo"
+      responses: # server responses
+        200:
+          description: Bloqueado o desbloqueado con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+        404:
+          description: no se pudo encontrar el usuario
 
 definitions: # Schema defination for request body
   create:
@@ -213,21 +281,26 @@ definitions: # Schema defination for request body
       code:
         type: integer
         description: Código del módulo
-      name:
+      iglesia:
         type: string
-        description: nombre del módulo
-      principal:
+        description: Código de la iglesia
+        example: IG-26332
+      correo_electronico:
+        type: string
+        description: Correo eletrónico del usuario
+      rol:
         type: integer
-        description: 1 si es módulo principal(padre) 0 si no es módulo principal(padre)
-      modulo_principal:
-        type: integer
-        description: Si es módulo hijo se establece el id del módulo padre
-  delete:
+        description: Id auto incremental del rol
+      alias:
+        type: string
+        description: Nombre que se muestra en el sistema
+        example: Jose Perez
+  bloqueo:
     type: object
     properties:
       code:
         type: integer
-        description: Código del módulo
-      status:
+        description: Código del usuario a bloquear o desbloquear
+      estado:
         type: integer
-        description: 1 si desea activar 0 si desactivar
+        description: 1 si desea bloquear 0 si desea desbloquear

@@ -50,4 +50,15 @@ module.exports = {
     const now = momenttz().tz("America/El_Salvador");
     console.log(now);
   },
+  /**
+   *
+   * @param {*} minutos
+   * @description minutos expresado en enteros
+   */
+  vencimiento_minutos(minutos) {
+    const hoy = momenttz().tz("America/El_Salvador");
+    const vencimiento = hoy.add(parseInt(minutos), `minutes`);
+
+    return vencimiento.format("YYYY-MM-DD HH:mm:ss");
+  },
 };
