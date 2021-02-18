@@ -197,27 +197,31 @@ module.exports = () => {
       console.log(error);
     }
   };
-  /*
+
   usuarios.requestEmailToChangePassword = async (req, res) => {
     const data = req.body;
-
+    let result;
+    console.log(data.changeRequestType);
     try {
-      if (!isUndefinedOrNull(data.correo) && !isUndefinedOrNull(data.tipo)) {
-        let result = await modelUsuarios.requestEmailToChangePassword(data);
+      let type= parseInt(data.changeRequestType);
+      if (!isUndefinedOrNull(data.email) && !isNaN(parseInt(type))  &&  (type == 1 || type == 3 )) {
+        result = await modelUsuarios.requestEmailToChangePassword(data);
         console.log(result);
+
         if (result.errno) {
-          res.status(500).json("Error de servidor");
+          throw result;
         } else {
           res.status(200).json({
             estado: result,
           });
         }
       } else {
-        res.status(400).json("faltan datos para realizar el proceso");
+        res.status(400).json("Faltan datos o son datos incorrectos");
       }
     } catch (error) {
       console.log(error);
+      res.status(500).json("Error de servidor");
     }
-  }; */
+  }; 
   return usuarios;
 };

@@ -286,66 +286,91 @@ module.exports = {
 
     return usuario !== undefined ? usuario : transaction;
   },
-  /*
-  requestEmailToChangePassword: async (data) => {
-    const { correo, tipo } = data;
+  requestEmailToChangePassword: async (changeRequestData) => {
+    let result;
+    try{
+      
+      let transactionResult;
+      let userRegisteredRow;
+      let updatedUser;
+      const { email, changeRequestType } = changeRequestData;
 
-    const password_generate = GeneratePassword();
+      transactionResult = await database.Transaction(db, async () => {
+        userRegisteredRow = await db.query(
+          "SELECT `id`,`alias`,`correo_electronico` FROM `usuarios` WHERE `correo_electronico` = ? LIMIT 1",
+          [email]
+        );
+        console.log("Usuario buscado-------------------------");
+        console.log(userRegisteredRow);
 
-    try {
-      const prisma = new PrismaClient();
-      const userToChangeSendEmail = await prisma.usuarios.findFirst({
-        where: {
-          correo_electronico: correo,
-        },
-      });
-      console.log(userToChangeSendEmail);
-      if (userToChangeSendEmail) {
-        let temp_password = GeneratePassword();
-        console.log("temp_pass: " + temp_password);
-        const uidChange = GenerateUID();
-        console.log("uid: " + uidChange);
-        expire = new Date();
-        console.log(expire);
-        expire.setMinutes(expire.getMinutes() + 10); //Arreglar hora
-        console.log(expire);
+        if(userRegisteredRow.length>0){
+          const temporalPassword = GeneratePassword();
+          const uidRequestToken  = GenerateUID();
+          console.log("TEMP PASS"+ temporalPassword);
 
-        const updateUser = await prisma.usuarios.update({
-          where: {
-            id: userToChangeSendEmail.id,
-          },
-          data: {
-            password_defecto: true,
-            password: password_encryption.encrypt_password(temp_password),
-            cambios_password: {
-              create: {
-                correo_electronico: userToChangeSendEmail.correo_electronico,
-                token: uidChange,
-                vencimiento: expire,
-                tipo_cambio: parseInt(tipo),
-              },
-            },
-          },
-        });
-        if (updateUser.id) {
-          const mailSend = await mail.send(
-            "Control de seguridad",
-            correo,
-            "Restablecimiento de contraseña",
-            "",
-            `Estimado su contraseña es: ${temp_password} \n
-            <a href='http://localhost:9700/restaurar/${uidChange}'>Enlace</a>
-            `
+          updatedUser = await db.query(
+            "UPDATE `usuarios` SET `password`=?,`password_defecto`=? WHERE `id` = ?",
+            [password_encryption.encrypt_password(temporalPassword),1,userRegisteredRow[0].id]
           );
-          return mailSend ? true : false;
-        } else {
-          return false;
+          console.log("Usuario actualizado-------------------------");
+          console.log(updatedUser);
+          if(updatedUser.changedRows>0){
+            let insertedChangeRequest = await db.query("INSERT INTO cambios_password(usuario, correo_electronico, token, vencimiento, tipo_cambio) VALUES (?,?,?,?,?)",
+            [
+              userRegisteredRow[0].id, 
+              email,
+              uidRequestToken, 
+              Datetime.vencimiento_minutos(10),
+              parseInt(changeRequestType)
+            ]
+            ); 
+            console.log("Cambio password insertado-------------------------");
+            console.log(insertedChangeRequest);
+            if(insertedChangeRequest.affectedRows>0){
+              
+              let info = await mail.send(
+                "Administración de IDDPU El Salvador",
+                email,
+                "Recuperación de contraseña",'',
+                `<p>Hola ${userRegisteredRow[0].alias}, para cambiar tu contraseña, este es tu codigo de seguridad: ${temporalPassword}</p>
+                <p>Ingresa al siguiente enlace para cambiar la contraseña: <a href='${process.env.URL_FRONTEND}validar_acceso/${uidRequestToken}'>Cambiar contraseña</a></p>` 
+              
+              );
+              console.log("MAIL enviado --------------------------------------");
+              console.log(info);
+              if(info===false){
+                throw 500;
+              }
+              else{
+                result = true;
+              }
+            }
+            else{
+              console.log("MAIL enviado mal")
+              throw 500; // no se pudo guardar en cambios password
+            }
+
+          }
+          else{//No se pudo actualizar la contraseña temporal en usuarios
+           throw 500; 
+          }
         }
-      } else {
-        return false;
+        else{
+          result = false; //No se encontro el correo en los usuarios
+        }
+      });
+      if(transactionResult.errno){
+        console.log("erro");
+        throw transactionResult;
       }
-    } catch (error) {
+
+      return result;
+      
+    }
+    catch(error){
+      console.log(error);
       return error;
     }
-  }, */
+  }
+  
 };

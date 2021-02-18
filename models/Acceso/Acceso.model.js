@@ -41,24 +41,24 @@ module.exports = {
 
   checkTokenToChangePassword: async(token) => {
     let result;
-    let tokenRegisterRow;
+    let tokenRegisteredRow;
     let transactionResult; // Almacena el resultado de la transaccion, error en caso fallido, los resultados de la transaccion en caso contrario
     try{
       transactionResult = await database.Transaction(db, async () => {
-        tokenRegisterRow = await db.query(
+        tokenRegisteredRow = await db.query(
           "SELECT  `vencimiento`, `vigente`, `utilizado` FROM `cambios_password` WHERE `token` = ?",
           [token]
           );
 
       });
       console.log("Token result");
-      console.log(tokenRegisterRow);
+      console.log(tokenRegisteredRow);
       console.log("Transaction result");
       console.log(transactionResult);
 
       if(!transactionResult.errno){
-        if(tokenRegisterRow.length>0 && tokenRegisterRow[0].vigente == 1){
-          if(tokenRegisterRow[0].vencimiento > Date.now()){
+        if(tokenRegisteredRow.length>0 && tokenRegisteredRow[0].vigente == 1){
+          if(tokenRegisteredRow[0].vencimiento > Date.now()){
             result = 1;
           }
           else{
