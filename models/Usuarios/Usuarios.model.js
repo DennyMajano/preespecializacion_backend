@@ -54,6 +54,8 @@ module.exports = {
               `Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} \n
             <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>`
             );
+
+            console.log(info);
           }
         }
       });
@@ -154,13 +156,21 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         usuario = await db.query(
-          `SELECT U.id, U.iglesia AS iglesia_codigo, I.id AS iglesia_id, I.nombre AS iglesia_nombre, U.correo_electronico,  U.rol AS rol_id, R.nombre AS rol_nombre, U.alias FROM usuarios U LEFT JOIN iglesias I ON U.iglesia=I.codigo LEFT JOIN roles R ON U.rol=R.id WHERE U.id=?`,
+          `SELECT U.id, U.persona AS persona_codigo,P.id AS persona_id,  CONCAT(P.nombres,' ',P.apellidos) AS nombre_persona, U.iglesia AS iglesia_codigo, I.id AS iglesia_id, I.nombre AS iglesia_nombre, U.correo_electronico,  U.rol AS rol_id, R.nombre AS rol_nombre, U.alias FROM usuarios U LEFT JOIN iglesias I ON U.iglesia=I.codigo LEFT JOIN personas P ON U.persona=P.codigo LEFT JOIN roles R ON U.rol=R.id WHERE U.id=? LIMIT 1`,
           [code]
         );
 
         if (!usuario.errno) {
           data_usuarios = usuario.map((element) => {
             return {
+              persona:
+                element.persona_id !== null
+                  ? {
+                      label: element.nombre_persona,
+                      value: element.persona_id,
+                      codigo: element.persona_codigo,
+                    }
+                  : "",
               iglesia:
                 element.iglesia_id !== null
                   ? {
@@ -288,8 +298,7 @@ module.exports = {
   },
   requestEmailToChangePassword: async (changeRequestData) => {
     let result;
-    try{
-      
+    try {
       let transactionResult;
       let userRegisteredRow;
       let updatedUser;
@@ -303,74 +312,73 @@ module.exports = {
         console.log("Usuario buscado-------------------------");
         console.log(userRegisteredRow);
 
-        if(userRegisteredRow.length>0){
+        if (userRegisteredRow.length > 0) {
           const temporalPassword = GeneratePassword();
-          const uidRequestToken  = GenerateUID();
-          console.log("TEMP PASS"+ temporalPassword);
+          const uidRequestToken = GenerateUID();
+          console.log("TEMP PASS" + temporalPassword);
 
           updatedUser = await db.query(
             "UPDATE `usuarios` SET `password`=?,`password_defecto`=? WHERE `id` = ?",
-            [password_encryption.encrypt_password(temporalPassword),1,userRegisteredRow[0].id]
+            [
+              password_encryption.encrypt_password(temporalPassword),
+              1,
+              userRegisteredRow[0].id,
+            ]
           );
           console.log("Usuario actualizado-------------------------");
           console.log(updatedUser);
-          if(updatedUser.changedRows>0){
-            let insertedChangeRequest = await db.query("INSERT INTO cambios_password(usuario, correo_electronico, token, vencimiento, tipo_cambio) VALUES (?,?,?,?,?)",
-            [
-              userRegisteredRow[0].id, 
-              email,
-              uidRequestToken, 
-              Datetime.vencimiento_minutos(10),
-              parseInt(changeRequestType)
-            ]
-            ); 
+          if (updatedUser.changedRows > 0) {
+            let insertedChangeRequest = await db.query(
+              "INSERT INTO cambios_password(usuario, correo_electronico, token, vencimiento, tipo_cambio) VALUES (?,?,?,?,?)",
+              [
+                userRegisteredRow[0].id,
+                email,
+                uidRequestToken,
+                Datetime.vencimiento_minutos(10),
+                parseInt(changeRequestType),
+              ]
+            );
             console.log("Cambio password insertado-------------------------");
             console.log(insertedChangeRequest);
-            if(insertedChangeRequest.affectedRows>0){
-              
+            if (insertedChangeRequest.affectedRows > 0) {
               let info = await mail.send(
                 "Administración de IDDPU El Salvador",
                 email,
-                "Recuperación de contraseña",'',
+                "Recuperación de contraseña",
+                "",
                 `<p>Hola ${userRegisteredRow[0].alias}, para cambiar tu contraseña, este es tu codigo de seguridad: ${temporalPassword}</p>
-                <p>Ingresa al siguiente enlace para cambiar la contraseña: <a href='${process.env.URL_FRONTEND}validar_acceso/${uidRequestToken}'>Cambiar contraseña</a></p>` 
-              
+                <p>Ingresa al siguiente enlace para cambiar la contraseña: <a href='${process.env.URL_FRONTEND}validar_acceso/${uidRequestToken}'>Cambiar contraseña</a></p>`
               );
-              console.log("MAIL enviado --------------------------------------");
+              console.log(
+                "MAIL enviado --------------------------------------"
+              );
               console.log(info);
-              if(info===false){
+              if (info === false) {
                 throw 500;
-              }
-              else{
+              } else {
                 result = true;
               }
-            }
-            else{
-              console.log("MAIL enviado mal")
+            } else {
+              console.log("MAIL enviado mal");
               throw 500; // no se pudo guardar en cambios password
             }
-
+          } else {
+            //No se pudo actualizar la contraseña temporal en usuarios
+            throw 500;
           }
-          else{//No se pudo actualizar la contraseña temporal en usuarios
-           throw 500; 
-          }
-        }
-        else{
+        } else {
           result = false; //No se encontro el correo en los usuarios
         }
       });
-      if(transactionResult.errno){
+      if (transactionResult.errno) {
         console.log("erro");
         throw transactionResult;
       }
 
       return result;
-      
-    }
-    catch(error){
+    } catch (error) {
       console.log(error);
       return error;
     }
-  }
-  
+  },
 };
