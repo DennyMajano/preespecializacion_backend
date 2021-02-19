@@ -182,6 +182,28 @@ module.exports = () => {
       console.log(error);
     }
   };
+
+  usuarios.delete = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (!isUndefinedOrNull(data.code)) {
+        let result = await modelUsuarios.delete(data);
+        if (result.errno) {
+          res.status(500).json("Error de servidor");
+        } else if (result.affectedRows === 1) {
+          res.status(200).json("Proceso se realizó con exito");
+        } else {
+          res.status(400).json("No se pudo realizar el proceso");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   usuarios.getImagen = async (req, res) => {
     const { code } = req.params;
     console.log(code);
@@ -203,8 +225,12 @@ module.exports = () => {
     let result;
     console.log(data.changeRequestType);
     try {
-      let type= parseInt(data.changeRequestType);
-      if (!isUndefinedOrNull(data.email) && !isNaN(parseInt(type))  &&  (type == 1 || type == 3 )) {
+      let type = parseInt(data.changeRequestType);
+      if (
+        !isUndefinedOrNull(data.email) &&
+        !isNaN(parseInt(type)) &&
+        (type == 1 || type == 3)
+      ) {
         result = await modelUsuarios.requestEmailToChangePassword(data);
         console.log(result);
 
@@ -222,6 +248,6 @@ module.exports = () => {
       console.log(error);
       res.status(500).json("Error de servidor");
     }
-  }; 
+  };
   return usuarios;
 };

@@ -296,6 +296,28 @@ module.exports = {
 
     return usuario !== undefined ? usuario : transaction;
   },
+  delete: async (data) => {
+    const { code } = data;
+    let usuario;
+    let log_pass;
+    let transaction;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        log_pass = await db.query(
+          `DELETE FROM cambios_password WHERE usuario=?`,
+          [code]
+        );
+        usuario = await db.query(`DELETE FROM usuarios WHERE id=?`, [code]);
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return usuario !== undefined && log_pass !== undefined
+      ? usuario
+      : transaction;
+  },
   requestEmailToChangePassword: async (changeRequestData) => {
     let result;
     try {
