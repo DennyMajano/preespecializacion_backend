@@ -431,7 +431,7 @@ module.exports = {
           console.log("Usuario a cambiar-----------");
           console.log(userToChangePassword);
         if(userToChangePassword.length > 0 && userToChangePassword[0].tipo == type){ //Si se contro el usuario con ese token y si el tipo de cambio coincide con el recibido
-          const userPasswordIsCorrect = type == 3
+          const userPasswordIsCorrect = (type == 3 || type == 2)
           ?password_encryption.validation_password(securityCode,userToChangePassword[0].password) //Se valida la contraseña temporal si es por admin
           : true //Si el cambio es solicitado desde login no se valida
           
