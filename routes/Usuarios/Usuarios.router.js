@@ -23,8 +23,12 @@ module.exports = () => {
   router.put("/usuarios", usuariosController.updateOne);
   router.put("/usuarios/restablecer_pass", usuariosController.reset_pass);
   router.put(
-    "/usuarios/change_password",
+    "/usuarios/request_new_password",
     usuariosController.requestEmailToChangePassword
+  );
+  router.put(
+    "/usuarios/change_password",
+    usuariosController.changePassword
   );
 
   router.post("/usuarios/bloqueo", usuariosController.BloquearDesbloquear);

@@ -1,7 +1,9 @@
 const modelUsuarios = require("../../models/Usuarios/Usuarios.model");
+const modelAcceso = require("../../models/Acceso/Acceso.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 const fs = require("fs-extra");
 const Config = require("../../config.path");
+const { token } = require("morgan");
 
 module.exports = () => {
   let usuarios = {};
@@ -223,5 +225,43 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   }; 
+
+  usuarios.changePassword = async (req, res) => {
+    const data = req.body;
+    console.log("datos----------------------------");
+    console.log(data);
+    try {
+      if(!isUndefinedOrNull(data.token) && !isUndefinedOrNull(data.type) && !isUndefinedOrNull(data.newPassword)){
+        const isTokenValid = await modelAcceso.checkTokenToChangePassword(data.token);
+        console.log("Token valido:"+isTokenValid);
+        if(isTokenValid === 1){ //Si el token es valido
+          const changePasswordResult = await modelUsuarios.changePassword(data);
+          console.log("Resultado de cambio de contraseña");
+          console.log(changePasswordResult);
+          //Se devolvio un booleano? que es el caso si las operaciones siguieron el curso normal
+          if(typeof changePasswordResult === 'boolean'){
+            //Dependiendo si se cambio la contraseña o no se manda 201 (modificado) o 200 (Ejecutado pero no cambiado)
+            res.status((changePasswordResult?201:200)).json({estado: changePasswordResult});
+          }
+          else{
+            
+           throw  changePasswordResult; // Error devuelto desde modelo
+          }
+        }
+        else{
+          res.status(403).json("Sin autorización"); // El token no es valido
+        }
+       
+      }
+      else{
+        res.status(400).json("Solicitud mal formada");; //solicitud con datos incompletos
+      }
+
+    } catch (error) {
+      console.log("FINAl");
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
   return usuarios;
 };

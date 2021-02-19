@@ -7,6 +7,8 @@ const GeneratePassword = require("../../helpers/GeneratePassword");
 const NombreTrim = require("../../helpers/NombreTrim");
 const GenerateUID = require("../../helpers/UID");
 const Datetime = require("../../services/Date/Datetime");
+const { copySync } = require("fs-extra");
+const isUndefinedOrNull = require("validate.io-undefined-or-null/lib");
 
 module.exports = {
   create: async (data) => {
@@ -302,6 +304,7 @@ module.exports = {
       let transactionResult;
       let userRegisteredRow;
       let updatedUser;
+      let temporalPassword;
       const { email, changeRequestType } = changeRequestData;
 
       transactionResult = await database.Transaction(db, async () => {
@@ -313,21 +316,25 @@ module.exports = {
         console.log(userRegisteredRow);
 
         if (userRegisteredRow.length > 0) {
-          const temporalPassword = GeneratePassword();
+         
           const uidRequestToken = GenerateUID();
-          console.log("TEMP PASS" + temporalPassword);
-
-          updatedUser = await db.query(
-            "UPDATE `usuarios` SET `password`=?,`password_defecto`=? WHERE `id` = ?",
-            [
-              password_encryption.encrypt_password(temporalPassword),
-              1,
-              userRegisteredRow[0].id,
-            ]
-          );
+         
+          if(changeRequestType == 3){
+            temporalPassword = GeneratePassword();
+            console.log("TEMP PASS" + temporalPassword);
+            updatedUser = await db.query(
+              "UPDATE `usuarios` SET `password`=?,`password_defecto`=? WHERE `id` = ?",
+              [
+                password_encryption.encrypt_password(temporalPassword),
+                1,
+                userRegisteredRow[0].id,
+              ]
+            );
+          }
+         
           console.log("Usuario actualizado-------------------------");
           console.log(updatedUser);
-          if (updatedUser.changedRows > 0) {
+          if (changeRequestType == 1 || updatedUser.changedRows > 0) {
             let insertedChangeRequest = await db.query(
               "INSERT INTO cambios_password(usuario, correo_electronico, token, vencimiento, tipo_cambio) VALUES (?,?,?,?,?)",
               [
@@ -341,25 +348,28 @@ module.exports = {
             console.log("Cambio password insertado-------------------------");
             console.log(insertedChangeRequest);
             if (insertedChangeRequest.affectedRows > 0) {
-              let info = await mail.send(
+              console.log(
+                "MAIL enviado en teoria --------------------------------------"
+              );
+              let htmlForMail;
+              if (changeRequestType == 1){
+                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href="+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+              }
+              else{
+                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href="+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+              }
+              let info = mail.send(
                 "Administración de IDDPU El Salvador",
                 email,
                 "Recuperación de contraseña",
                 "",
-                `<p>Hola ${userRegisteredRow[0].alias}, para cambiar tu contraseña, este es tu codigo de seguridad: ${temporalPassword}</p>
-                <p>Ingresa al siguiente enlace para cambiar la contraseña: <a href='${process.env.URL_FRONTEND}validar_acceso/${uidRequestToken}'>Cambiar contraseña</a></p>`
+                htmlForMail
               );
-              console.log(
-                "MAIL enviado --------------------------------------"
-              );
-              console.log(info);
-              if (info === false) {
-                throw 500;
-              } else {
-                result = true;
-              }
+             
+            
+              result = true;
             } else {
-              console.log("MAIL enviado mal");
+              console.log("cambios pasword no guardado");
               throw 500; // no se pudo guardar en cambios password
             }
           } else {
@@ -371,7 +381,6 @@ module.exports = {
         }
       });
       if (transactionResult.errno) {
-        console.log("erro");
         throw transactionResult;
       }
 
@@ -381,4 +390,76 @@ module.exports = {
       return error;
     }
   },
+  changePassword: async (changePasswordData) =>{
+    const {securityCode, type, newPassword, token} = changePasswordData;
+    let result;
+    try {
+      const transactionResult = await database.Transaction(db, async()=>{
+
+        const userToChangePassword = await db.query(
+          "SELECT usuarios.id as id , usuarios.password as password, cambios_password.tipo_cambio as tipo FROM cambios_password join usuarios on usuarios.id = cambios_password.usuario where token = ?",
+          [token]
+        );
+          console.log("Usuario a cambiar-----------");
+          console.log(userToChangePassword);
+        if(userToChangePassword.length > 0 && userToChangePassword[0].tipo == type){ //Si se contro el usuario con ese token y si el tipo de cambio coincide con el recibido
+          const userPasswordIsCorrect = type == 3
+          ?password_encryption.validation_password(securityCode,userToChangePassword[0].password) //Se valida la contraseña temporal si es por admin
+          : true //Si el cambio es solicitado desde login no se valida
+          
+          console.log("Codigo correcto: " + userPasswordIsCorrect);
+          if(userPasswordIsCorrect){ // Si el codigo de seguridad es correcto
+            const changePasswordResult = await db.query(
+              "update usuarios set password = ? where id = ?",
+              [
+                password_encryption.encrypt_password(newPassword),
+                userToChangePassword[0].id
+              ]
+            );
+            console.log("Cambio de contraseña--------------");
+            console.log(changePasswordResult);
+            if(changePasswordResult.changedRows > 0){
+              //Inhabilitar el token usado
+              const updatedToken = await db.query(
+                "update cambios_password set vigente = ?, utilizado = ?, fecha_utilizado=? where token = ? ",
+                [
+                  0,
+                  1,
+                  Datetime.getDateTime(),
+                  token
+                ]
+              );
+              if(updatedToken.changedRows > 0){
+                result = true;
+              }
+              else{
+                throw new Error("No se actualizó el historial de cambio de contraseña");
+              }
+            }
+            else{ // No se cambió la contraseña
+              throw new Error("Se encontró el codigo pero no se actualizó la contraseña");
+            }
+          }
+          else{ //la contraseña temporal es incorrecta
+            result = false;
+          }
+          
+        }
+        else{ //No se encontro usuario con ese token...
+          throw new Error("Token no asociado con usuario o tipo de solicitud incorrecta");
+        }
+  
+      });
+
+     
+      if(transactionResult.errno || transactionResult instanceof Error ){
+        throw transactionResult;
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
+
+  },
+  
 };

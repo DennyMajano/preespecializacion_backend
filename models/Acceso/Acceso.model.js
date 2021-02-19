@@ -53,20 +53,20 @@ module.exports = {
       });
       console.log("Token result");
       console.log(tokenRegisteredRow);
-      console.log("Transaction result");
+      console.log("Token Transaction result");
       console.log(transactionResult);
 
       if(!transactionResult.errno){
         if(tokenRegisteredRow.length>0 && tokenRegisteredRow[0].vigente == 1){
           if(tokenRegisteredRow[0].vencimiento > Date.now()){
-            result = 1;
+            result = 1; //Valido
           }
           else{
-            result = 0;
+            result = 0; // Vencido
           }
         }
         else{
-          result = -1;
+          result = -1; // Invalido
         }
         return result;
       }

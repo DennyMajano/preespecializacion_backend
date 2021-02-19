@@ -61,4 +61,8 @@ module.exports = {
 
     return vencimiento.format("YYYY-MM-DD HH:mm:ss");
   },
+
+  getDateTime(){
+    return  momenttz().tz("America/El_Salvador").format("YYYY-MM-DD HH:mm:ss");
+  }
 };
