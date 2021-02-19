@@ -381,10 +381,10 @@ module.exports = {
               );
               let htmlForMail;
               if (changeRequestType == 1){
-                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href="+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
               }
               else{
-                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href="+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
               }
               let info = mail.send(
                 "Administración de IDDPU El Salvador",
@@ -438,9 +438,10 @@ module.exports = {
           console.log("Codigo correcto: " + userPasswordIsCorrect);
           if(userPasswordIsCorrect){ // Si el codigo de seguridad es correcto
             const changePasswordResult = await db.query(
-              "update usuarios set password = ? where id = ?",
+              "update usuarios set password = ?, password_defecto=? where id = ?",
               [
                 password_encryption.encrypt_password(newPassword),
+                0,
                 userToChangePassword[0].id
               ]
             );
