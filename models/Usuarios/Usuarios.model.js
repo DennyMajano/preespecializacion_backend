@@ -47,12 +47,18 @@ module.exports = {
 
             //Aqui enviar el correo
 
+            let html_message = `
+            Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} 
+            <br/>
+            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>
+            
+            `;
             let info = mail.send(
               "Bienvenido al SISTEMA",
               correo_electronico,
               "ASIGNACION DE CONTRASEÑA",
-              `Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} \n
-            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>`
+              ``,
+              html_message
             );
 
             console.log(info);
