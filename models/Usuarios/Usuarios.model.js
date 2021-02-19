@@ -49,12 +49,18 @@ module.exports = {
 
             //Aqui enviar el correo
 
+            let html_message = `
+            Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} 
+            <br/>
+            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>
+            
+            `;
             let info = mail.send(
               "Bienvenido al SISTEMA",
               correo_electronico,
               "ASIGNACION DE CONTRASEÑA",
-              `Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} \n
-            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>`
+              ``,
+              html_message
             );
 
             console.log(info);
@@ -297,6 +303,28 @@ module.exports = {
     console.log(usuario);
 
     return usuario !== undefined ? usuario : transaction;
+  },
+  delete: async (data) => {
+    const { code } = data;
+    let usuario;
+    let log_pass;
+    let transaction;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        log_pass = await db.query(
+          `DELETE FROM cambios_password WHERE usuario=?`,
+          [code]
+        );
+        usuario = await db.query(`DELETE FROM usuarios WHERE id=?`, [code]);
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return usuario !== undefined && log_pass !== undefined
+      ? usuario
+      : transaction;
   },
   requestEmailToChangePassword: async (changeRequestData) => {
     let result;

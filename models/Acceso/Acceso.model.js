@@ -9,6 +9,7 @@ module.exports = {
     let transaction;
     let modulos;
     let data_out;
+
     try {
       transaction = await database.Transaction(db, async () => {
         acceso = await db.query(
@@ -22,6 +23,10 @@ module.exports = {
         );
 
         if (!acceso.errno && !modulos.errno) {
+          await db.query(
+            `UPDATE usuarios SET ultimo_login=CURRENT_TIMESTAMP() WHERE id=?`,
+            [acceso[0].id]
+          );
           data_out = {
             acceso,
             modulos,
@@ -39,43 +44,41 @@ module.exports = {
       : transaction;
   },
 
-  checkTokenToChangePassword: async(token) => {
+  checkTokenToChangePassword: async (token) => {
     let result;
     let tokenRegisteredRow;
     let transactionResult; // Almacena el resultado de la transaccion, error en caso fallido, los resultados de la transaccion en caso contrario
-    try{
+    try {
       transactionResult = await database.Transaction(db, async () => {
         tokenRegisteredRow = await db.query(
           "SELECT  `vencimiento`, `vigente`, `utilizado` FROM `cambios_password` WHERE `token` = ?",
           [token]
-          );
-
+        );
       });
       console.log("Token result");
       console.log(tokenRegisteredRow);
       console.log("Token Transaction result");
       console.log(transactionResult);
 
-      if(!transactionResult.errno){
-        if(tokenRegisteredRow.length>0 && tokenRegisteredRow[0].vigente == 1){
-          if(tokenRegisteredRow[0].vencimiento > Date.now()){
-            result = 1; //Valido
+      if (!transactionResult.errno) {
+        if (
+          tokenRegisteredRow.length > 0 &&
+          tokenRegisteredRow[0].vigente == 1
+        ) {
+          if (tokenRegisteredRow[0].vencimiento > Date.now()) {
+            result = 1;
+          } else {
+            result = 0;
           }
-          else{
-            result = 0; // Vencido
-          }
-        }
-        else{
-          result = -1; // Invalido
+        } else {
+          result = -1;
         }
         return result;
-      }
-      else{
+      } else {
         throw transactionResult;
       }
-    }
-    catch(error){
+    } catch (error) {
       return error;
     }
-  }
+  },
 };

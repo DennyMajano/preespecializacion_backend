@@ -44,28 +44,28 @@ paths:
 
         400:
           description: no se pudo crear por que faltan datos obligatorios
-  #   #Update de módulos
-  #   delete: # endpoint request type (put request)
-  #     tags: # Tag property
-  #       - Modulos # Value of the tag
-  #     summary: Activar y desactivar un módulo
-  #     produces:
-  #       - application/json
-  #     parameters: # request parameters
-  #       - in: body # request body
-  #         name: delete # name of request, can be any name
-  #         description: json para desactivar o activar el módulo
-  #         required: false # can also be true depending on user preference
-  #         schema: # Schema definition
-  #           $ref: "#/definitions/delete"
-  #     responses: # server responses
-  #       200:
-  #         description: se activo o desactivo con éxito
-  #       500:
-  #         description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #Update de módulos
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Eliminar el acceso
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Delete # name of request, can be any name
+          description: objeto para eliminar un usuario
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete"
+      responses: # server responses
+        200:
+          description: se elimino con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #       400:
-  #         description: no se pudo crear por que faltan datos obligatorios
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
 
   #get de módulos por id
   /usuarios/{code}:
@@ -304,3 +304,9 @@ definitions: # Schema defination for request body
       estado:
         type: integer
         description: 1 si desea bloquear 0 si desea desbloquear
+  delete:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Código del usuario a borrar

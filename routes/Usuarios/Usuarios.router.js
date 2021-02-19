@@ -20,6 +20,7 @@ module.exports = () => {
     usuariosController.validar_correo
   );
   router.post("/usuarios", usuariosController.insertOne);
+  router.delete("/usuarios", usuariosController.delete);
   router.put("/usuarios", usuariosController.updateOne);
   router.put("/usuarios/restablecer_pass", usuariosController.reset_pass);
   router.put(
