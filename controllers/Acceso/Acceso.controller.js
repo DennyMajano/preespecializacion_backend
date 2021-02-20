@@ -82,13 +82,19 @@ module.exports = () => {
     const {token} = req.body;
     console.log(token);
     try{
-      const result = await modelAcceso.checkTokenToChangePassword(token);
-      if(result.errno){
-        throw result;
+      if(!isUndefinedOrNull(token)){
+        const result = await modelAcceso.checkTokenToChangePassword(token);
+        if(result.errno){
+          throw result;
+        }
+        else{
+          res.status(200).json(result);
+        }
       }
       else{
-        res.status(200).json(result);
+        res.status(400).json("Faltan datos");
       }
+    
     }
     catch(error){
       console.log(error);

@@ -23,7 +23,29 @@ paths:
 
         400:
           description: no se pudo crear por que faltan datos obligatorios
-
+  /verify_token: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Acceso # Value of the tag
+      summary: Verificar token de cambio de contraseña
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Token # name of request, can be any name
+          description: Token para ser validado en el sistema
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/verifyToken"
+      responses: # server responses
+        200:
+          description: Operación realizada con éxito
+          schema: 
+            $ref: "#/definitions/responseVerifyToken"
+        400:
+          description: Faltan datos
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 definitions: # Schema defination for request body
   login:
     type: object
@@ -36,3 +58,21 @@ definitions: # Schema defination for request body
         type: string
         description: contraseña asignada
         example: "12345"
+  verifyToken:
+    type: object
+    properties:
+      token:
+        type: string
+        description: Token a ser validado
+        example: b889f9ff-7777-418a-af08-0dffb647ec03
+  responseVerifyToken:
+    type: object
+    properties:
+      estado:
+        type: integer
+        description: -1 es invalido, 0 es vencido, 1 es valido
+        example: 1
+      tipo:
+        type: integer
+        description: 0 es invalido, 1 es cambio por usuario, 2 es cambio por primera vez, 3 es cambio por admin
+        example: 1
