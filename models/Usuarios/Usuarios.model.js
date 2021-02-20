@@ -347,7 +347,7 @@ module.exports = {
          
           const uidRequestToken = GenerateUID();
          
-          if(changeRequestType == 3){
+          if(changeRequestType == 3){ // Si el tipo de cambio es por admin resetear por defecto el pass
             temporalPassword = GeneratePassword();
             console.log("TEMP PASS" + temporalPassword);
             updatedUser = await db.query(

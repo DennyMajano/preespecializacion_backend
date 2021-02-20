@@ -2,13 +2,26 @@ const security = require("../services/security/Token");
 
 
 function isFreeToSee(path){
-  path2= path.split("/");
-  return path2[0]=="verificar_token_pass" && path2.length == 2;
+  const nonSecurePaths =[
+    "login",
+    "verify_token",
+    "usuarios/request_new_password",
+    "usuarios/change_password"
+  ]
+
+  for(let subpath of nonSecurePaths){
+    if(path.startsWith(subpath)){
+      return true;
+    }
+  }
+
+  return false;
+
 }
 
 module.exports = (req, res, next) => {
   const path = req.originalUrl.replace("/api/", "");
-  if (path != "login" && !isFreeToSee(path)) {
+  if (!isFreeToSee(path)) {
     if (!req.headers.authorization) {
       return res.status(403).send({ message: "No tienes autorización" });
     }
@@ -18,7 +31,7 @@ module.exports = (req, res, next) => {
     : null;
   const decoded = security.decodeToken(token);
 
-  if (path != "login" && !isFreeToSee(path)) {
+  if (!isFreeToSee(path)) {
     console.log("2");
     if (decoded != 0) {
       next();
