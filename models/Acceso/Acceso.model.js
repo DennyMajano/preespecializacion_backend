@@ -51,7 +51,7 @@ module.exports = {
     try {
       transactionResult = await database.Transaction(db, async () => {
         tokenRegisteredRow = await db.query(
-          "SELECT  `vencimiento`, `vigente`, `utilizado` FROM `cambios_password` WHERE `token` = ?",
+          "SELECT  `vencimiento`, `vigente`, `utilizado`,`tipo_cambio` FROM `cambios_password` WHERE `token` = ?",
           [token]
         );
       });
@@ -66,12 +66,28 @@ module.exports = {
           tokenRegisteredRow[0].vigente == 1
         ) {
           if (tokenRegisteredRow[0].vencimiento > Date.now()) {
-            result = 1;
+            result = {
+              estado: 1,
+              tipo: tokenRegisteredRow[0].tipo_cambio
+            }
           } else {
-            result = 0;
+            const updatedToken = await db.query(
+              "update cambios_password set vigente = ? where token = ? ",
+              [
+                0,
+                token
+              ]
+            );
+            result = {
+              estado: 0,
+              tipo: 0
+            }
           }
         } else {
-          result = -1;
+          result = {
+            estado: -1,
+            tipo:0
+          }
         }
         return result;
       } else {

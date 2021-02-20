@@ -225,13 +225,13 @@ module.exports = () => {
   usuarios.requestEmailToChangePassword = async (req, res) => {
     const data = req.body;
     let result;
-    console.log(data.changeRequestType);
+    console.log(data);
     try {
       let type = parseInt(data.changeRequestType);
       if (
         !isUndefinedOrNull(data.email) &&
         !isNaN(parseInt(type)) &&
-        (type == 1 || type == 3)
+        (type == 1 || type == 3 || type ==2)
       ) {
         result = await modelUsuarios.requestEmailToChangePassword(data);
         console.log(result);
@@ -260,13 +260,13 @@ module.exports = () => {
       if(!isUndefinedOrNull(data.token) && !isUndefinedOrNull(data.type) && !isUndefinedOrNull(data.newPassword)){
         const isTokenValid = await modelAcceso.checkTokenToChangePassword(data.token);
         console.log("Token valido:"+isTokenValid);
-        if(isTokenValid === 1){ //Si el token es valido
+        if(isTokenValid.estado === 1){ //Si el token es valido
           const changePasswordResult = await modelUsuarios.changePassword(data);
           console.log("Resultado de cambio de contraseña");
           console.log(changePasswordResult);
           //Se devolvio un booleano? que es el caso si las operaciones siguieron el curso normal
           if(typeof changePasswordResult === 'boolean'){
-            //Dependiendo si se cambio la contraseña o no se manda 201 (modificado) o 200 (Ejecutado pero no cambiado)
+            //Dependiendo si se cambio la contraseña o no se manda 201 (modificado) o 200 (Ejecutado pero no cambiado por que el codigo temporal incorrecto)
             res.status((changePasswordResult?201:200)).json({estado: changePasswordResult});
           }
           else{

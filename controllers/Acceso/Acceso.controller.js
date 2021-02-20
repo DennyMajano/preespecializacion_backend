@@ -79,7 +79,7 @@ module.exports = () => {
   };
   
   acceso.checkTokenToChangePassword = async(req, res) =>{
-    const {token} = req.params;
+    const {token} = req.body;
     console.log(token);
     try{
       const result = await modelAcceso.checkTokenToChangePassword(token);
@@ -87,9 +87,7 @@ module.exports = () => {
         throw result;
       }
       else{
-        res.status(200).json({
-          estado: result 
-        });
+        res.status(200).json(result);
       }
     }
     catch(error){
