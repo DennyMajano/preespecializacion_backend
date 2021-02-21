@@ -1,8 +1,5 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 module.exports = {
   create: async (data) => {
     const { name } = data;
@@ -98,11 +95,11 @@ module.exports = {
             query += ` AND (nombres LIKE '%${filter[i]}%' OR apellidos LIKE '%${filter[i]}%' OR codigo LIKE '%${filter[i]}%')`;
           }
 
-          personas = await prisma.$queryRaw(
+          personas = personas = await db.query(
             `${query} ORDER BY nombre ASC LIMIT 50`
           );
         } else {
-          personas = await prisma.$queryRaw(
+          personas = await db.query(
             `SELECT id, codigo, CONCAT( nombres,' ',apellidos) AS nombre FROM personas WHERE condicion=1 AND estado=1`
           );
         }
@@ -122,7 +119,7 @@ module.exports = {
     }
 
     return personas !== undefined
-      ? personas.code === undefined
+      ? personas.errno
         ? data_roles
         : personas
       : transaction;

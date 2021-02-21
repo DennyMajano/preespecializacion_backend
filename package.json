@@ -4,13 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
-    "restro": "npx prisma introspect",
-    "generate": "npx prisma generate",
-    "prisma": "npm run restro && npm run generate"
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@prisma/client": "^2.16.1",
     "bcrypt": "5.0.0",
     "body-parser": "1.19.0",
     "cookie-parser": "~1.4.4",
@@ -41,7 +37,6 @@
     "validate.io-undefined-or-null": "^1.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7",
-    "prisma": "^2.16.1"
+    "nodemon": "^2.0.7"
   }
 }
