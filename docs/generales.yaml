@@ -113,7 +113,7 @@ paths:
     get: # endpoint request type (put request)
       tags: # Tag property
         - Generales # Value of the tag
-      summary: Obtiene los cantones que coincidan con el id de municipio
+      summary: Obtiene los cantones que coincidan con filtro busqueda
       produces:
         - application/json
       parameters: # request parameters
@@ -185,8 +185,9 @@ paths:
       parameters: # request parameters
         - in: path # request body
           name: grupo # name of request, can be any name
-          description: Valor del grupo
+          description: Nombre del grupo
           required: true # can also be true depending on user preference
+          example: sexo_persona
           type: string
 
       responses: # server responses
