@@ -10,25 +10,13 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        if (filter != "") {
-          filter = filter.split(" ");
-
-          let query = `SELECT id, nombre FROM departamentos`;
-
-          for (let i = 0; i < filter.length; i++) {
-            query += ` (nombre LIKE '%${filter[i]}%')  ${
-              i + 1 - filter.length >= 0 ? "" : "AND"
-            }`;
-          }
-
-          data = await db.query(`${query}`);
-        } else {
+     
           data = await db.query(`SELECT id, nombre FROM departamentos`);
-        }
+        
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });

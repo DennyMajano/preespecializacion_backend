@@ -8,7 +8,7 @@ module.exports = () => {
     generalesController.getSelectEstadoCivil
   );
   router.get(
-    "/generales/departamentos/all",
+    "/generales/departamentos",
     generalesController.getSelectDepartamento
   );
   // MUNICIPIOS
