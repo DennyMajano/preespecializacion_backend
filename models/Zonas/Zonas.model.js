@@ -1,17 +1,17 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
-const codeGenerator= require("../../helpers/GeneratorCode")
+const codeGenerator = require("../../helpers/GeneratorCode");
 module.exports = {
   create: async (data) => {
     const { nombre } = data;
     let zonas;
     let transaction;
-    let codigo= codeGenerator("ZN")
+    let codigo = codeGenerator("ZN");
     try {
       transaction = await database.Transaction(db, async () => {
         zonas = await db.query(
           `INSERT INTO zonas(codigo, nombre) VALUES (?,?)`,
-          [codigo,nombre]
+          [codigo, nombre]
         );
       });
     } catch (error) {
@@ -28,10 +28,10 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(
-          `UPDATE zonas SET nombre=? WHERE id=?`,
-          [nombre, code]
-        );
+        zonas = await db.query(`UPDATE zonas SET nombre=? WHERE id=?`, [
+          nombre,
+          code,
+        ]);
       });
     } catch (error) {
       return error;
@@ -53,9 +53,9 @@ module.exports = {
           let query = `SELECT id,codigo, nombre, condicion FROM zonas WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` (nombre LIKE '%${filter[i]}%' OR codigo LIKE '%${filter[i]}%' )  ${
-              i + 1 - filter.length >= 0 ? "" : "AND"
-            }`;
+            query += ` (nombre LIKE '%${filter[i]}%' OR codigo LIKE '%${
+              filter[i]
+            }%' )  ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
           }
 
           data_out = await db.query(`${query} LIMIT 100`);
@@ -133,13 +133,14 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         zonas = await db.query(
-          `SELECT nombre FROM zonas WHERE id=? OR codigo=? LIMIT 1`,
-          [code,code]
+          `SELECT codigo,nombre FROM zonas WHERE id=? OR codigo=? LIMIT 1`,
+          [code, code]
         );
 
         if (!zonas.errno) {
           data_out = zonas.map((element) => {
             return {
+              codigo: element.codigo,
               nombre: element.nombre,
             };
           });
@@ -162,10 +163,10 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(
-          `UPDATE zonas SET condicion=? WHERE id=?`,
-          [status, code]
-        );
+        zonas = await db.query(`UPDATE zonas SET condicion=? WHERE id=?`, [
+          status,
+          code,
+        ]);
       });
     } catch (error) {
       return error;
