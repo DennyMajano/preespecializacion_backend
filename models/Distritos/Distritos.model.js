@@ -3,41 +3,41 @@ const db = require("../../config/conexion");
 const codeGenerator = require("../../helpers/GeneratorCode");
 module.exports = {
   create: async (data) => {
-    const { nombre } = data;
-    let zonas;
+    const { nombre, zona } = data;
+    let distritos;
     let transaction;
-    let codigo = codeGenerator("ZN");
+    let codigo = codeGenerator("DTTO");
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(
-          `INSERT INTO zonas(codigo, nombre) VALUES (?,?)`,
-          [codigo, nombre]
+        distritos = await db.query(
+          `INSERT INTO distritos(codigo, nombre, zona) VALUES (?,?,?)`,
+          [codigo, nombre, zona]
         );
       });
     } catch (error) {
       return error;
     }
 
-    return zonas !== undefined ? zonas : transaction;
+    return distritos !== undefined ? distritos : transaction;
   },
 
   update: async (data) => {
-    const { code, nombre } = data;
-    let zonas;
+    const { code, nombre, zona } = data;
+    let distritos;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(`UPDATE zonas SET nombre=? WHERE id=?`, [
-          nombre,
-          code,
-        ]);
+        distritos = await db.query(
+          `UPDATE distritos SET nombre=?, zona=? WHERE id=?`,
+          [nombre, zona, code]
+        );
       });
     } catch (error) {
       return error;
     }
 
-    return zonas !== undefined ? zonas : transaction;
+    return distritos !== undefined ? distritos : transaction;
   },
 
   findAll: async (filter = "") => {
@@ -50,18 +50,22 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id,codigo, nombre, condicion FROM zonas WHERE `;
+          let query = `SELECT DTTO.id, DTTO.codigo,DTTO.nombre,Z.nombre AS zona, DTTO.condicion FROM distritos DTTO LEFT JOIN zonas Z ON DTTO.zona=Z.codigo WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` (nombre LIKE '%${filter[i]}%' OR codigo LIKE '%${
+            query += ` (DTTO.nombre LIKE '%${
               filter[i]
-            }%' )  ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
+            }%' OR DTTO.codigo LIKE '%${filter[i]}%' OR Z.codigo LIKE '%${
+              filter[i]
+            }%' OR Z.nombre LIKE '%${filter[i]}%'   )  ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
           }
 
           data_out = await db.query(`${query} LIMIT 100`);
         } else {
           data_out = await db.query(
-            `SELECT id, codigo,nombre, condicion FROM zonas LIMIT 100`
+            `SELECT DTTO.id, DTTO.codigo,DTTO.nombre,Z.nombre AS zona, DTTO.condicion FROM distritos DTTO LEFT JOIN zonas Z ON DTTO.zona=Z.codigo LIMIT 100`
           );
         }
         if (!data_out.errno) {
@@ -70,6 +74,7 @@ module.exports = {
               id: element.id,
               codigo: element.codigo,
               nombre: element.nombre,
+              zona: element.zona,
               condicion: element.condicion,
             };
           });
@@ -86,7 +91,7 @@ module.exports = {
       : transaction;
   },
   findSelect: async (filter = "") => {
-    let zonas;
+    let distritos;
     let transaction;
     let data_out;
 
@@ -95,20 +100,20 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id,codigo, nombre FROM zonas WHERE condicion=1 `;
+          let query = `SELECT id,codigo, nombre FROM distritos WHERE condicion=1 `;
 
           for (let i = 0; i < filter.length; i++) {
             query += ` AND (nombre LIKE '%${filter[i]}%')`;
           }
 
-          zonas = await db.query(`${query} LIMIT 50`);
+          distritos = await db.query(`${query} LIMIT 50`);
         } else {
-          zonas = await db.query(
-            `SELECT id,codigo, nombre FROM zonas WHERE condicion=1 LIMIT 50`
+          distritos = await db.query(
+            `SELECT id,codigo, nombre FROM distritos WHERE condicion=1 LIMIT 50`
           );
         }
-        if (!zonas.errno) {
-          data_out = zonas.map((element) => {
+        if (!distritos.errno) {
+          data_out = distritos.map((element) => {
             return {
               id: element.id,
               codigo: element.codigo,
@@ -121,28 +126,33 @@ module.exports = {
       return error;
     }
 
-    return zonas !== undefined
-      ? !zonas.errno
+    return distritos !== undefined
+      ? !distritos.errno
         ? data_out
-        : zonas
+        : distritos
       : transaction;
   },
   findById: async (code) => {
-    let zonas;
+    let distritos;
     let transaction;
     let data_out;
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(
-          `SELECT codigo,nombre FROM zonas WHERE id=? OR codigo=? LIMIT 1`,
+        distritos = await db.query(
+          `SELECT DTTO.codigo,DTTO.nombre, Z.id AS zona_id, DTTO.zona AS zona_codigo, Z.nombre AS zona_nombre FROM distritos DTTO LEFT JOIN zonas Z ON DTTO.zona=Z.codigo WHERE DTTO.id=? OR DTTO.codigo=? LIMIT 1`,
           [code, code]
         );
 
-        if (!zonas.errno) {
-          data_out = zonas.map((element) => {
+        if (!distritos.errno) {
+          data_out = distritos.map((element) => {
             return {
               codigo: element.codigo,
               nombre: element.nombre,
+              zona: {
+                label: element.zona_nombre,
+                value: element.zona_id,
+                codigo: element.zona_codigo,
+              },
             };
           });
         }
@@ -151,27 +161,27 @@ module.exports = {
       return error;
     }
 
-    return zonas !== undefined
-      ? !zonas.errno
+    return distritos !== undefined
+      ? !distritos.errno
         ? data_out
-        : zonas
+        : distritos
       : transaction;
   },
   disableOrEnable: async (data) => {
     const { status, code } = data;
-    let zonas;
+    let distritos;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
-        zonas = await db.query(`UPDATE zonas SET condicion=? WHERE id=?`, [
-          status,
-          code,
-        ]);
+        distritos = await db.query(
+          `UPDATE distritos SET condicion=? WHERE id=?`,
+          [status, code]
+        );
       });
     } catch (error) {
       return error;
     }
-    return zonas !== undefined ? zonas : transaction;
+    return distritos !== undefined ? distritos : transaction;
   },
 };

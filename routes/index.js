@@ -6,6 +6,7 @@ const usuariosRouter = require("./Usuarios/Usuarios.router")();
 const tipoDocumentoRouter = require("./TipoDocumento/TipoDocumento.router")();
 const personasRouter = require("./Personas/Personas.router")();
 const zonasRouter = require("./Zonas/Zonas.router")();
+const distritosRouter = require("./Distritos/Distritos.router")();
 
 module.exports = function (app) {
   //rutas configuracion
@@ -17,5 +18,6 @@ module.exports = function (app) {
   app.use("/api", tipoDocumentoRouter);
   app.use("/api", personasRouter);
   app.use("/api", zonasRouter);
+  app.use("/api", distritosRouter);
   //other routes..
 };
