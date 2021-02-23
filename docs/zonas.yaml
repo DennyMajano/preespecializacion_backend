@@ -12,7 +12,7 @@ paths:
           description: Esto es para crear una nueva zona
           required: false # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/create"
+            $ref: "#/definitions/create_zona"
       responses: # server responses
         201:
           description: se creó con éxito
@@ -34,7 +34,7 @@ paths:
           description: Esto es para actualizar una zona
           required: false # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/update"
+            $ref: "#/definitions/update_zona"
       responses: # server responses
         200:
           description: se actualizó con éxito
@@ -56,7 +56,7 @@ paths:
           description: json para desactivar o activar el zona
           required: false # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/delete"
+            $ref: "#/definitions/delete_zona"
       responses: # server responses
         200:
           description: se activo o desactivo con éxito
@@ -163,7 +163,6 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-
   /zonas_departamento: # path of the user from your endpoint
     post: # endpoint request type (post request)
       tags: # Tag property
@@ -177,7 +176,7 @@ paths:
           description: Objeto para asigancion de departamento a una zona
           required: false # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/create_zona_departamento"
+            $ref: "#/definitions/create_zona_departamento_zona"
       responses: # server responses
         201:
           description: se creó con éxito
@@ -200,11 +199,11 @@ paths:
           description: Objeto para eliminación de un departamento a una zona
           required: false # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/delete_zona_departamento"
+            $ref: "#/definitions/delete_zona_departamento_zona"
       responses: # server responses
         200:
           description: se eliminó con éxito
-       
+
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
 
@@ -236,34 +235,33 @@ paths:
       produces:
         - application/json
       parameters:
-      - name: code
-        in: path
-        description: 'Codigo o id de la zona'
-        required: false
-        type: string
-      - name: filter
-        in: path
-        description: 'Nombre del departamento para filtro de busqueda'
-        required: false
-        type: string
-       
+        - name: code
+          in: path
+          description: "Codigo o id de la zona"
+          required: false
+          type: string
+        - name: filter
+          in: path
+          description: "Nombre del departamento para filtro de busqueda"
+          required: false
+          type: string
 
       responses: # server responses
         200:
           description: Datos consultados con éxito
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
-    
+
 definitions: # Schema defination for request body
-  create:
+  create_zona:
     type: object
     properties:
       nombre:
         type: string
         description: nombre del zona
         example: Zona norte
-      
-  update:
+
+  update_zona:
     type: object
     properties:
       code:
@@ -273,8 +271,8 @@ definitions: # Schema defination for request body
       nombre:
         type: string
         description: nombre del zona
-        example: Zona norte   
-  delete:
+        example: Zona norte
+  delete_zona:
     type: object
     properties:
       code:
@@ -283,7 +281,7 @@ definitions: # Schema defination for request body
       status:
         type: integer
         description: 1 si desea activar 0 si desactivar
-  create_zona_departamento:
+  create_zona_departamento_zona:
     type: object
     properties:
       zona:
@@ -294,22 +292,10 @@ definitions: # Schema defination for request body
         type: integer
         description: id del departamento
         example: 12
-  delete_zona_departamento:
+  delete_zona_departamento_zona:
     type: object
     properties:
       code:
         type: integer
         description: id del registro de zona departamento
         example: 1
-parameters:
-  zona:
-    - in: path # request body
-      name: code # name of request, can be any name
-      escription: Codigo o id de la zona
-      required: true # can also be true depending on user preference
-  filter:
-    - in: path # request body
-      name: filter # name of request, can be any name
-      escription: Nombre del departamento para filtro de busqueda
-      required: true # can also be true depending on user preference
-
