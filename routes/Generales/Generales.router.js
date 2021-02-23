@@ -15,8 +15,6 @@ module.exports = () => {
     "/generales/comodin/all/:grupo",
     generalesController.getSelectMiselanea
   );
-
-  router.get("/generales/sexo/all", generalesController.getSelectSexo);
   router.get(
     "/generales/tipo_documento_identificacion/all",
     generalesController.getSelectTipoDocumentoIdentificacion
