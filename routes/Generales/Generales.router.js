@@ -11,32 +11,54 @@ module.exports = () => {
     "/generales/departamentos/all",
     generalesController.getSelectDepartamento
   );
+  // MUNICIPIOS
+  // router.get(
+  //   "/generales/municipios/all",
+  //   generalesController.getSelectMunicipio
+  // );
+  router.get(
+    "/generales/municipios/all/:dep",
+    generalesController.getSelectMunicipio
+  );
+  router.get(
+    "/generales/municipios/all/:dep/:filter",
+    generalesController.getSelectMunicipio
+  );
+  // CANTONES
+  router.get(
+    "/generales/cantones/all",
+    generalesController.getSelectCanton
+  );
+  router.get(
+    "/generales/cantones/all/:municipio",
+    generalesController.getSelectCanton
+  );
+  router.get(
+    "/generales/cantones/all/:municipio/:filter",
+    generalesController.getSelectCanton
+  );
+  // NACIONALIDADES
+  router.get(
+    "/generales/nacionalidades/select",
+    generalesController.getSelectNacionalidad
+  );
+  router.get(
+    "/generales/nacionalidades/select/:filter", 
+    generalesController.getSelectNacionalidad);
   router.get(
     "/generales/comodin/all/:grupo",
     generalesController.getSelectMiselanea
   );
   router.get(
-    "/generales/tipo_documento_identificacion/all",
-    generalesController.getSelectTipoDocumentoIdentificacion
+    "/generales/tipo_documento/all",
+    generalesController.getSelectTipoDocumento
   );
   router.get(
-    "/generales/motivos_baja/all",
-    generalesController.getSelectMotivosBaja
-  );
-  router.get(
-    "/generales/tipos_saldos/all",
-    generalesController.getSelectTiposSaldos
+    "/generales/tipo_iglesia/all",
+    generalesController.getSelectTipoIglesia
   );
 
-  router.get(
-    "/generales/tipo_cuenta/all",
-    generalesController.getSelectTipoCuenta
-  );
-  router.get(
-    "/generales/tipo_proyecto/all",
-    generalesController.getSelectTipoProyecto
-  );
-  router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
+  // router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
   // router.get("/cargos/all/:filter", generalesController.getAll);
   // router.get("/cargos/select", generalesController.getSelect);
   // router.get("/cargos/select/:filter", generalesController.getSelect);

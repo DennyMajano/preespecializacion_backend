@@ -35,6 +35,65 @@ module.exports = () => {
       console.log(error);
     }
   };
+  generales.getSelectMunicipio = async (req, res) => {
+    const { filter, dep } = req.params;
+
+    try {
+      let result = await modelGenerales.findAllMunicipios(filter, dep);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  generales.getSelectCanton = async (req, res) => {
+    const { filter, municipio } = req.params;
+
+    try {
+      let result = await modelGenerales.findAllCantones(filter, municipio);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  generales.getSelectNacionalidad = async (req, res) => {
+    const { filter } = req.params;
+
+    try {
+      let result = await modelGenerales.findAllNacionalidad(filter);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  generales.getSelectTipoIglesia = async (req, res) => {
+
+    try {
+      let result = await modelGenerales.findAllTipoIglesia();
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   generales.getSelectMiselanea = async (req, res) => {
     const { grupo } = req.params;
 
@@ -50,9 +109,9 @@ module.exports = () => {
       console.log(error);
     }
   };
-  generales.getSelectSexo = async (req, res) => {
+  generales.getSelectTipoDocumento = async (req, res) => {
     try {
-      let result = await modelGenerales.findAllSexo();
+      let result = await modelGenerales.findAllTipoDocumento();
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
@@ -61,86 +120,6 @@ module.exports = () => {
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-  generales.getSelectTipoDocumentoIdentificacion = async (req, res) => {
-    try {
-      let result = await modelGenerales.findAllTipoDocumentoIdentificacion();
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  generales.getSelectMotivosBaja = async (req, res) => {
-    try {
-      let result = await modelGenerales.findAllMotivosBaja();
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  generales.getSelectTiposSaldos = async (req, res) => {
-    try {
-      let result = await modelGenerales.findAllTiposSaldo();
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  generales.getSelectTipoCuenta = async (req, res) => {
-    try {
-      let result = await modelGenerales.findAllTipoCuenta();
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  generales.getSelectTipoProyecto = async (req, res) => {
-    try {
-      let result = await modelGenerales.findAllTipoProyecto();
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  generales.mail = async (req, res) => {
-    const { mensaje, correo } = req.params;
-
-    try {
-      let info = await mail.send(
-        "Mensaje de prueba",
-        correo,
-        "PRUEBA",
-        mensaje
-      );
-      res.status(200).json({ info });
-    } catch (error) {
-      res.status(500).json({ info: "Error al enviar el mensaje" });
     }
   };
 

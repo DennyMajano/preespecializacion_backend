@@ -16,7 +16,7 @@ module.exports = {
           let query = `SELECT id, nombre FROM departamentos`;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` AND (nombre LIKE '%${filter[i]}%')  ${
+            query += ` (nombre LIKE '%${filter[i]}%')  ${
               i + 1 - filter.length >= 0 ? "" : "AND"
             }`;
           }
@@ -40,7 +40,167 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
+  findAllMunicipios: async (filter = "", dep) => {
+    let data;
+    let transaction;
+    let data_final;
 
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, nombre FROM municipios WHERE departamento=${dep} AND`;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` (nombre LIKE '%${filter[i]}%')  ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
+          }
+
+          data = await db.query(`${query} LIMIT 50`);
+        } else {
+          data = await db.query(`SELECT id, nombre FROM municipios WHERE departamento=${dep} LIMIT 50`);
+        }
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: encryption.encrypt_id(element.id),
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+  findAllCantones: async (filter = "", municipio) => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, nombre FROM cantones WHERE municipio=${municipio} AND`;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` (nombre LIKE '%${filter[i]}%')  ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
+          }
+
+          data = await db.query(`${query} LIMIT 50`);
+        } else {
+          data = await db.query(`SELECT id, nombre FROM cantones WHERE municipio=${municipio} LIMIT 50`);
+        }
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: encryption.encrypt_id(element.id),
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+  findAllNacionalidad: async (filter = "") => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, nacionalidad FROM nacionalidades WHERE`;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` (nacionalidad LIKE '%${filter[i]}%')  ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
+          }
+
+          data = await db.query(`${query} LIMIT 50`);
+        } else {
+          data = await db.query(`SELECT id, nacionalidad FROM nacionalidades LIMIT 50`);
+        }
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: encryption.encrypt_id(element.id),
+              nombre: element.nacionalidad,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+
+  findAllEstadoCivil: async () => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        data = await db.query(`SELECT id, nombre FROM estados_civiles`);
+
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: encryption.encrypt_id(element.id),
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+  findAllTipoIglesia: async () => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        data = await db.query(`SELECT id, nombre FROM tipo_iglesias`);
+
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: encryption.encrypt_id(element.id),
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+  
   findAllMiselanea: async (grupo) => {
     let data;
     let transaction;
@@ -68,31 +228,7 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-  findAllSexo: async () => {
-    let data;
-    let transaction;
-    let data_final;
-
-    try {
-      transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT id, nombre FROM sexo`);
-
-        if (!data.errno) {
-          data_final = data.map((element) => {
-            return {
-              id: encryption.encrypt_id(element.id),
-              nombre: element.nombre,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
-  },
-  findAllTipoDocumentoIdentificacion: async () => {
+  findAllTipoDocumento: async () => {
     let data;
     let transaction;
     let data_final;
@@ -100,7 +236,7 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         data = await db.query(
-          `SELECT id, nombre FROM tipo_documentos_identificacion`
+          `SELECT id, nombre FROM tipos_documentos`
         );
 
         if (!data.errno) {
@@ -118,105 +254,5 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-  findAllMotivosBaja: async () => {
-    let data;
-    let transaction;
-    let data_final;
 
-    try {
-      transaction = await database.Transaction(db, async () => {
-        data = await db.query(
-          `SELECT id, nombre FROM motivos_baja_colaboradores`
-        );
-
-        if (!data.errno) {
-          data_final = data.map((element) => {
-            return {
-              id: encryption.encrypt_id(element.id),
-              nombre: element.nombre,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
-  },
-  findAllTiposSaldo: async () => {
-    let data;
-    let transaction;
-    let data_final;
-
-    try {
-      transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT id, nombre FROM tipos_saldos`);
-
-        if (!data.errno) {
-          data_final = data.map((element) => {
-            return {
-              id: encryption.encrypt_id(element.id),
-              nombre: element.nombre,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
-  },
-
-  findAllTipoCuenta: async () => {
-    let data;
-    let transaction;
-    let data_final;
-
-    try {
-      transaction = await database.Transaction(db, async () => {
-        data = await db.query(
-          `SELECT id, nombre_nivel FROM tipo_cuenta WHERE grupo="catalogo_cuenta"`
-        );
-
-        if (!data.errno) {
-          data_final = data.map((element) => {
-            return {
-              id: encryption.encrypt_id(element.id),
-              nombre: element.nombre_nivel,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
-  },
-  findAllTipoProyecto: async () => {
-    let data;
-    let transaction;
-    let data_final;
-
-    try {
-      transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT id, nombre FROM tipo_proyecto`);
-
-        if (!data.errno) {
-          data_final = data.map((element) => {
-            return {
-              id: encryption.encrypt_id(element.id),
-              nombre: element.nombre,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
-  },
 };
