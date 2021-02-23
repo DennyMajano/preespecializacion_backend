@@ -53,7 +53,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });
@@ -90,7 +90,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });
@@ -127,7 +127,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nacionalidad,
             };
           });
@@ -152,7 +152,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });
@@ -176,7 +176,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });
@@ -230,7 +230,7 @@ module.exports = {
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
-              id: encryption.encrypt_id(element.id),
+              id: element.id,
               nombre: element.nombre,
             };
           });

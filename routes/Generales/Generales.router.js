@@ -4,7 +4,7 @@ module.exports = () => {
   const generalesController = require("../../controllers/Generales/Generales.controller")();
 
   router.get(
-    "/generales/estado_civil/all",
+    "/generales/estado_civil",
     generalesController.getSelectEstadoCivil
   );
   router.get(
@@ -17,44 +17,44 @@ module.exports = () => {
   //   generalesController.getSelectMunicipio
   // );
   router.get(
-    "/generales/municipios/all/:dep",
+    "/generales/municipios/:dep",
     generalesController.getSelectMunicipio
   );
   router.get(
-    "/generales/municipios/all/:dep/:filter",
+    "/generales/municipios/:dep/:filter",
     generalesController.getSelectMunicipio
   );
   // CANTONES
   router.get(
-    "/generales/cantones/all",
+    "/generales/cantones",
     generalesController.getSelectCanton
   );
   router.get(
-    "/generales/cantones/all/:municipio",
+    "/generales/cantones/:municipio",
     generalesController.getSelectCanton
   );
   router.get(
-    "/generales/cantones/all/:municipio/:filter",
+    "/generales/cantones/:municipio/:filter",
     generalesController.getSelectCanton
   );
   // NACIONALIDADES
   router.get(
-    "/generales/nacionalidades/select",
+    "/generales/nacionalidad",
     generalesController.getSelectNacionalidad
   );
   router.get(
-    "/generales/nacionalidades/select/:filter", 
+    "/generales/nacionalidad/:filter", 
     generalesController.getSelectNacionalidad);
   router.get(
-    "/generales/comodin/all/:grupo",
+    "/generales/comodin/:grupo",
     generalesController.getSelectMiselanea
   );
   router.get(
-    "/generales/tipo_documento/all",
+    "/generales/tipo_documento",
     generalesController.getSelectTipoDocumento
   );
   router.get(
-    "/generales/tipo_iglesia/all",
+    "/generales/tipo_iglesia",
     generalesController.getSelectTipoIglesia
   );
 
