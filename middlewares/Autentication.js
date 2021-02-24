@@ -15,6 +15,8 @@ function isFreeToSee(path){
     }
   }
 
+  //nonSecurePaths.some((subpath => path.startsWith(subpath)));
+
   return false;
 
 }
@@ -26,17 +28,20 @@ module.exports = (req, res, next) => {
       return res.status(403).send({ message: "No tienes autorización" });
     }
   }
+  console.log("HEADERS");
+  console.log(req.headers.authorization);
   const token = req.headers.authorization
     ? req.headers.authorization.split(" ")[1]
     : null;
   const decoded = security.decodeToken(token);
 
   if (!isFreeToSee(path)) {
-    console.log("2");
+   console.log("TOKEN DECODED") ;
+    console.log(decoded);
     if (decoded != 0) {
       next();
     } else {
-      res.status(403).send({ message: `No tienes autorizacion` });
+      res.status(403).send({ message: `No tienes autorización` });
     }
   } else {
     next();

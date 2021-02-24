@@ -1,3 +1,4 @@
+const testRoutes = require("./TestRoutes/TestRoutes")();
 const modulosRouter = require("./Modulos/Modulos.router")();
 const rolesRouter = require("./Roles/Roles.router")();
 const generalesRouter = require("./Generales/Generales.router")();
@@ -21,5 +22,8 @@ module.exports = function (app) {
   app.use("/api", zonasRouter);
   app.use("/api", distritosRouter);
   app.use("/api", iglesiasRouter);
+
+  //Rutas de prueba
+  app.use("/api", testRoutes);
   //other routes..
 };
