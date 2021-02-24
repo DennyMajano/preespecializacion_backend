@@ -8,6 +8,7 @@ const tipoDocumentoRouter = require("./TipoDocumento/TipoDocumento.router")();
 const personasRouter = require("./Personas/Personas.router")();
 const zonasRouter = require("./Zonas/Zonas.router")();
 const distritosRouter = require("./Distritos/Distritos.router")();
+const iglesiasRouter = require("./Iglesias/Iglesia.router")();
 
 module.exports = function (app) {
   //rutas configuracion
@@ -20,8 +21,9 @@ module.exports = function (app) {
   app.use("/api", personasRouter);
   app.use("/api", zonasRouter);
   app.use("/api", distritosRouter);
+  app.use("/api", iglesiasRouter);
 
   //Rutas de prueba
-  app.use("/api",testRoutes);
+  app.use("/api", testRoutes);
   //other routes..
 };

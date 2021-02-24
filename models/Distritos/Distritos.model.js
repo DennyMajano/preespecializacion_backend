@@ -90,7 +90,7 @@ module.exports = {
         : data_out
       : transaction;
   },
-  findSelect: async (filter = "") => {
+  findSelect: async (filter = "", zona) => {
     let distritos;
     let transaction;
     let data_out;
@@ -100,16 +100,17 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id,codigo, nombre FROM distritos WHERE condicion=1 `;
+          let query = `SELECT id,codigo, nombre FROM distritos WHERE zona=? AND condicion=1 `;
 
           for (let i = 0; i < filter.length; i++) {
             query += ` AND (nombre LIKE '%${filter[i]}%')`;
           }
 
-          distritos = await db.query(`${query} LIMIT 50`);
+          distritos = await db.query(`${query} LIMIT 50`, [zona]);
         } else {
           distritos = await db.query(
-            `SELECT id,codigo, nombre FROM distritos WHERE condicion=1 LIMIT 50`
+            `SELECT id,codigo, nombre FROM distritos WHERE zona=? AND condicion=1 LIMIT 50`,
+            [zona]
           );
         }
         if (!distritos.errno) {

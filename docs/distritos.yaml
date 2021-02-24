@@ -87,18 +87,19 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
     #get de Distritos padres
-  /distritos/select:
+  /distritos/select/{zona}:
     get: # endpoint request type (put request)
       tags: # Tag property
         - Distritos # Value of the tag
       summary: Obtiene todos los Distritos para mostrarlas en un select
       produces:
         - application/json
-      # parameters: # request parameters
-      #   - in: path # request body
-      #     name: code # name of request, can be any name
-      #     description: Get para obtener los Distritos principales o padres
-      #     required: false # can also be true depending on user preference
+      parameters: # request parameters
+        - in: path # request body
+          name: zona # name of request, can be any name
+          description: codigo de la zona
+          required: false # can also be true depending on user preference
+          example: ZN-422262260
 
       responses: # server responses
         200:
@@ -106,7 +107,7 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
       #get de Distritos padres
-  /distritos/select/{filter}:
+  /distritos/select/{zona}/{filter}:
     get: # endpoint request type (put request)
       tags: # Tag property
         - Distritos # Value of the tag
@@ -114,10 +115,17 @@ paths:
       produces:
         - application/json
       parameters: # request parameters
-        - in: path # request body
-          name: filter # name of request, can be any name
+        - name: zona
+          in: path
+          description: "Codigo de la zona"
+          required: false
+          type: string
+          example: ZN-422262260
+        - name: filter
+          in: path
           description: Valor a buscar nombre del distrito
-          required: true # can also be true depending on user preference
+          required: false
+          type: string
 
       responses: # server responses
         200:
