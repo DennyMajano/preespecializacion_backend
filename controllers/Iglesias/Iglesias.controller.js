@@ -21,7 +21,9 @@ module.exports = () => {
         if (result.errno) {
           res.status(500).json("Error de servidor");
         } else if (result.affectedRows > 0) {
-          res.status(201).json("Se creo con exito");
+          res
+            .status(201)
+            .json({ message: "Se creo con exito", iglesia: result.insertId });
         } else {
           res.status(400).json("No se pudo crear");
         }
@@ -36,7 +38,15 @@ module.exports = () => {
     const data = req.body;
 
     try {
-      if (!isUndefinedOrNull(data.code) && !isUndefinedOrNull(data.nombre)) {
+      if (
+        !isUndefinedOrNull(data.code) &&
+        !isUndefinedOrNull(data.nombre) &&
+        !isUndefinedOrNull(data.departamento) &&
+        !isUndefinedOrNull(data.municipio) &&
+        !isUndefinedOrNull(data.distrito) &&
+        !isUndefinedOrNull(data.tipo_iglesia) &&
+        !isUndefinedOrNull(data.zona)
+      ) {
         let result = await modelIglesias.update(data);
         if (result.errno) {
           res.status(500).json("Error de servidor");

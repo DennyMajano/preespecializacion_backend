@@ -18,7 +18,7 @@ module.exports = {
     } = data;
     let iglesias;
     let transaction;
-    let codigo = codeGenerator("ZN");
+    let codigo = codeGenerator("IGLE");
     try {
       transaction = await database.Transaction(db, async () => {
         iglesias = await db.query(
@@ -48,16 +48,44 @@ module.exports = {
   },
 
   update: async (data) => {
-    const { code, nombre } = data;
+    const {
+      code,
+      nombre,
+      telefono,
+      departamento,
+      municipio,
+      canton,
+      direccion,
+      src_google,
+      distrito,
+      fecha_ordenamiento,
+      tipo_iglesia,
+      zona,
+    } = data;
     let iglesias;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
-        iglesias = await db.query(`UPDATE iglesias SET nombre=? WHERE id=?`, [
-          nombre,
-          code,
-        ]);
+        iglesias = await db.query(
+          `UPDATE iglesias SET nombre=?,telefono=?,departamento=?,municipio=?,canton=?,direccion=?,src_google=?,distrito=?,fecha_ordenamiento=?,tipo_iglesia=?,zona=? WHERE id=?`,
+          [
+            nombre,
+            telefono,
+            departamento,
+            municipio,
+            canton !== "" && canton !== null ? canton : null,
+            direccion,
+            src_google,
+            distrito,
+            fecha_ordenamiento !== "" && fecha_ordenamiento !== null
+              ? fecha_ordenamiento
+              : null,
+            tipo_iglesia,
+            zona,
+            code,
+          ]
+        );
       });
     } catch (error) {
       return error;
@@ -76,18 +104,22 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id,codigo, nombre, condicion FROM iglesias WHERE `;
+          let query = `SELECT I.id, I.codigo, I.nombre, I.telefono,  D.nombre AS departamento, M.nombre AS municipio, DTTO.nombre AS distrito, DATE_FORMAT(I.fecha_ordenamiento, '%d/%m/%Y') AS fecha_ordenamiento, TI.nombre AS tipo_iglesia, Z.nombre AS zona, DATE_FORMAT(I.fecha_cr, '%d/%m/%Y %r') AS fecha_registro,DATE_FORMAT(I.fecha_uac, '%d/%m/%Y %r') AS fecha_actualizacion FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id  WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` (nombre LIKE '%${filter[i]}%' OR codigo LIKE '%${
+            query += ` (I.nombre LIKE '%${filter[i]}%' OR I.codigo LIKE '%${
               filter[i]
-            }%' )  ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
+            }%' OR D.nombre LIKE '%${filter[i]}%' OR M.nombre LIKE '%${
+              filter[i]
+            }%' OR DTTO.nombre LIKE '%${filter[i]}%' OR Z.nombre LIKE '%${
+              filter[i]
+            }%')  ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
           }
 
           data_out = await db.query(`${query} LIMIT 100`);
         } else {
           data_out = await db.query(
-            `SELECT id, codigo,nombre, condicion FROM iglesias LIMIT 100`
+            `SELECT I.id, I.codigo, I.nombre, I.telefono,  D.nombre AS departamento, M.nombre AS municipio, DTTO.nombre AS distrito, DATE_FORMAT(I.fecha_ordenamiento, '%d/%m/%Y') AS fecha_ordenamiento, TI.nombre AS tipo_iglesia, Z.nombre AS zona, DATE_FORMAT(I.fecha_cr, '%d/%m/%Y %r') AS fecha_registro,DATE_FORMAT(I.fecha_uac, '%d/%m/%Y %r') AS fecha_actualizacion FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id  LIMIT 100`
           );
         }
         if (!data_out.errno) {
@@ -96,6 +128,15 @@ module.exports = {
               id: element.id,
               codigo: element.codigo,
               nombre: element.nombre,
+              telefono: element.telefono,
+              departamento: element.departamento,
+              municipio: element.municipio,
+              distrito: element.distrito,
+              fecha_ordenamiento: element.fecha_ordenamiento,
+              tipo_iglesia: element.tipo_iglesia,
+              zona: element.zona,
+              fecha_registro: element.fecha_registro,
+              fecha_actualizacion: element.fecha_actualizacion,
               condicion: element.condicion,
             };
           });
@@ -121,7 +162,7 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT id,codigo, nombre FROM iglesias WHERE condicion=1 `;
+          let query = `SELECT id, codigo, nombre FROM iglesias WHERE condicion=1 `;
 
           for (let i = 0; i < filter.length; i++) {
             query += ` AND (nombre LIKE '%${filter[i]}%')`;
@@ -130,7 +171,7 @@ module.exports = {
           iglesias = await db.query(`${query} LIMIT 50`);
         } else {
           iglesias = await db.query(
-            `SELECT id,codigo, nombre FROM iglesias WHERE condicion=1 LIMIT 50`
+            `SELECT id, codigo, nombre FROM iglesias WHERE condicion=1 LIMIT 50`
           );
         }
         if (!iglesias.errno) {
@@ -160,7 +201,7 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         iglesias = await db.query(
-          `SELECT codigo,nombre FROM iglesias WHERE id=? OR codigo=? LIMIT 1`,
+          `SELECT I.id, I.codigo, I.nombre, I.telefono, I.departamento AS departamento_id, D.nombre AS departamento_nombre, I.municipio AS municipio_id, M.nombre AS municipio_nombre, I.canton AS canton_id, C.nombre AS canton_nombre, I.direccion, I.src_google, DTTO.id AS distrito_id, I.distrito AS distrito_codigo, DTTO.nombre AS distrito_nombre, I.fecha_ordenamiento, I.tipo_iglesia AS tipo_iglesia_id, TI.nombre AS tipo_iglesia_nombre, Z.id AS zona_id, I.zona AS zona_codigo,Z.nombre AS zona_nombre FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id WHERE I.id=? OR I.codigo=? LIMIT 1`,
           [code, code]
         );
 
@@ -168,7 +209,54 @@ module.exports = {
           data_out = iglesias.map((element) => {
             return {
               codigo: element.codigo,
-              nombre: element.nombre,
+              telefono: element.telefono,
+              departamento:
+                element.departamento_id !== null
+                  ? {
+                      label: element.departamento_nombre,
+                      value: element.departamento_id,
+                    }
+                  : "",
+              municipio:
+                element.municipio_id !== null
+                  ? {
+                      label: element.municipio_nombre,
+                      value: element.municipio_id,
+                    }
+                  : "",
+              canton:
+                element.canton_id !== null
+                  ? {
+                      label: element.canton_nombre,
+                      value: element.canton_id,
+                    }
+                  : "",
+              direccion: element.direccion,
+              ruta_mapa: element.src_google,
+              distrito:
+                element.distrito_codigo !== null
+                  ? {
+                      label: element.distrito_nombre,
+                      value: element.distrito_id,
+                      codgio: element.distrito_codigo,
+                    }
+                  : "",
+              fecha_ordenamiento: element.fecha_ordenamiento,
+              zona:
+                element.zona_codigo !== null
+                  ? {
+                      label: element.zona_nombre,
+                      value: element.zona_id,
+                      codgio: element.zona_codigo,
+                    }
+                  : "",
+              tipo_iglesia:
+                element.tipo_iglesia_id !== null
+                  ? {
+                      label: element.tipo_iglesia_nombre,
+                      value: element.tipo_iglesia_id,
+                    }
+                  : "",
             };
           });
         }
