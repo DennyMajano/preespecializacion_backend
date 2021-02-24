@@ -2,7 +2,6 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
   const usuariosController = require("../../controllers/Usuarios/Usuarios.controller")();
-  const upload_files = require("../../middlewares/upload_files");
   const configPath = require("../../config.path");
   router.get("/usuarios/all", usuariosController.getAll);
   router.get("/usuarios/all/:filter", usuariosController.getAll);
