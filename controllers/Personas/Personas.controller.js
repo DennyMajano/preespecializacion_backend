@@ -5,28 +5,59 @@ module.exports = () => {
   let personas = {};
 
   personas.insertOne = async (req, res) => {
-    const data = req.body;
-    console.log(data);
+    
     try {
-      if (!isUndefinedOrNull(data.name)) {
+      const data = req.body;
+      data.avatar = req.file?req.file.path:"";
+      console.log(req.file);
+      if (!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
         let result = await modelPersonas.create(data);
-        if (result.errno) {
-          res.status(500).json("Error de servidor");
-        } else if (result.affectedRows === 1) {
-          res.status(201).json({
-            message: "Se creo con exito",
-            id: result.insertId,
-          });
-        } else {
-          res.status(400).json("No se pudo crear");
-        }
+        res.status(200).json({result});
       } else {
-        res.status(400).json("faltan datos para realizar el proceso");
+        res.status(400).json("Faltan datos para realizar el proceso");
       }
     } catch (error) {
       console.log(error);
+      res.status(500).json("Error de servidor");
     }
   };
+
+  personas.getById = async (req, res) => {
+    const { code } = req.params;
+    console.log(code);
+    try {
+      const result = await modelPersonas.findById(code);
+
+      if (result.errno || result instanceof Error) {
+        throw result;
+      } else {
+        res.status(result===false?404:200).json({estado: result});
+      } 
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+
+  personas.updateAvatar = (req, res) => {
+    try {
+      if(!isUndefinedOrNull( req.body.userId) && !isUndefinedOrNull(req.file)){
+
+        const data = req.body;
+        data.avatar = req.file.path;
+
+        const person = modelPersonas.findById(data.userId);
+
+        
+      }
+
+    } catch (error) {
+      
+    }
+  }
+
+  //-----------------
+
   personas.updateOne = async (req, res) => {
     const data = req.body;
     console.log(data);
@@ -83,25 +114,7 @@ module.exports = () => {
       console.log(error);
     }
   };
-  personas.getById = async (req, res) => {
-    const { code } = req.params;
-    console.log(code);
-    try {
-      let result = await modelPersonas.findById(code);
-
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length > 0) {
-        console.log(result);
-        res.status(200).json(result.length > 0 ? result[0] : result);
-      } else {
-        res.status(404).send();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+ 
   personas.DisableOrEnable = async (req, res) => {
     const data = req.body;
     console.log(data);

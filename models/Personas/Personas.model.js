@@ -1,20 +1,130 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
+const GeneratorCode = require("../../helpers/GeneratorCode");
+
 module.exports = {
-  create: async (data) => {
-    const { name } = data;
-    let roles;
-    let transaction;
+  /**
+   * @returns Si la persona se registra exitosamente devuelve el `id` de la persona registrada, en caso contrario devuelve `false`
+   * @param {*} PersonaData - Recibe todos los datos de la persona nueva a registrarse.
+   */
+  create: async (PersonaData) => {
+    const { 
+      nombre, 
+      apellido, 
+      telefono, 
+      sexo, 
+      avatar, 
+      nacionalidad, 
+      fechaNacimiento, 
+      departamentoNacimiento,  
+      municipioNacimiento,
+      cantonNacimiento,
+      departamentoResidencia,
+      municipioResidencia,
+      cantonResidencia,
+      tipoDocumento,
+      numeroDocumento,
+      estadoCivil,
+      profesion,
+      direccion,
+
+    } = PersonaData;
+
     try {
-      transaction = await database.Transaction(db, async () => {
-        roles = await db.query(`INSERT INTO roles (nombre) VALUES (?)`, [name]);
-      });
+
+      let result;
+
+      const transactionResult = await database.Transaction(
+        db,
+        async () =>{
+          const newPersonaCode = GeneratorCode("P");
+          const personaResult = await db.query(
+            "INSERT INTO `personas`(`codigo`,`nombres`, `apellidos`, `telefono`, `sexo`, `avatar`, `nacionalidad`, `fecha_nacimiento`, `departemento_nacimiento`, `municipio_nacimiento`, `canton_nacimiento`, `departamento_residencia`, `municipio_residencia`, `canton_residencia`, `tipo_documento`, `numero_documento`, `estado_civil`, `profesion_oficio`, `direccion`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [
+              newPersonaCode,
+              nombre, 
+              apellido, 
+              telefono, 
+              sexo, 
+              avatar, 
+              nacionalidad, 
+              fechaNacimiento, 
+              departamentoNacimiento,  
+              municipioNacimiento,
+              cantonNacimiento,
+              departamentoResidencia,
+              municipioResidencia,
+              cantonResidencia,
+              tipoDocumento,
+              numeroDocumento,
+              estadoCivil,
+              profesion,
+              direccion
+            ]
+          );
+            console.log(personaResult);
+          if(personaResult.affectedRows > 0){
+            result = personaResult.insertId;
+          }
+          else{
+            result = false;
+          }
+          
+        }
+        );
+        if(transactionResult.errno){
+          throw transactionResult;
+        }
+        return result;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+   
+  },
+
+  /**
+   * @returns Si la persona es encontrada se devuelve un `object` de la persona, de lo contrario se devuelve `false`
+   * @param {string} code - Es el id, codigo o numero de documento de la persona a buscar
+   */
+  findById: async (code) => {
+    try {
+      let personaFound;
+      const transactionResult = await database.Transaction(
+        db,
+        async () => {
+          const personaResult = await db.query(
+            "select * from personas where id = ? OR codigo = ? OR numero_documento = ? LIMIT 1",
+            [code,code,code]
+          );
+
+          if(personaResult.length>0){
+            personaFound = personaResult[0];
+          }
+          else{
+            personaFound = false;
+          }
+        }
+      );
+
+      if(transactionResult.errno || transactionResult instanceof Error){
+        throw transactionResult;
+      }
+      return personaFound;
+
     } catch (error) {
       return error;
     }
-    return roles !== undefined ? roles : transaction;
   },
 
+
+  updateProfilePicture: async(data)=>{
+    try {
+      
+    } catch (error) {
+      
+    }
+  },
   update: async (data) => {
     const { code, name } = data;
     let roles;
@@ -122,37 +232,6 @@ module.exports = {
       ? personas.errno
         ? data_roles
         : personas
-      : transaction;
-  },
-
-  findById: async (code) => {
-    let roles;
-    let data_roles;
-    let transaction;
-    try {
-      transaction = await database.Transaction(db, async () => {
-        roles = await db.query(
-          `SELECT id AS rol_id, nombre AS name	FROM roles WHERE id=?`,
-          [code]
-        );
-
-        if (!roles.errno) {
-          data_roles = roles.map((element) => {
-            return {
-              rol_id: element.rol_id,
-              name: element.name,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return roles !== undefined
-      ? !roles.errno
-        ? data_roles
-        : roles
       : transaction;
   },
 
