@@ -6,8 +6,8 @@ module.exports = () => {
   //rutas para zonas
   router.get("/distritos/all", distritoController.getAll);
   router.get("/distritos/all/:filter", distritoController.getAll);
-  router.get("/distritos/select", distritoController.getSelect);
-  router.get("/distritos/select/:filter", distritoController.getSelect);
+  router.get("/distritos/select/:zona", distritoController.getSelect);
+  router.get("/distritos/select/:zona/:filter", distritoController.getSelect);
   router.get("/distritos/:code", distritoController.getById);
   router.post("/distritos", distritoController.insertOne);
   router.put("/distritos", distritoController.updateOne);

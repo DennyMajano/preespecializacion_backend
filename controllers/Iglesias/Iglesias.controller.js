@@ -1,15 +1,23 @@
-const modelDistritos = require("../../models/Distritos/Distritos.model");
+const modelIglesias = require("../../models/Iglesias/Iglesias.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 
 module.exports = () => {
-  let distrito = {};
+  let iglesia = {};
 
-  distrito.insertOne = async (req, res) => {
+  iglesia.insertOne = async (req, res) => {
     const data = req.body;
     console.log(data);
     try {
-      if (!isUndefinedOrNull(data.nombre) && !isUndefinedOrNull(data.zona)) {
-        let result = await modelDistritos.create(data);
+      if (
+        !isUndefinedOrNull(data.nombre) &&
+        !isUndefinedOrNull(data.departamento) &&
+        !isUndefinedOrNull(data.municipio) &&
+        !isUndefinedOrNull(data.distrito) &&
+        !isUndefinedOrNull(data.tipo_iglesia) &&
+        !isUndefinedOrNull(data.zona)
+      ) {
+        let result = await modelIglesias.create(data);
+        console.log(result);
         if (result.errno) {
           res.status(500).json("Error de servidor");
         } else if (result.affectedRows > 0) {
@@ -24,16 +32,12 @@ module.exports = () => {
       console.log(error);
     }
   };
-  distrito.updateOne = async (req, res) => {
+  iglesia.updateOne = async (req, res) => {
     const data = req.body;
 
     try {
-      if (
-        !isUndefinedOrNull(data.code) &&
-        !isUndefinedOrNull(data.nombre) &&
-        !isUndefinedOrNull(data.zona)
-      ) {
-        let result = await modelDistritos.update(data);
+      if (!isUndefinedOrNull(data.code) && !isUndefinedOrNull(data.nombre)) {
+        let result = await modelIglesias.update(data);
         if (result.errno) {
           res.status(500).json("Error de servidor");
         } else if (result.affectedRows > 0) {
@@ -49,11 +53,11 @@ module.exports = () => {
     }
   };
 
-  distrito.getAll = async (req, res) => {
+  iglesia.getAll = async (req, res) => {
     const { filter } = req.params;
 
     try {
-      let result = await modelDistritos.findAll(filter);
+      let result = await modelIglesias.findAll(filter);
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
@@ -64,11 +68,11 @@ module.exports = () => {
       console.log(error);
     }
   };
-  distrito.getSelect = async (req, res) => {
-    const { filter, zona } = req.params;
+  iglesia.getSelect = async (req, res) => {
+    const { filter } = req.params;
     console.log(filter);
     try {
-      let result = await modelDistritos.findSelect(filter, zona);
+      let result = await modelIglesias.findSelect(filter);
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
@@ -79,11 +83,11 @@ module.exports = () => {
       console.log(error);
     }
   };
-  distrito.getById = async (req, res) => {
+  iglesia.getById = async (req, res) => {
     const { code } = req.params;
     console.log(code);
     try {
-      let result = await modelDistritos.findById(code);
+      let result = await modelIglesias.findById(code);
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
@@ -97,12 +101,12 @@ module.exports = () => {
     }
   };
 
-  distrito.DisableOrEnable = async (req, res) => {
+  iglesia.DisableOrEnable = async (req, res) => {
     const data = req.body;
     console.log(data);
     try {
       if (!isUndefinedOrNull(data.status) && !isUndefinedOrNull(data.code)) {
-        let result = await modelDistritos.disableOrEnable(data);
+        let result = await modelIglesias.disableOrEnable(data);
         if (result.errno) {
           res.status(500).json("Error de servidor");
         } else if (result.affectedRows === 1) {
@@ -117,5 +121,5 @@ module.exports = () => {
       console.log(error);
     }
   };
-  return distrito;
+  return iglesia;
 };
