@@ -7,9 +7,9 @@ module.exports = () => {
   //   router.get("/roles/all/:filter", personasController.getAll);
   router.post("/personas/create",FilesUpload.uploadSingle("usuarios/perfil","fotoPerfil"), personasController.insertOne);
   router.put("/personas/updateAvatar",FilesUpload.uploadSingle("usuarios/perfil","fotoPerfil"), personasController.updateAvatar);
-  router.get("/personas/select", personasController.getSelect);
-  router.get("/personas/select/:filter", personasController.getSelect);
-  router.get("/personas/:code", personasController.getById);
+  router.get("/persona/:code", personasController.getById);
+  router.get("/personas/select", personasController.find);
+  router.get("/personas/select/:filter", personasController.find);
 
   //   router.get("/roles/:code", personasController.getById);
   //   router.post("/roles", personasController.insertOne);

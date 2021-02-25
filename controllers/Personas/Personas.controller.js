@@ -69,6 +69,24 @@ module.exports = () => {
     }
   }
 
+  personas.find = async (req, res) => {
+    const { filter } = req.params;
+    console.log(filter);
+    try {
+      const result = await modelPersonas.find(filter);
+      console.log(result);
+      if (result.errno || result instanceof Error) {
+        throw result;
+      } else{
+        res.status(result.length > 0 ?200:404).json(result);
+      }
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+
   //-----------------
 
   personas.updateOne = async (req, res) => {
@@ -93,21 +111,7 @@ module.exports = () => {
     }
   };
 
-  personas.getAll = async (req, res) => {
-    const { filter } = req.params;
-    console.log(filter);
-    try {
-      let result = await modelPersonas.findAll(filter);
-      console.log(result);
-      if (result.errno) {
-        res.status(500).json("Error de servidor");
-      } else if (result.length >= 0) {
-        res.status(200).json(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
 
   personas.getSelect = async (req, res) => {
     const { filter } = req.params;

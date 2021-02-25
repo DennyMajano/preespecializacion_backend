@@ -117,6 +117,10 @@ module.exports = {
     }
   },
 
+  /**
+   * @returns Devuelve un `booleano` indicando si se actualizo o no la foto de perfil.
+   * @param {*} data - Datos sobre el usuario y el nuevo archivo guardado a actualizarse en el usuario.
+   */
   updateProfilePicture: async(data)=>{
     const {user, avatar} = data;
     try {
@@ -149,6 +153,46 @@ module.exports = {
       return error;
     }
   },
+  /**
+   * @returns Devuelve la lista de personas que cumplan con `filter`. Cuando no se pasa `filter` se devuelven todos sin filtrar.
+   * @param {string} filter - Opcional. Cadena a buscar en los campos de Personas. 
+   */
+  find: async (filter = "") => {
+    let personas;
+    try {
+      const transactionResult = await database.Transaction(
+        db, 
+        async () => {
+          if (filter != "") {
+            filter = filter.split(" ");
+
+            let query = `SELECT * FROM personas WHERE `;
+            for (let i = 0; i < filter.length; i++) {
+              query += 
+              `(nombres LIKE '%${filter[i]}%' OR apellidos LIKE '%${filter[i]}%' OR numero_documento LIKE '%${filter[i]}%' OR codigo LIKE '%${filter[i]}%' OR telefono LIKE '%${filter[i]}%') ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
+            }
+            console.log(query);
+            personas = await db.query(`${query} ORDER BY nombres ASC LIMIT 100`);
+            console.log(personas);
+          } else {
+            console.log("todos");
+            personas = await db.query(
+              `SELECT * FROM personas ORDER BY nombres ASC LIMIT 100`
+            );
+          }
+
+         
+      });
+      if(transactionResult.errno || transactionResult instanceof Error){
+        throw transactionResult;
+      }
+      return personas;
+    } catch (error) {
+      return error;
+    }
+
+  },
+  
   update: async (data) => {
     const { code, name } = data;
     let roles;
@@ -167,52 +211,7 @@ module.exports = {
     return roles !== undefined ? roles : transaction;
   },
 
-  findAll: async (filter = "") => {
-    let personas;
-    let transaction;
-    let data_roles;
-    try {
-      transaction = await database.Transaction(db, async () => {
-        if (filter != "") {
-          filter = filter.split(" ");
 
-          let query = `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(fecha_uac,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles WHERE`;
-
-          for (let i = 0; i < filter.length; i++) {
-            query += ` (nombre LIKE '%${filter[i]}%' OR id LIKE '%${
-              filter[i]
-            }%') ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
-          }
-          console.log(query);
-          personas = await db.query(`${query} ORDER BY nombre ASC LIMIT 100`);
-        } else {
-          personas = await db.query(
-            `SELECT id AS rol_id, nombre AS name, DATE_FORMAT(fecha_cr,"%W %d de %M del %Y, %I:%i %p") AS date,DATE_FORMAT(fecha_uac,"%W %d de %M del %Y, %I:%i %p") AS date_update, condicion AS status FROM roles ORDER BY nombre ASC LIMIT 100`
-          );
-        }
-
-        if (!personas.errno) {
-          data_roles = roles.map((element) => {
-            return {
-              rol_id: element.rol_id,
-              name: element.name,
-              date: element.date,
-              date_update: element.date_update,
-              status: element.status,
-            };
-          });
-        }
-      });
-    } catch (error) {
-      return error;
-    }
-
-    return roles !== undefined
-      ? !roles.errno
-        ? data_roles
-        : roles
-      : transaction;
-  },
 
   findSelect: async (filter = "") => {
     let personas;
