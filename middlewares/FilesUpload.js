@@ -65,13 +65,13 @@ module.exports ={
         try {
             const storage = multer.diskStorage(
                 {
-                    destination:  (req, file, callback) => {
+                    destination:  async (req, file, callback) => {
                         let folder;
                         if(isForUser)
-                            folder = path.join(process.env.PATH_USERS_FOLDER,getUserFolder(req.headers.authorization.split(" ")[1]),pathToSaveFile);
+                            folder = path.join(process.env.PATH_PUBLIC_FOLDER,process.env.PATH_USERS_FOLDER,getUserFolder(req.headers.authorization.split(" ")[1]),pathToSaveFile);
                         else
                             folder = path.join(process.env.PATH_PUBLIC_FOLDER,pathToSaveFile);
-                        fse.ensureDirSync(folder); //nos aseguramos que el directorio exista
+                        await fse.ensureDir(folder); //nos aseguramos que el directorio exista
                         callback(null, folder); //directorio donde se va guardar la imagen
                     }, 
                     filename: (req, file, callback) => {
@@ -115,13 +115,13 @@ module.exports ={
         try {
             const storage = multer.diskStorage(
                 {
-                    destination:  (req, file, callback) => {
+                    destination: async (req, file, callback) => {
                         let folder;
                         if(isForUser)
                             folder = path.join(process.env.PATH_USERS_FOLDER,getUserFolder(req.headers.authorization.split(" ")[1]),pathToSaveFile);
                         else
                             folder = path.join(process.env.PATH_PUBLIC_FOLDER,pathToSaveFile);
-                        fse.ensureDirSync(folder); //nos aseguramos que el directorio exista
+                        await fse.ensureDir(folder); //nos aseguramos que el directorio exista
                         callback(null, folder); //directorio donde se va guardar la imagen
                     }, 
                     filename: (req, file, callback) => {

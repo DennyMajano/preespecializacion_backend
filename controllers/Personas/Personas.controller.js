@@ -1,4 +1,5 @@
 const modelPersonas = require("../../models/Personas/Personas.model");
+const modelUsuarios = require("../../models/Usuarios/Usuarios.model")
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 const Encrytion = require("../../services/encrytion/Encrytion");
 
@@ -9,10 +10,14 @@ module.exports = () => {
     
     try {
       const data = req.body;
-      data.avatar = req.file?req.file.path:"";
+      data.avatar = req.file?req.file.path:"recursos/images/usuarios/profile_default.png";
       console.log(req.file);
       if (!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
-        let result = await modelPersonas.create(data);
+        const result = await modelPersonas.create(
+          data,
+          async (userdata) => {
+            return await modelUsuarios.create(userdata);
+        });
         res.status(200).json({result});
       } else {
         res.status(400).json("Faltan datos para realizar el proceso");

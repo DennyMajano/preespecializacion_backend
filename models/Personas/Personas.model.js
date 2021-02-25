@@ -3,11 +3,14 @@ const db = require("../../config/conexion");
 const GeneratorCode = require("../../helpers/GeneratorCode");
 const fse = require("fs-extra");
 module.exports = {
+
+
   /**
    * @returns Si la persona se registra exitosamente devuelve el `id` de la persona registrada, en caso contrario devuelve `false`
    * @param {*} PersonaData - Recibe todos los datos de la persona nueva a registrarse.
+   * @param {*} callback- Callback a ejecutarse cuando se registre usuario;
    */
-  create: async (PersonaData) => {
+  create: async (PersonaData, callback) => {
     const { 
       nombre, 
       apellido, 
@@ -27,6 +30,11 @@ module.exports = {
       estadoCivil,
       profesion,
       direccion,
+      createUser,
+      iglesia,
+      correo_electronico,
+      rol,
+      alias
 
     } = PersonaData;
 
@@ -64,7 +72,28 @@ module.exports = {
           );
             console.log(personaResult);
           if(personaResult.affectedRows > 0){
-            result = personaResult.insertId;
+            console.log("-------------------ID OF PERSON");
+            console.log(personaResult);
+            if(createUser == true){
+              const userResult = await callback({
+                persona: newPersonaCode,
+                iglesia,
+                correo_electronico,
+                rol,
+                alias
+              });
+
+              if(userResult.affectedRows > 0){
+                result = personaResult.insertId;
+              }
+              else{
+                throw new Error("No se pudo crear el usuario");
+              }
+            }
+            else{
+              result = personaResult.insertId;
+            }
+
           }
           else{
             result = false;
