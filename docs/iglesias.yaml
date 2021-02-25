@@ -1,0 +1,361 @@
+paths:
+  /iglesias: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Crear una iglesia
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear una iglesia
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/create_iglesia"
+      responses: # server responsess
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    #Update de Iglesias
+    put: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Actualizar una iglesia
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Update # name of request, can be any name
+          description: Esto es para actualizar una iglesia
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/update_iglesia"
+      responses: # server responses
+        200:
+          description: se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    #Update de Iglesias
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Activar y desactivar una iglesia
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: delete # name of request, can be any name
+          description: json para desactivar o activar el distrito
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete_iglesia"
+      responses: # server responses
+        200:
+          description: se activo o desactivo con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+  #get de Iglesias por id
+  /iglesias/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene una iglesia
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id de la iglesia o el codigo
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de Iglesias detalle
+  /iglesias/detalle/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene una iglesia para mostra el detalle
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id de la iglesia o el codigo
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de Iglesias por id
+  /iglesias/informe/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene el informe de un iglesia
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id de la iglesia o el codigo
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+    #get de Iglesias
+  /iglesias/select:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene todos los Iglesias para mostrarlas en un select
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: zona # name of request, can be any name
+      #     description: codigo de la zona
+      #     required: false # can also be true depending on user preference
+      #     example: ZN-422262260
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de Iglesias padres
+  /iglesias/select/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: filter
+          in: path
+          description: Valor a buscar nombre del distrito
+          required: false
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /iglesias/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene todas las Iglesias
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los Iglesias principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de Iglesias padres
+  /iglesias/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene los Iglesias  que coincidan con el filtro de búsqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre o codigo del distrito
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /iglesias/visor/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene todas las Iglesias con condicion =1 para el visor
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los Iglesias principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de Iglesias padres
+  /iglesias/visor/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene los Iglesias  que coincidan con el filtro de búsqueda con condicion=1 para el visor
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre o codigo del distrito
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+definitions: # Schema defination for request body
+  create_iglesia:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: nombre del distrito
+        example: Distrito 1
+      telefono:
+        type: string
+        description: número de teléfono de la iglesia
+        example: 7777-8888
+      departamento:
+        type: integer
+        description: id del departamento
+        example: 14
+      municipio:
+        type: integer
+        description: id del municipio
+        example: 251
+      canton:
+        type: integer
+        description: cantón de la iglesia en caso de estar en cantón
+        example: 1452
+      direccion:
+        type: string
+        description: direccion de la iglesia
+        example: B° el centro, San Antonio
+      src_google:
+        type: string
+        description: url mapa google para mostrar embeded en iframe
+        example: https://google.com/mapa
+      distrito:
+        type: string
+        description: código del distrito
+        example: DTTO-983765756
+      fecha_ordenamiento:
+        type: date
+        description: fecha cuando fue organizada como iglesia
+        example: 2009-02-01
+      tipo_iglesia:
+        type: integer
+        description: id de tipo iglesia
+        example: 1
+      zona:
+        type: string
+        description: código de la zona
+        example: ZN-422262260
+  update_iglesia:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id de la zona
+        example: 1
+      nombre:
+        type: string
+        description: nombre del distrito
+        example: Distrito 1
+      telefono:
+        type: string
+        description: número de teléfono de la iglesia
+        example: 7777-8888
+      departamento:
+        type: integer
+        description: id del departamento
+        example: 14
+      municipio:
+        type: integer
+        description: id del municipio
+        example: 251
+      canton:
+        type: integer
+        description: cantón de la iglesia en caso de estar en cantón
+        example: 1452
+      direccion:
+        type: string
+        description: direccion de la iglesia
+        example: B° el centro, San Antonio
+      src_google:
+        type: string
+        description: url mapa google para mostrar embeded en iframe
+        example: https://google.com/mapa
+      distrito:
+        type: string
+        description: código del distrito
+        example: DTTO-983765756
+      fecha_ordenamiento:
+        type: date
+        description: fecha cuando fue organizada como iglesia
+        example: 2009-02-01
+      tipo_iglesia:
+        type: integer
+        description: id de tipo iglesia
+        example: 1
+      zona:
+        type: string
+        description: código de la zona
+        example: ZN-422262260
+  delete_iglesia:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id del distrito
+      status:
+        type: integer
+        description: 1 si desea activar 0 si desactivar
