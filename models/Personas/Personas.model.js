@@ -1,7 +1,7 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
 const GeneratorCode = require("../../helpers/GeneratorCode");
-
+const fse = require("fs-extra");
 module.exports = {
   /**
    * @returns Si la persona se registra exitosamente devuelve el `id` de la persona registrada, en caso contrario devuelve `false`
@@ -117,12 +117,36 @@ module.exports = {
     }
   },
 
-
   updateProfilePicture: async(data)=>{
+    const {user, avatar} = data;
     try {
+      let result;
+      console.log(user.avatar);
+      await fse.remove(user.avatar)
+
+      const transactionResult = await database.Transaction(
+        db,
+        async ()=>{
+          console.log("xxxxxxxxxxxxxxxxxxxxxxxxx");
+          console.log(user.id);
+          const updateAvatarResult = await db.query(
+            "UPDATE `personas` SET `avatar`= ?  WHERE `id`=?",
+            [avatar.path, user.id]
+          );
+          console.log("-------------------aaa");
+          console.log(updateAvatarResult);
+          result = updateAvatarResult.affectedRows > 0;
+        }
+      );
       
+      if(transactionResult.errno || transactionResult instanceof Error){
+        throw Error;
+      }
+      console.log("--------------------result");
+      console.log(result);
+      return result;
     } catch (error) {
-      
+      return error;
     }
   },
   update: async (data) => {

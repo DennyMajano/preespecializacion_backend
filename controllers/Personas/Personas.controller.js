@@ -1,6 +1,7 @@
 const modelPersonas = require("../../models/Personas/Personas.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
 const Encrytion = require("../../services/encrytion/Encrytion");
+
 module.exports = () => {
   let personas = {};
 
@@ -39,20 +40,32 @@ module.exports = () => {
     }
   };
 
-  personas.updateAvatar = (req, res) => {
+  personas.updateAvatar = async (req, res) => {
     try {
       if(!isUndefinedOrNull( req.body.userId) && !isUndefinedOrNull(req.file)){
 
         const data = req.body;
-        data.avatar = req.file.path;
-
-        const person = modelPersonas.findById(data.userId);
-
-        
+        data.avatar = req.file;
+        data.user = await modelPersonas.findById(req.body.userId);
+        console.log(data);
+        const result = await modelPersonas.updateProfilePicture(data);
+        console.log(result);
+        if(result.errno || result instanceof Error){
+          console.log("ERRO");
+          throw result;
+        }
+        else{
+          console.log("ERRO1");
+          res.status(200).json({estado: result});
+        }
+      }
+      else{
+        res.status(400).json("Faltan datos");
       }
 
     } catch (error) {
-      
+      console.log(error);
+      res.status(500).json("Error de servidor");
     }
   }
 
