@@ -6,10 +6,20 @@ module.exports = () => {
   //  router.get("/roles/all", personasController.getAll);
   //   router.get("/roles/all/:filter", personasController.getAll);
   router.post("/personas/create",FilesUpload.uploadSingle(process.env.PATH_USERS_FOLDER_PROFILES_IMAGES,"fotoPerfil"), personasController.insertOne);
+  router.put("/personas/update", personasController.update);
   router.put("/personas/updateAvatar",FilesUpload.uploadSingle(process.env.PATH_USERS_FOLDER_PROFILES_IMAGES,"fotoPerfil"), personasController.updateAvatar);
   router.get("/persona/:code", personasController.getById);
-  router.get("/personas/select", personasController.find);
-  router.get("/personas/select/:filter", personasController.find);
+  router.get("/personas/find", personasController.findAll);
+  router.get("/personas/find/:filter", personasController.findAll);
+  router.get("/personas/select", personasController.findSelect);
+  router.get("/personas/select/:filter", personasController.findSelect);
+  router.get("/personas/findok", personasController.findAllInOk);
+  router.get("/personas/findok/:filter", personasController.findAllInOk);
+  router.get("/personas/phone/:phoneNumber", personasController.findPhoneNumber);
+  router.get("/personas/document/:documentNumber", personasController.findDocumentNumber);
+  router.put("/personas/enable", personasController.disableOrEnable);
+  router.put("/personas/died", personasController.setDied);
+  
 
   //   router.get("/roles/:code", personasController.getById);
   //   router.post("/roles", personasController.insertOne);

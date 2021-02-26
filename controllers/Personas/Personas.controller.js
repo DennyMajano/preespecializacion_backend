@@ -27,7 +27,29 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   };
+  personas.update = async (req, res) => {
+    
+    try {
+      const data = req.body;
+      console.log(data);
+      if (!isUndefinedOrNull(data.code) &&!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
+        const result = await modelPersonas.update(data);
+        
+        if(result.errno || result instanceof Error || result.affectedRows == 0){
+          throw result;
+        }
+        else{
+          res.status(200).json("Datos actualizados");
+        }
 
+      } else {
+        res.status(400).json("Faltan datos");
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
   personas.getById = async (req, res) => {
     const { code } = req.params;
     console.log(code);
@@ -74,11 +96,11 @@ module.exports = () => {
     }
   }
 
-  personas.find = async (req, res) => {
+  personas.findAll = async (req, res) => {
     const { filter } = req.params;
     console.log(filter);
     try {
-      const result = await modelPersonas.find(filter);
+      const result = await modelPersonas.findAll(filter);
       console.log(result);
       if (result.errno || result instanceof Error) {
         throw result;
@@ -91,7 +113,131 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   };
+  personas.findPhoneNumber = async(req, res) => {
+    try {
+      const {phoneNumber} = req.params;
+      const result = await modelPersonas.findPhoneNumber(phoneNumber);
+      console.log(result);
+      if(result.errno || result instanceof Error){
+        throw result;
+      }
+      else{
+        res.status(200).json({
+          estado: result
+        });;
+      }
+      
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+  personas.findDocumentNumber = async(req, res) => {
+    try {
+      const { documentNumber} = req.params;
+      const result = await modelPersonas.findDocumentNumber(documentNumber);
+      console.log(result);
+      if(result.errno || result instanceof Error){
+        throw result;
+      }
+      else{
+        res.status(200).json({
+          estado: result
+        });;
+      }
+      
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+  personas.disableOrEnable = async(req, res) => {
+    try {
+      const data = req.body;
 
+      if(!isUndefinedOrNull(data.status) && !isUndefinedOrNull(data.code)){
+        const result = await modelPersonas.disableOrEnable(data);
+        console.log(result);
+        if(result.errno || result instanceof Error){
+          throw result;
+        }
+        else if(result){
+          res.status(201).json("Registro modificado");;
+        }
+        else{
+          throw  new Error("No se pudo habilitar o deshabilitar el registro");
+        }
+      }
+      else{
+        res.status(400).json("Faltan datos");
+      }
+      
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+  personas.setDied = async(req, res) => {
+    try {
+      const data = req.body;
+
+      if(!isUndefinedOrNull(data.date) && !isUndefinedOrNull(data.code)){
+        console.log(data);
+        const result = await modelPersonas.setDied(data);
+        console.log(result);
+        if(result.errno || result instanceof Error){
+          throw result;
+        }
+        else if(result){
+          res.status(201).json("Registro modificado");;
+        }
+        else{
+          throw  new Error("No se pudo habilitar o deshabilitar el registro");
+        }
+      }
+      else{
+        res.status(400).json("Faltan datos");
+      }
+      
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+  personas.findAllInOk = async (req, res) => {
+    const { filter } = req.params;
+    console.log(filter);
+    try {
+      const result = await modelPersonas.findAllInOk(filter);
+      console.log(result);
+      if (result.errno || result instanceof Error) {
+        throw result;
+      } else{
+        res.status(result.length > 0 ?200:404).json(result);
+      }
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
+  personas.findSelect = async (req, res) => {
+    const { filter } = req.params;
+    console.log(filter);
+    try {
+      const result = await modelPersonas.findSelect(filter);
+      console.log(result);
+      if (result.errno || result instanceof Error) {
+        throw result;
+      } else{
+        res.status(result.length > 0 ?200:404).json(result);
+      }
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
   //-----------------
 
   personas.updateOne = async (req, res) => {
