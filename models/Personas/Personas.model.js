@@ -2,6 +2,7 @@ const database = require("../../config/database.async");
 const db = require("../../config/conexion");
 const GeneratorCode = require("../../helpers/GeneratorCode");
 const fse = require("fs-extra");
+const isUndefinedOrNull = require("validate.io-undefined-or-null/lib");
 module.exports = {
 
 
@@ -192,7 +193,8 @@ module.exports = {
       const transactionResult = await database.Transaction(
         db, 
         async () => {
-          if (filter != "") {
+          if (filter != "" || !isUndefinedOrNull(filter)) {
+            console.log("_-------------------------AKI");
             filter = filter.split(" ");
 
             let query = `SELECT * FROM personas WHERE `;
@@ -236,7 +238,7 @@ module.exports = {
             "select telefono from personas where telefono = ?",
             [phoneNumber]
           );
-          result =  queryResult.length > 0;
+          result =  queryResult
         }
       );
 
@@ -265,7 +267,7 @@ module.exports = {
             "select numero_documento from personas where numero_documento = ?",
             [documentNumber]
           );
-          result =  queryResult.length > 0;
+          result =  queryResult;
         }
       );
 
@@ -397,7 +399,8 @@ module.exports = {
             let query = "SELECT id, codigo, concat(nombres, ' ', apellidos) as nombre FROM `personas` WHERE condicion = 1 AND estado = 1 ";
             for (let i = 0; i < filter.length; i++) {
               query += 
-              `AND (nombre LIKE '%${filter[i]}%')`;
+              `AND (nombres LIKE '%${filter[i]}%'
+              OR apellidos LIKE '%${filter[i]}%')`;
             }
             console.log(query);
             personas = await db.query(`${query} ORDER BY nombre ASC LIMIT 50`);

@@ -122,8 +122,8 @@ module.exports = () => {
         throw result;
       }
       else{
-        res.status(200).json({
-          estado: result
+        res.status(result.length>0?200:404).json({
+          estado: result.length>0
         });;
       }
       
@@ -141,8 +141,8 @@ module.exports = () => {
         throw result;
       }
       else{
-        res.status(200).json({
-          estado: result
+        res.status(result.length>0?200:404).json({
+          estado: result.length>0
         });;
       }
       
