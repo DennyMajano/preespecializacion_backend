@@ -139,7 +139,43 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
+  findAllProfesiones: async (filter = "") => {
+    let data;
+    let transaction;
+    let data_final;
 
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, nombre FROM profesiones WHERE`;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` (nombre LIKE '%${filter[i]}%')  ${
+              i + 1 - filter.length >= 0 ? "" : "AND"
+            }`;
+          }
+
+          data = await db.query(`${query} LIMIT 20`);
+        } else {
+          data = await db.query(`SELECT id, nombre FROM profesiones LIMIT 20`);
+        }
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: element.id,
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
   findAllEstadoCivil: async () => {
     let data;
     let transaction;

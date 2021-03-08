@@ -124,12 +124,96 @@ module.exports = {
         db,
         async () => {
           const personaResult = await db.query(
-            "select * from personas where id = ? OR codigo = ? OR numero_documento = ? LIMIT 1",
+            `SELECT id, codigo, nombres, apellidos, telefono, 
+            (SELECT valor from miscelanea where grupo = "sexo_persona" AND code = personas.sexo ) as sexo,
+            (SELECT code from miscelanea where grupo = "sexo_persona" AND code = personas.sexo ) as sexo_code,
+            (SELECT nacionalidad from nacionalidades WHERE id = personas.nacionalidad) as nacionalidad, 
+            (SELECT id from nacionalidades  WHERE id = personas.nacionalidad) as nacionalidad_id,
+             DATE_FORMAT(fecha_nacimiento,'%Y-%m-%d') AS fecha_nacimiento, 
+            (SELECT nombre from departamentos where id = personas.departemento_nacimiento) as departemento_nacimiento,
+            (SELECT id from departamentos  where id = personas.departemento_nacimiento) as departemento_nacimiento_id, 
+            (SELECT nombre from municipios  where id  = personas.municipio_nacimiento) as municipio_nacimiento,
+            (SELECT id from municipios where id = personas.municipio_nacimiento) as municipio_nacimiento_id,
+            (SELECT nombre from cantones where id = personas.canton_nacimiento) as canton_nacimiento, 
+            (SELECT id from cantones where id = personas.canton_nacimiento) as canton_nacimiento_id,
+            (SELECT nombre from departamentos where id = personas.departamento_residencia) as departamento_residencia,
+            (SELECT id from departamentos where id = personas.departamento_residencia) as departamento_residencia_id, 
+            (SELECT nombre from municipios where id = personas.municipio_residencia) as municipio_residencia,
+            (SELECT id from municipios where id = personas.municipio_residencia) as municipio_residencia_id,
+            (SELECT nombre from cantones where id = personas.canton_residencia) as canton_residencia, 
+            (SELECT id from cantones  where id = personas.canton_residencia) as canton_residencia_id, 
+            (SELECT nombre from tipos_documentos where id = personas.tipo_documento) as tipo_documento, 
+            (SELECT id from tipos_documentos where id = personas.tipo_documento) as tipo_documento_id, 
+            numero_documento, 
+            (SELECT nombre FROM estados_civiles WHERE id = personas.estado_civil) as estado_civil, 
+            (SELECT id FROM estados_civiles WHERE id = personas.estado_civil) as estado_civil_id,
+            (SELECT nombre from profesiones where id = personas.profesion_oficio) as profesion_oficio,
+            (SELECT id from profesiones where id = personas.profesion_oficio)as profesion_oficio_id,
+            direccion, estado, fecha_fallecimiento, condicion, fecha_cr, fecha_uac FROM personas WHERE (personas.id = ? OR personas.codigo = ? OR personas.numero_documento = ?)`,
             [code,code,code]
           );
 
           if(personaResult.length>0){
-            personaFound = personaResult[0];
+
+            personaFound = {
+              "id": personaResult[0].id,
+              "codigo": personaResult[0].codigo,
+              "nombres":personaResult[0].nombres,
+              "apellidos": personaResult[0].apellidos,
+              "telefono": personaResult[0].telefono,
+              "sexo": {
+                label: personaResult[0].sexo,
+                value: personaResult[0].sexo_code
+              },
+              "nacionalidad": {
+                label: personaResult[0].nacionalidad,
+                value: personaResult[0].nacionalidad_id
+              },
+              "fecha_nacimiento":personaResult[0].fecha_nacimiento,
+              "departemento_nacimiento": {
+                label: personaResult[0].departemento_nacimiento,
+                value: personaResult[0].departemento_nacimiento_id
+              },
+              "municipio_nacimiento": {
+                label:personaResult[0].municipio_nacimiento,
+                value:personaResult[0].municipio_nacimiento_id
+              },
+              "canton_nacimiento": {
+                label:personaResult[0].canton_nacimiento,
+                value: personaResult[0].canton_nacimiento_id
+              },
+              "departamento_residencia": {
+                label:personaResult[0].departamento_residencia,
+                value: personaResult[0].departamento_residencia_id
+              },
+              "municipio_residencia": {
+                label:personaResult[0].municipio_residencia,
+                value: personaResult[0].municipio_residencia_id
+              },
+              "canton_residencia": {
+                label:personaResult[0].canton_residencia,
+                value: personaResult[0].canton_residencia_id
+              },
+              "tipo_documento": {
+                label:personaResult[0].tipo_documento,
+                value: personaResult[0].tipo_documento_id
+              },
+              "numero_documento": personaResult[0].numero_documento,
+              "estado_civil": {
+                label:personaResult[0].estado_civil,
+                value: personaResult[0].estado_civil_id
+              },
+              "profesion_oficio": {
+                label:personaResult[0].profesion_oficio,
+                value: personaResult[0].profesion_oficio_id
+              },
+              "direccion": personaResult[0].direccion,
+              "estado": personaResult[0].estado,
+              "fecha_fallecimiento": personaResult[0].fechaNacimiento,
+              "condicion": personaResult[0].condicion,
+              "fecha_cr": personaResult[0].fecha_cr,
+              "fecha_uac": personaResult[0].fecha_uac
+            }
           }
           else{
             personaFound = false;
@@ -197,7 +281,7 @@ module.exports = {
             console.log("_-------------------------AKI");
             filter = filter.split(" ");
 
-            let query = `SELECT * FROM personas WHERE `;
+            let query = `SELECT id, codigo, nombres, apellidos, telefono, condicion, estado, (SELECT id from usuarios WHERE usuarios.persona = personas.codigo) as userId FROM personas WHERE `;
             for (let i = 0; i < filter.length; i++) {
               query += 
               `(nombres LIKE '%${filter[i]}%' OR apellidos LIKE '%${filter[i]}%' OR numero_documento LIKE '%${filter[i]}%' OR codigo LIKE '%${filter[i]}%' OR telefono LIKE '%${filter[i]}%') ${i + 1 - filter.length >= 0 ? "" : "AND"}`;

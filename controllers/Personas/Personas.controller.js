@@ -10,6 +10,7 @@ module.exports = () => {
     
     try {
       const data = req.body;
+      console.log(data);
       data.avatar = req.file?req.file.path:"recursos/images/usuarios/profile_default.png";
       console.log(req.file);
       if (!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
@@ -18,7 +19,13 @@ module.exports = () => {
           async (userdata) => {
             return await modelUsuarios.create(userdata);
         });
-        res.status(200).json({result});
+        if(result.errno){
+          throw result;
+        }
+        else{
+          res.status(200).json({result});
+        }
+       
       } else {
         res.status(400).json("Faltan datos para realizar el proceso");
       }
@@ -31,6 +38,7 @@ module.exports = () => {
     
     try {
       const data = req.body;
+      console.log("---------------------------------------------------------------");
       console.log(data);
       if (!isUndefinedOrNull(data.code) &&!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
         const result = await modelPersonas.update(data);

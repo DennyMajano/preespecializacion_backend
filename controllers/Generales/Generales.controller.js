@@ -80,6 +80,21 @@ module.exports = () => {
       console.log(error);
     }
   };
+  generales.getSelectProfesiones = async (req, res) => {
+    const { filter } = req.params;
+
+    try {
+      let result = await modelGenerales.findAllProfesiones(filter);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   generales.getSelectTipoIglesia = async (req, res) => {
 
     try {

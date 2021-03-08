@@ -57,7 +57,14 @@ module.exports = () => {
     "/generales/tipo_iglesia",
     generalesController.getSelectTipoIglesia
   );
-
+  router.get(
+    "/generales/profesiones",
+    generalesController.getSelectProfesiones
+  );
+  router.get(
+    "/generales/profesiones/:filter",
+    generalesController.getSelectProfesiones
+  );
   // router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
   // router.get("/cargos/all/:filter", generalesController.getAll);
   // router.get("/cargos/select", generalesController.getSelect);
