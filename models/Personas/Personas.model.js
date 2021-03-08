@@ -124,7 +124,7 @@ module.exports = {
         db,
         async () => {
           const personaResult = await db.query(
-            `SELECT id, codigo, nombres, apellidos, telefono, 
+            `SELECT id,avatar, codigo, nombres, apellidos, telefono, 
             (SELECT valor from miscelanea where grupo = "sexo_persona" AND code = personas.sexo ) as sexo,
             (SELECT code from miscelanea where grupo = "sexo_persona" AND code = personas.sexo ) as sexo_code,
             (SELECT nacionalidad from nacionalidades WHERE id = personas.nacionalidad) as nacionalidad, 
@@ -157,6 +157,7 @@ module.exports = {
 
             personaFound = {
               "id": personaResult[0].id,
+              "avatar": personaResult[0].avatar,
               "codigo": personaResult[0].codigo,
               "nombres":personaResult[0].nombres,
               "apellidos": personaResult[0].apellidos,
@@ -239,14 +240,12 @@ module.exports = {
     const {user, avatar} = data;
     try {
       let result;
-      console.log(user.avatar);
-      await fse.remove(user.avatar)
+      if(!user.avatar.includes("profile_default.png"))
+        await fse.remove(user.avatar)
 
       const transactionResult = await database.Transaction(
         db,
         async ()=>{
-          console.log("xxxxxxxxxxxxxxxxxxxxxxxxx");
-          console.log(user.id);
           const updateAvatarResult = await db.query(
             "UPDATE `personas` SET `avatar`= ?  WHERE `id`=?",
             [avatar.path, user.id]

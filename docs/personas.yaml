@@ -138,7 +138,7 @@ paths:
     get:
       tags: # Tag property
         - Personas # Value of the tag
-      summary: Actualizar un registro de persona
+      summary: recupera a una persona por su codigo, id, numero de documento
       produces:
         - application/json
       parameters: # request parameters
@@ -157,7 +157,7 @@ paths:
           description: No encontrado
  
   /personas/avatar:
-    put: # endpoint request type (put request)
+    post: # endpoint request type (put request)
       tags: # Tag property
         - Personas # Value of the tag
       summary: Actualizar la fotografía de perfil de una persona
@@ -304,7 +304,7 @@ paths:
     get:
       tags: # Tag property
         - Personas # Value of the tag
-      summary: Recupera todas las personas activas del sistema (vivas y habilitadas) que cumplan el filtro
+      summary: Verifica si el numero de telefono existe
       produces:
         - application/json
       parameters: # request parameters
@@ -326,7 +326,7 @@ paths:
     get:
       tags: # Tag property
         - Personas # Value of the tag
-      summary: Recupera todas las personas activas del sistema (vivas y habilitadas) que cumplan el filtro
+      summary: Verifica si el numero de documento ya existe
       produces:
         - application/json
       parameters: # request parameters
