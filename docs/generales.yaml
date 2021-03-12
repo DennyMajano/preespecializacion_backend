@@ -234,4 +234,24 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código                                                     
+          description: Error de servidor ya sea por problemas de base de datos o logica en código  
+
+  #get de tipo_informe
+  /generales/tipo_informe:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipo de informes
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name:  # name of request, can be any name
+      #     description: Colocar id del departamento
+      #     required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código                                                            
