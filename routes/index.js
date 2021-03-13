@@ -9,6 +9,7 @@ const personasRouter = require("./Personas/Personas.router")();
 const zonasRouter = require("./Zonas/Zonas.router")();
 const distritosRouter = require("./Distritos/Distritos.router")();
 const iglesiasRouter = require("./Iglesias/Iglesia.router")();
+const maestroInformeRouter = require("./MaestroInforme/MaestroInforme.router")();
 
 module.exports = function (app) {
   //rutas configuracion
@@ -22,6 +23,7 @@ module.exports = function (app) {
   app.use("/api", zonasRouter);
   app.use("/api", distritosRouter);
   app.use("/api", iglesiasRouter);
+  app.use("/api", maestroInformeRouter);
 
   //Rutas de prueba
   app.use("/api", testRoutes);
