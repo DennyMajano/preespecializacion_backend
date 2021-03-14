@@ -4,17 +4,13 @@ const UID = require("../../helpers/UID");
 module.exports = {
   create: async (data) => {
     const { nombre, tipo_informe } = data;
-    let maestro_informe
+    let maestro_informe;
     let transaction;
     try {
       transaction = await database.Transaction(db, async () => {
         maestro_informe = await db.query(
           `INSERT INTO maestro_de_informes(identificador,nombre,tipo_informe) VALUES (?,?,?)`,
-          [
-            UID(),
-            nombre,
-            tipo_informe,
-          ]
+          [UID(), nombre, tipo_informe]
         );
       });
     } catch (error) {
@@ -56,11 +52,9 @@ module.exports = {
           let query = `SELECT MI.id, MI.identificador,MI.nombre,TI.nombre AS tipo_informe, MI.condicion FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
-            query += ` (MI.nombre LIKE '%${
+            query += ` (MI.nombre LIKE '%${filter[i]}%' OR TI.nombre LIKE '%${
               filter[i]
-            }%' OR TI.nombre LIKE '%${filter[i]}%'   )  ${
-              i + 1 - filter.length >= 0 ? "" : "AND"
-            }`;
+            }%'   )  ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
           }
 
           data_out = await db.query(`${query} LIMIT 100`);
@@ -148,8 +142,10 @@ module.exports = {
             return {
               id: element.id,
               nombre: element.nombre,
-              tipo_id: element.tipo_id,
-              tipo_informe: element.tipo_informe,
+              tipo_informe: {
+                label: element.tipo_informe,
+                value: element.tipo_id,
+              },
             };
           });
         }
