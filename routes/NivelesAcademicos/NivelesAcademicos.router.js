@@ -3,7 +3,7 @@ module.exports = () => {
     const router = express.Router();
     const nivelAcademicoController = require("../../controllers/NivelesAcademicos/NivelesAcademicos.controller")();
   
-    //rutas para Maestro_de_informes
+    //rutas para Niveles Academicos Pastorales
     router.get("/nivel_academico/all", nivelAcademicoController.getAll);
     router.get("/nivel_academico/all/:filter", nivelAcademicoController.getAll);
     router.get("/nivel_academico/select", nivelAcademicoController.getSelect);
