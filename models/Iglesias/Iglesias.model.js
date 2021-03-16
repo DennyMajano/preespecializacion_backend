@@ -293,7 +293,6 @@ module.exports = {
                     }
                   : "",
               direccion: element.direccion,
-              ruta_mapa: element.src_google,
               distrito:
                 element.distrito_codigo !== null
                   ? {
