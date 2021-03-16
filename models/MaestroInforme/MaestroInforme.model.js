@@ -126,6 +126,49 @@ module.exports = {
         : maestro_informe
       : transaction;
   },
+
+  findSelectTipo: async (filter = "", tipo) => {
+    let maestro_informe;
+    let transaction;
+    let data_out;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, nombre FROM maestro_de_informes WHERE condicion=1 AND tipo_informe=?`;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` AND (nombre LIKE '%${filter[i]}%')`;
+          }
+
+          maestro_informe = await db.query(`${query} LIMIT 50`, [tipo]);
+        } else {
+          maestro_informe = await db.query(
+            `SELECT id, nombre FROM maestro_de_informes WHERE condicion=1 AND tipo_informe=? LIMIT 50`,
+            [tipo]
+          );
+        }
+        if (!maestro_informe.errno) {
+          data_out = maestro_informe.map((element) => {
+            return {
+              id: element.id,
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return maestro_informe !== undefined
+      ? !maestro_informe.errno
+        ? data_out
+        : maestro_informe
+      : transaction;
+  },
   findById: async (code) => {
     let maestro_informe;
     let transaction;

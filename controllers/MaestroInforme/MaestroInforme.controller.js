@@ -8,7 +8,10 @@ module.exports = () => {
     const data = req.body;
     console.log(data);
     try {
-      if (!isUndefinedOrNull(data.nombre) && !isUndefinedOrNull(data.tipo_informe)) {
+      if (
+        !isUndefinedOrNull(data.nombre) &&
+        !isUndefinedOrNull(data.tipo_informe)
+      ) {
         let result = await modelMaestro.create(data);
         if (result.errno) {
           res.status(500).json("Error de servidor");
@@ -69,6 +72,21 @@ module.exports = () => {
     console.log(filter);
     try {
       let result = await modelMaestro.findSelect(filter);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  maestro_informe.getSelectTipo = async (req, res) => {
+    const { filter, tipo } = req.params;
+    console.log(filter);
+    try {
+      let result = await modelMaestro.findSelectTipo(filter, tipo);
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");

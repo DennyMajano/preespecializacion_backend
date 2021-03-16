@@ -123,6 +123,53 @@ paths:
           description: Datos consultados con éxito
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get select de maestro_de_informe
+  /maestro_informe/select/tipo/{tipo}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene todos los informes para mostrarlos en un select por tipo de informe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: tipo
+          in: path
+          description: "tipo informe"
+          required: true
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get filter de maestro_de_informe          
+  /maestro_informe/select/tipo/{tipo}/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: tipo
+          in: path
+          description: "tipo informe"
+          required: true
+          type: string
+        - name: filter
+          in: path
+          description: "Nombre del departamento para filtro de busqueda"
+          required: true
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
   #get all de maestro_de_informe   
   /maestro_informe/all:
     get: # endpoint request type (put request)
