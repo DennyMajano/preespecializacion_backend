@@ -119,7 +119,7 @@ module.exports = {
           data_out = await db.query(`${query} LIMIT 100`);
         } else {
           data_out = await db.query(
-            `SELECT I.id, I.codigo, I.nombre, I.telefono,  D.nombre AS departamento, M.nombre AS municipio, DTTO.nombre AS distrito, DATE_FORMAT(I.fecha_ordenamiento, '%d/%m/%Y') AS fecha_ordenamiento, TI.nombre AS tipo_iglesia, Z.nombre AS zona, DATE_FORMAT(I.fecha_cr, '%d/%m/%Y %r') AS fecha_registro,DATE_FORMAT(I.fecha_uac, '%d/%m/%Y %r') AS fecha_actualizacion FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id  LIMIT 100`
+            `SELECT I.id, I.codigo, I.nombre, I.telefono,  D.nombre AS departamento, M.nombre AS municipio, DTTO.nombre AS distrito, DATE_FORMAT(I.fecha_ordenamiento, '%d/%m/%Y') AS fecha_ordenamiento, TI.nombre AS tipo_iglesia, Z.nombre AS zona, DATE_FORMAT(I.fecha_cr, '%d/%m/%Y %r') AS fecha_registro,DATE_FORMAT(I.fecha_uac, '%d/%m/%Y %r') AS fecha_actualizacion, I.condicion FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id  LIMIT 100`
           );
         }
         if (!data_out.errno) {
@@ -269,6 +269,8 @@ module.exports = {
             return {
               codigo: element.codigo,
               telefono: element.telefono,
+              nombre: element.nombre,
+              src_google: element.src_google,
               departamento:
                 element.departamento_id !== null
                   ? {
@@ -306,7 +308,7 @@ module.exports = {
                   ? {
                       label: element.zona_nombre,
                       value: element.zona_id,
-                      codgio: element.zona_codigo,
+                      codigo: element.zona_codigo,
                     }
                   : "",
               tipo_iglesia:
