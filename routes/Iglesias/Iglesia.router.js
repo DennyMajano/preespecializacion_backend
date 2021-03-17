@@ -1,8 +1,10 @@
+const IglesiasReportesController = require("../../controllers/Iglesias/IglesiasReportes.controller");
+
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
   const iglesiasController = require("../../controllers/Iglesias/Iglesias.controller")();
-  const zonasDepartamentosController = require("../../controllers/Zonas/Zonas_departamento.controller")();
+  const iglesiasReportes = require("../../controllers/Iglesias/IglesiasReportes.controller")();
 
   //rutas para zonas
   router.get("/iglesias/all", iglesiasController.getAll);
@@ -17,17 +19,14 @@ module.exports = () => {
   router.post("/iglesias", iglesiasController.insertOne);
   router.put("/iglesias", iglesiasController.updateOne);
   router.delete("/iglesias", iglesiasController.DisableOrEnable);
-  //rutas para zonas departamentos
-  router.post("/zonas_departamento", zonasDepartamentosController.insertOne);
+
+  router.post("/iglesias_informes", iglesiasReportes.insertOne);
+  router.get("/iglesias_informes/all/:iglesia", iglesiasReportes.getAll);
   router.get(
-    "/zonas_departamento/:code/all",
-    zonasDepartamentosController.getAll
+    "/iglesias_informes/all/:iglesia/:filter",
+    iglesiasReportes.getAll
   );
-  router.get(
-    "/zonas_departamento/:code/all/:filter",
-    zonasDepartamentosController.getAll
-  );
-  router.delete("/zonas_departamento", zonasDepartamentosController.delete);
+  router.delete("/iglesias_informes", iglesiasReportes.delete);
 
   return router;
 };

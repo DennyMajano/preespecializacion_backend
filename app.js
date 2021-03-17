@@ -58,7 +58,9 @@ const swaggerOpt = {
 const swaggerSpec = swaggerJSDoc(options);
 
 // use swagger-Ui-express for your app documentation endpoint
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOpt));
+if (process.env.MODE === "development") {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOpt));
+}
 
 //configuracion de autenticacion
 //Descomentar esto para utilizar tokens

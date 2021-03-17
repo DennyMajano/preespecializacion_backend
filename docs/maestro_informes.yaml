@@ -1,0 +1,248 @@
+paths:
+  #Create maestro_de_informes
+  /maestro_informe: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Crear un nuevo Informe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/create_maestro"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    
+    #Update de maestro_de_informes
+    put: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Actualizar un  informe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Update # name of request, can be any name
+          description: Esto es para actualizar un informe
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/update_maestro"
+      responses: # server responses
+        200:
+          description: se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+    #Update de maestro_de_informes
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Activar y desactivar un informe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: delete # name of request, can be any name
+          description: json para desactivar o activar un informe
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete_maestro"
+      responses: # server responses
+        200:
+          description: se activo o desactivo con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+   #get de zonas por id
+  /maestro_informe/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene un informe por id
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id del informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: integer
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get select de maestro_de_informe
+  /maestro_informe/select:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene todos los informes para mostrarlos en un select
+      produces:
+        - application/json
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get filter de maestro_de_informe          
+  /maestro_informe/select/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre de informe
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get select de maestro_de_informe
+  /maestro_informe/select/tipo/{tipo}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene todos los informes para mostrarlos en un select por tipo de informe
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: tipo
+          in: path
+          description: "tipo informe"
+          required: true
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get filter de maestro_de_informe          
+  /maestro_informe/select/tipo/{tipo}/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: tipo
+          in: path
+          description: "tipo informe"
+          required: true
+          type: string
+        - name: filter
+          in: path
+          description: "Nombre del departamento para filtro de busqueda"
+          required: true
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+  #get all de maestro_de_informe   
+  /maestro_informe/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene todos los informes
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los zonas principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get all filter de maestro_de_informe   
+  /maestro_informe/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - MaestroInforme # Value of the tag
+      summary: Obtiene los informes que coincidan con el filtro de búsqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre o codigo del informe
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+definitions: # Schema defination for request body
+  create_maestro:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: nombre del informe
+        example: Informe Prueba
+      tipo_informe:
+        type: integer
+        description: id del tipo de informe
+        example: 4
+  update_maestro:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id del informe
+        example: 44
+      nombre:
+        type: string
+        description: nombre del informe
+        example: Informe Editado
+      tipo_informe:
+        type: integer
+        description: id del tipo de informe
+        example: 5
+  delete_maestro:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id del informe
+      status:
+        type: integer
+        description: 1 si desea activar 0 si desactivar

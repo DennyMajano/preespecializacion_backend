@@ -137,6 +137,19 @@ module.exports = () => {
       console.log(error);
     }
   };
+  generales.getSelectTipoInforme = async (req, res) => {
+    try {
+      let result = await modelGenerales.findAllTipoInforme();
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return generales;
 };

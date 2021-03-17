@@ -126,7 +126,7 @@ function validateResult200ForUpdateOr500(
   if (result.affectedRows > 0) {
     res.status(200).json({ success: true, data: onSucces(result) });
   } else {
-    throw new Error("Los datos no pudieron ser registrados");
+    throw new Error("Los datos no pudieron ser registrados, probablemente el registro especificado no existe");
   }
 }
 function validateResult200ForSelectOneOr500(

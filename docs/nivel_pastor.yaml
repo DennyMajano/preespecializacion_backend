@@ -1,0 +1,203 @@
+paths:
+  #Create nivel_pastor
+  /nivel_pastor: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Crear un nuevo nivel de pastor
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo nivel pastoral
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/create_nivelPastor"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    
+    #Update de nivel_pastor
+    put: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Actualizar un nivel pastoral
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Update # name of request, can be any name
+          description: Esto es para actualizar un nivel pastoral
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/update_nivelPastor"
+      responses: # server responses
+        200:
+          description: se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+    #Update de nivel_pastor
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Activar y desactivar un nivel pastoral
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: delete # name of request, can be any name
+          description: json para desactivar o activar un nivel pastoral
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete_nivelPastor"
+      responses: # server responses
+        200:
+          description: se activo o desactivo con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+   #get de nivel_pastor por id
+  /nivel_pastor/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Obtiene un nivel pastoral por id
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: Id del nivel_pastor
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: integer
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get select de nivel_pastor
+  /nivel_pastor/select:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Obtiene todos los niveles pastorales para mostrarlos en un select
+      produces:
+        - application/json
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get filter de nivel_pastor         
+  /nivel_pastor/select/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre de nivel pastoral
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get all de nivel_pastor 
+  /nivel_pastor/all:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Obtiene todos los niveles pastorales
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Get para obtener los zonas principales o padres
+      #     required: false # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get all filter de nivel_pastor   
+  /nivel_pastor/all/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - NivelPastoral # Value of the tag
+      summary: Obtiene los niveles pastorales que coincidan con el filtro de búsqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre o codigo del nivel pastoral
+          required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+definitions: # Schema defination for request body
+  create_nivelPastor:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: nombre del Nivel Pastoral
+        example: Obispo
+      descripcion:
+        type: string
+        description: Descripcion del Nivel Pastoral
+        example: Un Obispo
+  update_nivelPastor:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id del Nivel Pastor
+        example: 2
+      nombre:
+        type: string
+        description: nombre del Nivel Pastoral
+        example: Ministro Laico
+      descripcion:
+        type: string
+        description: Descripcion del Nivel Pastoral
+        example: Un Ministro Laico
+  delete_nivelPastor:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id del informe
+      status:
+        type: integer
+        description: 1 si desea activar 0 si desactivar
