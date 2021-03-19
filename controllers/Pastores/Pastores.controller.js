@@ -69,9 +69,19 @@ module.exports = {
       sendErrorOn500(error,res)
     }
   },
-  getFilter: async (req, res)=>{
+  getAll: async (req, res)=>{
     try {
-      const result = await modelPastores.getFilter(req.params.filter);
+      const result = await modelPastores.getAll(req.params.filter);
+
+      validateResult200ForSelectOr500(result,res);
+
+    } catch (error) {
+      sendErrorOn500(error,res)
+    }
+  },
+  getFilterModal: async (req, res)=>{
+    try {
+      const result = await modelPastores.getFilterModal(req.params.filter);
 
       validateResult200ForSelectOr500(result,res);
 
@@ -88,6 +98,20 @@ module.exports = {
       validateFieldsOr400(camposEntrada,res);
 
       const result = await modelPastores.updateStatus(req.body);
+      validateResult200ForUpdateOr500(result, res);
+    } catch (error) {
+      sendErrorOn500(error, res);
+    }
+  },
+  enableDisable: async (req, res) => {
+    try {
+      const camposEntrada = [
+        req.body.status,
+        req.body.code
+      ];
+      validateFieldsOr400(camposEntrada,res);
+
+      const result = await modelPastores.enableDisable(req.body);
       validateResult200ForUpdateOr500(result, res);
     } catch (error) {
       sendErrorOn500(error, res);
@@ -153,7 +177,8 @@ function validateResult200ForSelectOr500(
   if (result.errno || result instanceof Error) throw result;
   //Si los datos de entrada son validos y no se devolvio error entonces
   console.log(result);
-  res.status(200).json({ success: true, data: onSucces(result) });
+  //res.status(200).json({ success: true, data: onSucces(result) });
+  res.status(200).json(onSucces(result) );
 }
 function sendErrorOn500(error, res) {
   console.log(error);

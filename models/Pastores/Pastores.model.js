@@ -85,16 +85,37 @@ module.exports = {
       );
     }
   },
-  getFilter: async (filter) =>{
+  getFilterModal: async (filter) =>{
     if(isUndefinedOrNull(filter)){
       return await simpleTransactionQuery(
-        "SELECT PAS.condicion, PAS.id as id, PAS.codigo, PER.nombres, PER.apellidos, (select nombre from niveles_academicos_pastorales where id = PAS.nivel_academico) as nivel_academico, (select nombre from nivel_pastor WHERE id = PAS.nivel_pastoral) as nivel_pastoral from pastores as PAS JOIN personas as PER on PAS.persona = PER.codigo WHERE PAS.condicion = 1 ORDER BY PER.nombres LIMIT 50",
+        "SELECT PAS.condicion, PAS.status PAS.id as id, PAS.codigo, PER.nombres, PER.apellidos, (select nombre from niveles_academicos_pastorales where id = PAS.nivel_academico) as nivel_academico, (select nombre from nivel_pastor WHERE id = PAS.nivel_pastoral) as nivel_pastoral from pastores as PAS JOIN personas as PER on PAS.persona = PER.codigo WHERE PAS.condicion = 1 ORDER BY PER.nombres LIMIT 50",
       );
      
     }
     else{
       filter = filter.split(" ");
       let query = "SELECT PAS.condicion, PAS.id as id, PAS.codigo, PER.nombres, PER.apellidos, (select nombre from niveles_academicos_pastorales where id = PAS.nivel_academico) as nivel_academico, (select nombre from nivel_pastor WHERE id = PAS.nivel_pastoral) as nivel_pastoral from pastores as PAS JOIN personas as PER on PAS.persona = PER.codigo WHERE PAS.condicion = 1 "
+
+      for(word of filter){
+        query += `AND (PER.numero_documento like '%${word}%' OR PER.nombres like '%${word}%' OR PER.apellidos like '%${word}%' OR PAS.licencia_ministerial like '%${word}%' OR PAS.codigo like '%${word}%')`;
+      }
+      query += " ORDER BY PER.nombres DESC LIMIT 50";
+      console.log(query);
+      return await simpleTransactionQuery(
+        query
+      );
+    }
+  },
+  getAll: async (filter) =>{
+    if(isUndefinedOrNull(filter)){
+      return await simpleTransactionQuery(
+        "SELECT PAS.condicion, PAS.status, PAS.id as id, PAS.codigo, PER.nombres, PER.apellidos, (select nombre from niveles_academicos_pastorales where id = PAS.nivel_academico) as nivel_academico, (select nombre from nivel_pastor WHERE id = PAS.nivel_pastoral) as nivel_pastoral from pastores as PAS JOIN personas as PER on PAS.persona = PER.codigo ORDER BY PER.nombres LIMIT 50",
+      );
+     
+    }
+    else{
+      filter = filter.split(" ");
+      let query = "SELECT PAS.condicion, PAS.status, PAS.id as id, PAS.codigo, PER.nombres, PER.apellidos, (select nombre from niveles_academicos_pastorales where id = PAS.nivel_academico) as nivel_academico, (select nombre from nivel_pastor WHERE id = PAS.nivel_pastoral) as nivel_pastoral from pastores as PAS JOIN personas as PER on PAS.persona = PER.codigo WHERE 1 "
 
       for(word of filter){
         query += `AND (PER.numero_documento like '%${word}%' OR PER.nombres like '%${word}%' OR PER.apellidos like '%${word}%' OR PAS.licencia_ministerial like '%${word}%' OR PAS.codigo like '%${word}%')`;
@@ -116,6 +137,16 @@ module.exports = {
       ]
     );
   },
+  enableDisable: async(data) =>{
+    const { status, code} = data;
+    return await simpleTransactionQuery(
+      "UPDATE `pastores` SET `condicion`=? WHERE `codigo`=?",
+      [
+        status,
+        code
+      ]
+    ); 
+  }
 };
 
 //Base

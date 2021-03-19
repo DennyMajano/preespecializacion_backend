@@ -64,7 +64,30 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar el proceso
+  /pastores/enable:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: Actualizar el la condicion de un pastor 1=activo, 0=inactivo
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo y estado del del pastor
+          required: true
+          schema:
+            $ref: "#/definitions/updateenablepastor"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
 
+          
           
 
   /pastores/{code}:
@@ -131,6 +154,23 @@ paths:
         400:
           description: Faltan datos para realizar el proceso
 
+  /pastores/all/:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: obtener registros de pastores para select,filtro buscador por nombres, apellidos, numero_documento, numero licencia ministerial. Sino existe dicho pastor devuelve la propiedad data no se asigna. Con mas datos que la funcion similar para select
+      consume: application/json
+      produces:
+        - application/json
+      
+          
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
 
 
 definitions:
@@ -211,4 +251,15 @@ definitions:
         description: de baja=0 cuando un pastor se da de baja, activo=1 esto es que está pastoreando, retirado=2 esto es que ya se retiro, con permiso=3 esto es que no está pastoreando y estará asi por un tiempo determinado con un permiso de la oficina nacional.
         type: integer
         example: 0
-     
+  updateenablepastor:
+    type: object
+    properties:
+      code:
+        description: código del pastor
+        type: string
+        example: "PT-531147314"
+      status:
+        description: 1=activo, 0=inactivo
+        type: integer
+        example: 0
+          
