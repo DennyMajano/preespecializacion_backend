@@ -6,9 +6,12 @@ module.exports = () => {
 
   nivel_pastor.insertOne = async (req, res) => {
     const data = req.body;
-    console.log(data);
+
     try {
-      if (!isUndefinedOrNull(data.nombre) && !isUndefinedOrNull(data.descripcion)) {
+      if (
+        !isUndefinedOrNull(data.nombre) &&
+        !isUndefinedOrNull(data.descripcion)
+      ) {
         let result = await modelNivelPastor.create(data);
         if (result.errno) {
           res.status(500).json("Error de servidor");
@@ -21,7 +24,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -45,7 +48,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -53,38 +56,37 @@ module.exports = () => {
     const { filter } = req.params;
     try {
       let result = await modelNivelPastor.findAll(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   nivel_pastor.getSelect = async (req, res) => {
     const { filter } = req.params;
-    console.log(filter);
+
     try {
       let result = await modelNivelPastor.findSelect(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   nivel_pastor.getById = async (req, res) => {
     const { code } = req.params;
-    console.log(code);
     try {
       let result = await modelNivelPastor.findById(code);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length > 0) {
@@ -93,13 +95,13 @@ module.exports = () => {
         res.status(404).send();
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   nivel_pastor.DisableOrEnable = async (req, res) => {
     const data = req.body;
-    console.log(data);
+
     try {
       if (!isUndefinedOrNull(data.status) && !isUndefinedOrNull(data.code)) {
         let result = await modelNivelPastor.disableOrEnable(data);
@@ -114,7 +116,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 

@@ -8,16 +8,21 @@ module.exports = () => {
     const data = req.body;
 
     try {
-      if (!isUndefinedOrNull(data.zona) && !isUndefinedOrNull(data.departamento)) {
+      if (
+        !isUndefinedOrNull(data.zona) &&
+        !isUndefinedOrNull(data.departamento)
+      ) {
         let result = await ModelZonas_departamento.create(data);
         if (result.errno) {
           switch (result.errno) {
             case 1062:
-             res.status(409).json("Ya ha sido asignado este departamento a la zona");
+              res
+                .status(409)
+                .json("Ya ha sido asignado este departamento a la zona");
               break;
-          
+
             default:
-             res.status(500).json("Error de servidor");
+              res.status(500).json("Error de servidor");
               break;
           }
         } else if (result.affectedRows > 0) {
@@ -29,15 +34,15 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   zona_departamento.getAll = async (req, res) => {
-    const { filter,code } = req.params;
+    const { filter, code } = req.params;
 
     try {
-      let result = await ModelZonas_departamento.findAll(filter,code);
+      let result = await ModelZonas_departamento.findAll(filter, code);
       console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
@@ -45,13 +50,13 @@ module.exports = () => {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   zona_departamento.delete = async (req, res) => {
     const data = req.body;
-    
+
     try {
       if (!isUndefinedOrNull(data.code)) {
         let result = await ModelZonas_departamento.delete(data);
@@ -66,7 +71,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   return zona_departamento;

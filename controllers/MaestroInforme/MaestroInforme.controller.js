@@ -24,7 +24,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   maestro_informe.updateOne = async (req, res) => {
@@ -48,7 +48,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -57,44 +57,44 @@ module.exports = () => {
 
     try {
       let result = await modelMaestro.findAll(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   maestro_informe.getSelect = async (req, res) => {
     const { filter } = req.params;
-    console.log(filter);
+
     try {
       let result = await modelMaestro.findSelect(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   maestro_informe.getSelectTipo = async (req, res) => {
     const { filter, tipo } = req.params;
-    console.log(filter);
+
     try {
       let result = await modelMaestro.findSelectTipo(filter, tipo);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   maestro_informe.getById = async (req, res) => {
@@ -102,7 +102,7 @@ module.exports = () => {
     console.log(code);
     try {
       let result = await modelMaestro.findById(code);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length > 0) {
@@ -111,7 +111,7 @@ module.exports = () => {
         res.status(404).send();
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -132,7 +132,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 

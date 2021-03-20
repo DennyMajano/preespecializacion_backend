@@ -6,7 +6,6 @@ module.exports = () => {
 
   nivel_academico.insertOne = async (req, res) => {
     const data = req.body;
-    console.log(data);
     try {
       if (!isUndefinedOrNull(data.nombre)) {
         let result = await modelNivelAcademico.create(data);
@@ -21,7 +20,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -41,7 +40,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -49,39 +48,38 @@ module.exports = () => {
     const { filter } = req.params;
     try {
       let result = await modelNivelAcademico.findAll(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   nivel_academico.getSelect = async (req, res) => {
     const { filter } = req.params;
-    console.log(filter);
+
     try {
       let result = await modelNivelAcademico.findSelect(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
-  
+
   nivel_academico.getById = async (req, res) => {
     const { code } = req.params;
-    console.log(code);
     try {
       let result = await modelNivelAcademico.findById(code);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length > 0) {
@@ -90,13 +88,13 @@ module.exports = () => {
         res.status(404).send();
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
   nivel_academico.DisableOrEnable = async (req, res) => {
     const data = req.body;
-    console.log(data);
+
     try {
       if (!isUndefinedOrNull(data.status) && !isUndefinedOrNull(data.code)) {
         let result = await modelNivelAcademico.disableOrEnable(data);
@@ -111,7 +109,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 

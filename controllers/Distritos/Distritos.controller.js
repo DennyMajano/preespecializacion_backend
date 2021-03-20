@@ -6,7 +6,6 @@ module.exports = () => {
 
   distrito.insertOne = async (req, res) => {
     const data = req.body;
-    console.log(data);
     try {
       if (!isUndefinedOrNull(data.nombre) && !isUndefinedOrNull(data.zona)) {
         let result = await modelDistritos.create(data);
@@ -21,12 +20,11 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   distrito.updateOne = async (req, res) => {
     const data = req.body;
-
     try {
       if (
         !isUndefinedOrNull(data.code) &&
@@ -45,7 +43,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -54,14 +52,13 @@ module.exports = () => {
 
     try {
       let result = await modelDistritos.findAll(filter);
-      console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   distrito.getSelect = async (req, res) => {
@@ -69,14 +66,13 @@ module.exports = () => {
     console.log(filter);
     try {
       let result = await modelDistritos.findSelect(filter, zona);
-      console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   distrito.getById = async (req, res) => {
@@ -84,7 +80,6 @@ module.exports = () => {
     console.log(code);
     try {
       let result = await modelDistritos.findById(code);
-      console.log(result);
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length > 0) {
@@ -93,7 +88,7 @@ module.exports = () => {
         res.status(404).send();
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -114,7 +109,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   return distrito;

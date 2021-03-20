@@ -13,7 +13,9 @@ module.exports = () => {
         if (result.errno) {
           res.status(500).json("Error de servidor");
         } else if (result.affectedRows > 0) {
-          res.status(201).json({message:"Se creo con exito",zona:result.insertId});
+          res
+            .status(201)
+            .json({ message: "Se creo con exito", zona: result.insertId });
         } else {
           res.status(400).json("No se pudo crear");
         }
@@ -21,7 +23,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   zona.updateOne = async (req, res) => {
@@ -41,7 +43,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -50,14 +52,14 @@ module.exports = () => {
 
     try {
       let result = await modelZonas.findAll(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   zona.getSelect = async (req, res) => {
@@ -65,14 +67,14 @@ module.exports = () => {
     console.log(filter);
     try {
       let result = await modelZonas.findSelect(filter);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length >= 0) {
         res.status(200).json(result);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   zona.getById = async (req, res) => {
@@ -80,7 +82,7 @@ module.exports = () => {
     console.log(code);
     try {
       let result = await modelZonas.findById(code);
-      console.log(result);
+
       if (result.errno) {
         res.status(500).json("Error de servidor");
       } else if (result.length > 0) {
@@ -89,7 +91,7 @@ module.exports = () => {
         res.status(404).send();
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
 
@@ -110,7 +112,7 @@ module.exports = () => {
         res.status(400).json("faltan datos para realizar el proceso");
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).json("Error de servicio");
     }
   };
   return zona;

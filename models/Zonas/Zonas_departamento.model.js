@@ -3,27 +3,27 @@ const db = require("../../config/conexion");
 
 module.exports = {
   create: async (data) => {
-    const {zona, departamento } = data;
+    const { zona, departamento } = data;
     let zonas_departamentos;
     let transaction;
-    
+
     try {
       transaction = await database.Transaction(db, async () => {
         zonas_departamentos = await db.query(
           `INSERT INTO zonas_departamentos(zona, departamento) VALUES (?,?)`,
-          [zona,departamento]
+          [zona, departamento]
         );
       });
     } catch (error) {
       return error;
     }
 
-    return zonas_departamentos !== undefined ? zonas_departamentos : transaction;
+    return zonas_departamentos !== undefined
+      ? zonas_departamentos
+      : transaction;
   },
 
-  
-
-  findAll: async (filter = "",codigo) => {
+  findAll: async (filter = "", codigo) => {
     let data_out;
     let transaction;
     let data_data_out;
@@ -38,11 +38,11 @@ module.exports = {
           for (let i = 0; i < filter.length; i++) {
             query += ` AND (D.nombre LIKE '%${filter[i]}%' )`;
           }
-console.log(query)
-          data_out = await db.query(`${query} LIMIT 100`,[codigo,codigo]);
+          data_out = await db.query(`${query} LIMIT 100`, [codigo, codigo]);
         } else {
           data_out = await db.query(
-            `SELECT ZD.id, ZD.zona AS codigo_zona, D.nombre AS departamento FROM zonas_departamentos ZD LEFT JOIN departamentos D ON ZD.departamento=D.id LEFT JOIN zonas Z ON ZD.zona=Z.codigo WHERE ZD.zona=? OR Z.id=? LIMIT 100`,[codigo,codigo]
+            `SELECT ZD.id, ZD.zona AS codigo_zona, D.nombre AS departamento FROM zonas_departamentos ZD LEFT JOIN departamentos D ON ZD.departamento=D.id LEFT JOIN zonas Z ON ZD.zona=Z.codigo WHERE ZD.zona=? OR Z.id=? LIMIT 100`,
+            [codigo, codigo]
           );
         }
         if (!data_out.errno) {
@@ -51,7 +51,6 @@ console.log(query)
               id: element.id,
               codigo: element.codigo_zona,
               departamento: element.departamento,
-              
             };
           });
         }
@@ -67,9 +66,6 @@ console.log(query)
       : transaction;
   },
 
-  
-
-  
   delete: async (data) => {
     const { code } = data;
     let zonas_departamentos;
@@ -85,6 +81,8 @@ console.log(query)
     } catch (error) {
       return error;
     }
-    return zonas_departamentos !== undefined ? zonas_departamentos : transaction;
+    return zonas_departamentos !== undefined
+      ? zonas_departamentos
+      : transaction;
   },
 };

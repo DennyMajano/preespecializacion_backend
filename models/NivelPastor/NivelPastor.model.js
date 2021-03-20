@@ -15,7 +15,6 @@ module.exports = {
     } catch (error) {
       return error;
     }
-    console.log(transaction);
     return nivel_pastor !== undefined ? nivel_pastor : transaction;
   },
 
@@ -51,7 +50,7 @@ module.exports = {
 
           for (let i = 0; i < filter.length; i++) {
             query += ` (nombre LIKE '%${filter[i]}%') ${
-                i + 1 - filter.length >= 0 ? "" : "AND"
+              i + 1 - filter.length >= 0 ? "" : "AND"
             }`;
           }
           data_out = await db.query(`${query} LIMIT 100`);
@@ -137,7 +136,7 @@ module.exports = {
             return {
               id: element.id,
               nombre: element.nombre,
-              descripcion: element.descripcion, 
+              descripcion: element.descripcion,
             };
           });
         }

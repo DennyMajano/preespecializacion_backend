@@ -1,6 +1,5 @@
 const database = require("../../config/database.async");
 const db = require("../../config/conexion");
-const encryption = require("../../services/encrytion/Encrytion");
 
 module.exports = {
   findAllDepartamento: async (filter = "") => {
@@ -10,9 +9,8 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-     
-          data = await db.query(`SELECT id, nombre FROM departamentos`);
-        
+        data = await db.query(`SELECT id, nombre FROM departamentos`);
+
         if (!data.errno) {
           data_final = data.map((element) => {
             return {
@@ -48,7 +46,9 @@ module.exports = {
 
           data = await db.query(`${query} LIMIT 50`);
         } else {
-          data = await db.query(`SELECT id, nombre FROM municipios WHERE departamento=${dep} LIMIT 50`);
+          data = await db.query(
+            `SELECT id, nombre FROM municipios WHERE departamento=${dep} LIMIT 50`
+          );
         }
         if (!data.errno) {
           data_final = data.map((element) => {
@@ -85,7 +85,9 @@ module.exports = {
 
           data = await db.query(`${query} LIMIT 50`);
         } else {
-          data = await db.query(`SELECT id, nombre FROM cantones WHERE municipio=${municipio} LIMIT 50`);
+          data = await db.query(
+            `SELECT id, nombre FROM cantones WHERE municipio=${municipio} LIMIT 50`
+          );
         }
         if (!data.errno) {
           data_final = data.map((element) => {
@@ -122,7 +124,9 @@ module.exports = {
 
           data = await db.query(`${query} LIMIT 50`);
         } else {
-          data = await db.query(`SELECT id, nacionalidad FROM nacionalidades LIMIT 50`);
+          data = await db.query(
+            `SELECT id, nacionalidad FROM nacionalidades LIMIT 50`
+          );
         }
         if (!data.errno) {
           data_final = data.map((element) => {
@@ -224,7 +228,7 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-  
+
   findAllMiselanea: async (grupo) => {
     let data;
     let transaction;
@@ -259,9 +263,7 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        data = await db.query(
-          `SELECT id, nombre FROM tipos_documentos`
-        );
+        data = await db.query(`SELECT id, nombre FROM tipos_documentos`);
 
         if (!data.errno) {
           data_final = data.map((element) => {
@@ -285,9 +287,7 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        data = await db.query(
-          `SELECT id, nombre FROM tipo_informe`
-        );
+        data = await db.query(`SELECT id, nombre FROM tipo_informe`);
 
         if (!data.errno) {
           data_final = data.map((element) => {
@@ -304,6 +304,4 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-
-
 };

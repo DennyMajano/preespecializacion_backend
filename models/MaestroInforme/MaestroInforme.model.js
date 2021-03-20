@@ -16,7 +16,6 @@ module.exports = {
     } catch (error) {
       return error;
     }
-    console.log(transaction);
     return maestro_informe !== undefined ? maestro_informe : transaction;
   },
 

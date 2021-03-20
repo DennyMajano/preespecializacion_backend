@@ -11,11 +11,6 @@ module.exports = () => {
     "/generales/departamentos",
     generalesController.getSelectDepartamento
   );
-  // MUNICIPIOS
-  // router.get(
-  //   "/generales/municipios/all",
-  //   generalesController.getSelectMunicipio
-  // );
   router.get(
     "/generales/municipios/:dep",
     generalesController.getSelectMunicipio
@@ -25,10 +20,7 @@ module.exports = () => {
     generalesController.getSelectMunicipio
   );
   // CANTONES
-  router.get(
-    "/generales/cantones",
-    generalesController.getSelectCanton
-  );
+  router.get("/generales/cantones", generalesController.getSelectCanton);
   router.get(
     "/generales/cantones/:municipio",
     generalesController.getSelectCanton
@@ -43,8 +35,9 @@ module.exports = () => {
     generalesController.getSelectNacionalidad
   );
   router.get(
-    "/generales/nacionalidad/:filter", 
-    generalesController.getSelectNacionalidad);
+    "/generales/nacionalidad/:filter",
+    generalesController.getSelectNacionalidad
+  );
   router.get(
     "/generales/comodin/:grupo",
     generalesController.getSelectMiselanea
@@ -69,14 +62,6 @@ module.exports = () => {
     "/generales/tipo_informe",
     generalesController.getSelectTipoInforme
   );
-  // router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
-  // router.get("/cargos/all/:filter", generalesController.getAll);
-  // router.get("/cargos/select", generalesController.getSelect);
-  // router.get("/cargos/select/:filter", generalesController.getSelect);
-  // router.get("/cargos/:code", generalesController.getById);
-  // router.post("/cargos", generalesController.insertOne);
-  // router.put("/cargos", generalesController.updateOne);
-  // router.delete("/cargos", generalesController.DisableOrEnable);
 
   return router;
 };
