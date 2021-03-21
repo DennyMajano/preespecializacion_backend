@@ -196,6 +196,7 @@ module.exports = () => {
         } else if (result.affectedRows === 1) {
           res.status(200).json("Proceso se realizó con exito");
         } else {
+          console.log(result)
           res.status(400).json("No se pudo realizar el proceso");
         }
       } else {

@@ -554,7 +554,7 @@ definitions: # Schema defination for request body
         type: string
         description: dirección de la persona
         example: 1
-      code: 
+      id: 
         type: string
         description: id de la persona a actualizar
         example: 12

@@ -40,7 +40,7 @@ module.exports = () => {
       const data = req.body;
       console.log("---------------------------------------------------------------");
       console.log(data);
-      if (!isUndefinedOrNull(data.code) &&!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
+      if (!isUndefinedOrNull(data.id) &&!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
         const result = await modelPersonas.update(data);
         
         if(result.errno || result instanceof Error || result.affectedRows == 0){

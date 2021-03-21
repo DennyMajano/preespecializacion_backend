@@ -562,7 +562,7 @@ module.exports = {
       estadoCivil,
       profesion,
       direccion,
-      code,
+      id,
     } = PersonaData;
 
     try {
@@ -592,7 +592,7 @@ module.exports = {
               estadoCivil,
               profesion,
               direccion,
-              code
+              id
             ]
           );
             console.log(personaResult);
