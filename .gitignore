@@ -1,3 +1,4 @@
 node_modules
 .env
 .vscode/pinned-files.json
+config/IDDPUES.code-workspace

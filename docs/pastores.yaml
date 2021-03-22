@@ -101,7 +101,7 @@ paths:
       parameters: # request parameters
         - name: code
           in: path
-          description: codigo o id del pastor a recuperar
+          description: codigo, id o licencia miniesterial del pastor a recuperar
           required: true
           
       responses: # server responses
@@ -178,7 +178,7 @@ definitions:
     type: object
     properties:
       personaCode:
-        description: código de la persona del pastor
+        description: código de la persona del pastor, si no se especifica se creará un registro de personas
         type: string,
         example: "P-454354"
       licenciaMinisterial:
@@ -197,6 +197,102 @@ definitions:
         description: fecha de inicio del pastor
         type: string,
         example: "1995-03-03"
+      nombre:
+        type: string
+        description: nombre de la persona
+        example: Brenda Ariel 
+      apellido:
+        type: string
+        description: apellido de la persona
+        example: Gómez Claros
+      telefono:
+        type: string
+        description: teléfono de la persona
+        example: 7623-2323
+      sexo:
+        type: integer
+        description: id que indica el sexo de la persona. Es el id que representa el sexo.
+        example: 1
+      fotoPerfil:
+        type: string
+        format: binary
+        description: fotografía de perfil de la personas
+      nacionalidad:
+        type: number
+        description: id de la nacionalidad de la persona
+        example: 1
+      fechaNacimiento:
+        type: string
+        description: fecha de nacimiento de la persona
+        example: "1995-03-03"
+      departamentoNacimiento:
+        type: number
+        description: id del departamento en que nació la persona
+        example: 1
+      municipioNacimiento:
+        type: number
+        description: id del municipio en que nació la persona
+        example: 1        
+      cantonNacimiento:
+        type: number
+        description: id del cantón en que nació la persona
+        example: 1            
+      departamentoResidencia:
+        type: number
+        description: id del departamento en que reside la persona
+        example: 1         
+      municipioResidencia:
+        type: number
+        description: id del municipio en que reside la persona
+        example: 1                 
+      cantonResidencia:
+        type: number
+        description: id del cantón en que reside la persona
+        example: 1  
+      tipoDocumento:
+        type: number
+        description: id del tipo de documento de la persona
+        example: 1    
+      numeroDocumento:
+        type: string
+        description: número de documento de la persona
+        example: 05433223-9                          
+      estadoCivil:
+        type: number
+        description: id del estado civil de la persona
+        example: 1  
+      profesion:
+        type: number
+        description: id de la profesión de la persona
+        example: 1  
+      direccion:
+        type: string
+        description: dirección de la persona
+        example: 1
+      createUser:
+        type: boolean
+        description: indicador para saber si se registrará un usuario para esta persona
+        example: true  
+      iglesia:
+        type: string
+        description: Código de la iglesia donde está el usuario
+        example: IG-213414  
+      correo_electronico:
+        type: string
+        description: correo electrónico del usuario 
+        example: arielbrenda@gmail.com  
+      rol:
+        type: number
+        description: id del rol que se le asigna al usuario
+        example: 1  
+      alias:
+        type: string
+        description: alias para el usuario, este se mostrará en el sistema
+        example: Arienda  
+      id: 
+        type: string
+        description: este campo debe ir si la persona existe
+        example: 12          
   updatepastor:
     type: object
     properties:

@@ -1,21 +1,39 @@
 const modelPastores = require("../../models/Pastores/Pastores.model");
+const modelPersonas = require("../../models/Personas/Personas.model");
 const isUndefinedOrNull = require("validate.io-undefined-or-null");
-module.exports = {
-  create: async (req, res) => {
+module.exports = ()=> {
+  let pastores = {};
+  pastores.create = async (req, res) => {
+    console.log(req.body);
     try {
       //Validacion de datos de entrada
       const camposEntrada = [
-        req.body.personaCode,
         req.body.licenciaMinisterial,
         req.body.nivelPastoral,
         req.body.nivelAcademico,
         req.body.fechaInicioPastoral,
       ];
-
       validateFieldsOr400(camposEntrada, res);
+      if(!req.body.personaCode){
+        const personaResult = await modelPersonas.create(req.body);
+        if(personaResult.errno){
+          throw personaResult;
+        }
+        else{
+          console.log("INSERT PERSON FOR PASTOR");
+          console.log(personaResult);
+          console.log(req.body);
+          req.body.personaCode= personaResult.codigo;
+        }
+      }
+      else{
+        modelPersonas.update(req.body)
+      }
+      console.log(req.body);
 
       //Consulta a modelo
       const result = await modelPastores.create(req.body);
+      console.log("#######################################################################################");
       console.log(result);
       //Validar resultado
       validateResult201ForInsertOr500(result, res, (result) => {
@@ -26,7 +44,7 @@ module.exports = {
     }
   },
 
-  update: async (req, res) => {
+  pastores.update = async (req, res) => {
     try {
       const camposEntrada = [
         req.body.codigoPastor,
@@ -48,18 +66,18 @@ module.exports = {
       sendErrorOn500(error, res);
     }
   },
-  getById: async (req, res) =>{
+  pastores.getById = async (req, res) =>{
    try {
     validateFieldsOr400([req.params.code]);
 
     const result = await modelPastores.getById(req.params.code);
-
+    console.log(result);
     validateResult200ForSelectOneOr500(result, res);
    } catch (error) {
      sendErrorOn500(error,res)
    }
   },
-  getSelect: async (req, res)=>{
+  pastores.getSelect = async (req, res)=>{
     try {
       const result = await modelPastores.getSelect(req.params.filter);
 
@@ -69,7 +87,7 @@ module.exports = {
       sendErrorOn500(error,res)
     }
   },
-  getAll: async (req, res)=>{
+  pastores.getAll = async (req, res)=>{
     try {
       const result = await modelPastores.getAll(req.params.filter);
 
@@ -79,7 +97,7 @@ module.exports = {
       sendErrorOn500(error,res)
     }
   },
-  getFilterModal: async (req, res)=>{
+  pastores.getFilterModal = async (req, res)=>{
     try {
       const result = await modelPastores.getFilterModal(req.params.filter);
 
@@ -89,7 +107,7 @@ module.exports = {
       sendErrorOn500(error,res)
     }
   },
-  updateStatus: async (req, res) => {
+  pastores.updateStatus = async (req, res) => {
     try {
       const camposEntrada = [
         req.body.status,
@@ -103,7 +121,7 @@ module.exports = {
       sendErrorOn500(error, res);
     }
   },
-  enableDisable: async (req, res) => {
+  pastores.enableDisable = async (req, res) => {
     try {
       const camposEntrada = [
         req.body.status,
@@ -116,7 +134,9 @@ module.exports = {
     } catch (error) {
       sendErrorOn500(error, res);
     }
-  },
+  }
+
+  return pastores;
 };
 
 //Funciones comunes para todos los métodos de los controladores

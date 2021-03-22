@@ -229,6 +229,23 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   };
+  personas.findAllInOkNotPastores = async (req, res) => {
+    const { filter } = req.params;
+    console.log(filter);
+    try {
+      const result = await modelPersonas.findAllInOkNotPastores(filter);
+      console.log(result);
+      if (result.errno || result instanceof Error) {
+        throw result;
+      } else{
+        res.status(result.length > 0 ?200:404).json(result);
+      }
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error de servidor");
+    }
+  };
   personas.findSelect = async (req, res) => {
     const { filter } = req.params;
     console.log(filter);

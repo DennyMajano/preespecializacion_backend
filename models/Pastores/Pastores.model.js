@@ -60,8 +60,8 @@ module.exports = {
   },
   getById: async (id) => {
     return await simpleTransactionQuery(
-      "select * from pastores where id = ? or codigo = ?",
-      [id, id]
+      "select * from pastores where id = ? or codigo = ? or licencia_ministerial = ?",
+      [id, id, id]
     );
   },
   getSelect: async (filter) =>{

@@ -3,7 +3,7 @@
 module.exports = () => {
     const express = require("express");
     const router = express.Router();
-    const pastoresController = require("../../controllers/Pastores/Pastores.controller");
+    const pastoresController = require("../../controllers/Pastores/Pastores.controller")();
 
     router.post("/pastores", pastoresController.create);
     router.put("/pastores", pastoresController.update);

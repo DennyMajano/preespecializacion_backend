@@ -260,6 +260,41 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en códig
         404:
           description: No se encontró el registro
+  /personas/activesNotPastores:
+    get:
+      tags: # Tag property
+        - Personas # Value of the tag
+      summary: Recupera todas las personas activas del sistema (vivas, habilitadas, no pastores)
+      produces:
+        - application/json
+      responses: # server responses
+        200:
+          description: Se encontró el registro
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en códig
+        404:
+          description: No se encontró el registro
+  /personas/activesNotPastores/{filter}:
+    get:
+      tags: # Tag property
+        - Personas # Value of the tag
+      summary: Recupera todas las personas activas del sistema (vivas, habilitadas, no pastores) que cumplan el filtro
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: filter
+          in: path
+          description: filtro para la/s persona/s a recuperar
+          required: true
+          type: string
+          example: 1
+      responses: # server responses
+        200:
+          description: Se encontró el registro
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en códig
+        404:
+          description: No se encontró el registro
   
   /personas/select:
     get: # endpoint request type (put request)
@@ -482,7 +517,8 @@ definitions: # Schema defination for request body
       alias:
         type: string
         description: alias para el usuario, este se mostrará en el sistema
-        example: Arienda                                                                     
+        example: Arienda
+                                                                         
   updatePersona:
     type: object
     properties:

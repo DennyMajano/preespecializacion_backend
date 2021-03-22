@@ -12,12 +12,13 @@ module.exports = {
    * @param {*} [callback]- Callback a ejecutarse cuando se registre usuario;
    */
   create: async (PersonaData, callback) => {
+    console.log("----------------------------------------------------------------------");
+    console.log(PersonaData);
     const { 
       nombre, 
       apellido, 
       telefono, 
       sexo, 
-      avatar, 
       nacionalidad, 
       fechaNacimiento, 
       departamentoNacimiento,  
@@ -38,7 +39,10 @@ module.exports = {
       alias
 
     } = PersonaData;
-
+    let {avatar } = PersonaData;
+    if(!avatar){
+      avatar = "recursos/images/usuarios/profile_default.png";
+    }
     try {
 
       let result;
@@ -92,7 +96,7 @@ module.exports = {
               }
             }
             else{
-              result = personaResult.insertId;
+              result = {id: personaResult.insertId, codigo: newPersonaCode};
             }
 
           }
@@ -420,7 +424,7 @@ module.exports = {
           } else {
             console.log("todos");
             personas = await db.query(
-              `SELECT * FROM personas WHERE condicion = 1 AND estado = 1 ORDER BY nombres ASC LIMIT 100`
+              `SELECT id, codigo, apellidos, nombres, telefono, sexo, numero_documento, condicion, estado FROM personas WHERE condicion = 1 AND estado = 1 ORDER BY nombres ASC LIMIT 100`
             );
           }
 
@@ -436,6 +440,46 @@ module.exports = {
 
   },
   
+    /**
+   * Función para buscar en las personas que están habilitadas, que están vivas y no son pastores.
+   * @returns Devuelve la lista de personas que cumplan con `filter`. Cuando no se pasa `filter` se devuelven todos sin filtrar.
+   * @param {string} filter - Opcional. Cadena a buscar en los campos de Personas. 
+   */
+     findAllInOkNotPastores: async (filter = "") => {
+      let personas;
+      try {
+        const transactionResult = await database.Transaction(
+          db, 
+          async () => {
+            if (filter != "") {
+              filter = filter.split(" ");
+  
+              let query = `SELECT id, codigo, nombres, apellidos, telefono, sexo, numero_documento, condicion, estado  FROM personas WHERE personas.codigo not in (Select pastores.persona from pastores) AND (condicion = 1 AND estado = 1) AND `;
+              for (let i = 0; i < filter.length; i++) {
+                query += 
+                `(nombres LIKE '%${filter[i]}%' OR apellidos LIKE '%${filter[i]}%' OR numero_documento LIKE '%${filter[i]}%' OR codigo LIKE '%${filter[i]}%' OR telefono LIKE '%${filter[i]}%') ${i + 1 - filter.length >= 0 ? "" : "AND"}`;
+              }
+              console.log(query);
+              personas = await db.query(`${query} ORDER BY nombres ASC LIMIT 100`);
+              console.log(personas);
+            } else {
+              console.log("todos");
+              personas = await db.query(
+                `SELECT id, codigo, nombres, apellidos, telefono, sexo, numero_documento, condicion, estado FROM personas WHERE personas.codigo not in (Select pastores.persona from pastores) AND condicion = 1 AND estado = 1 ORDER BY nombres ASC LIMIT 100`
+              );
+            }
+  
+           
+        });
+        if(transactionResult.errno || transactionResult instanceof Error){
+          throw transactionResult;
+        }
+        return personas;
+      } catch (error) {
+        return error;
+      }
+  
+    },
     /**
    * 
    * @param {Object} data - Datos para habilitar o deshabilitar el registro

@@ -15,6 +15,8 @@ module.exports = () => {
   router.get("/personas/select/:filter", personasController.findSelect);
   router.get("/personas/actives", personasController.findAllInOk);
   router.get("/personas/actives/:filter", personasController.findAllInOk);
+  router.get("/personas/activesNotPastores", personasController.findAllInOkNotPastores);
+  router.get("/personas/activesNotPastores/:filter", personasController.findAllInOkNotPastores);
   router.get("/personas/phone/:phoneNumber", personasController.findPhoneNumber);
   router.get("/personas/document/:documentNumber", personasController.findDocumentNumber);
   router.put("/personas/enable", personasController.disableOrEnable);
