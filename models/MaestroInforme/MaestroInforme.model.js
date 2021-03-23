@@ -3,14 +3,14 @@ const db = require("../../config/conexion");
 const UID = require("../../helpers/UID");
 module.exports = {
   create: async (data) => {
-    const { nombre, tipo_informe } = data;
+    const { nombre, tipo_informe, ruta } = data;
     let maestro_informe;
     let transaction;
     try {
       transaction = await database.Transaction(db, async () => {
         maestro_informe = await db.query(
-          `INSERT INTO maestro_de_informes(identificador,nombre,tipo_informe) VALUES (?,?,?)`,
-          [UID(), nombre, tipo_informe]
+          `INSERT INTO maestro_de_informes(identificador,nombre,tipo_informe, ruta) VALUES (?,?,?,?)`,
+          [UID(), nombre, tipo_informe, ruta]
         );
       });
     } catch (error) {
@@ -20,15 +20,15 @@ module.exports = {
   },
 
   update: async (data) => {
-    const { code, nombre, tipo_informe } = data;
+    const { code, nombre, tipo_informe, ruta } = data;
     let maestro_informe;
     let transaction;
 
     try {
       transaction = await database.Transaction(db, async () => {
         maestro_informe = await db.query(
-          `UPDATE maestro_de_informes SET nombre=?, tipo_informe=? WHERE id=?`,
-          [nombre, tipo_informe, code]
+          `UPDATE maestro_de_informes SET nombre=?, tipo_informe=?, ruta=? WHERE id=?`,
+          [nombre, tipo_informe, ruta, code]
         );
       });
     } catch (error) {
@@ -48,7 +48,7 @@ module.exports = {
         if (filter != "") {
           filter = filter.split(" ");
 
-          let query = `SELECT MI.id, MI.identificador,MI.nombre,TI.nombre AS tipo_informe, MI.condicion FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id WHERE `;
+          let query = `SELECT MI.id, MI.identificador,MI.nombre,TI.nombre AS tipo_informe, MI.condicion, MI.ruta FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id WHERE `;
 
           for (let i = 0; i < filter.length; i++) {
             query += ` (MI.nombre LIKE '%${filter[i]}%' OR TI.nombre LIKE '%${
@@ -59,7 +59,7 @@ module.exports = {
           data_out = await db.query(`${query} LIMIT 100`);
         } else {
           data_out = await db.query(
-            `SELECT MI.id, MI.identificador,MI.nombre,TI.nombre AS tipo_informe, MI.condicion FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id LIMIT 100 `
+            `SELECT MI.id, MI.identificador,MI.nombre,TI.nombre AS tipo_informe, MI.condicion, MI.ruta FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id LIMIT 100 `
           );
         }
         if (!data_out.errno) {
@@ -70,6 +70,7 @@ module.exports = {
               nombre: element.nombre,
               tipo_informe: element.tipo_informe,
               condicion: element.condicion,
+              ruta: element.ruta,
             };
           });
         }
@@ -175,7 +176,7 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         maestro_informe = await db.query(
-          `SELECT MI.id ,MI.nombre, TI.id AS tipo_id, TI.nombre AS tipo_informe FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id WHERE MI.id=? `,
+          `SELECT MI.id ,MI.nombre, TI.id AS tipo_id, TI.nombre AS tipo_informe, MI.ruta FROM maestro_de_informes MI LEFT JOIN tipo_informe TI ON MI.tipo_informe=TI.id WHERE MI.id=? `,
           [code]
         );
 
@@ -188,6 +189,7 @@ module.exports = {
                 label: element.tipo_informe,
                 value: element.tipo_id,
               },
+              ruta: element.ruta,
             };
           });
         }

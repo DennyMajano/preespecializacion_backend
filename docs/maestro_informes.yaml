@@ -222,6 +222,10 @@ definitions: # Schema defination for request body
         type: integer
         description: id del tipo de informe
         example: 4
+      ruta:
+        type: string
+        description: rRuta que tendrá el informe
+        example: /informe_iglesias/ministerial
   update_maestro:
     type: object
     properties:
@@ -237,6 +241,10 @@ definitions: # Schema defination for request body
         type: integer
         description: id del tipo de informe
         example: 5
+      ruta:
+        type: string
+        description: rRuta que tendrá el informe
+        example: /informe_iglesias/ministerial
   delete_maestro:
     type: object
     properties:
