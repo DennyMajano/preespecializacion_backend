@@ -197,6 +197,26 @@ definitions:
         description: fecha de inicio del pastor
         type: string,
         example: "1995-03-03"
+      fechaRetiro:
+        description: fecha de retiro del pastor
+        type: string,
+        example: "1995-03-03"
+      fallecido:
+        description: fallecido=1, vivo = 0
+        type: integer
+        example: 1
+      status:
+        description: de baja=0 cuando un pastor se da de baja, activo=1 esto es que está pastoreando, retirado=2 esto es que ya se retiro, con permiso=3 esto es que no está pastoreando y estará asi por un tiempo determinado con un permiso de la oficina nacional.
+        type: integer
+        example: 0
+      biografia:
+        description: Biografia del pastor su historia y logros ministeriales
+        type: string
+        example: Lorem ipsum estri deli...
+      memoria_fallecimiento:
+        description: Reseña para que pueda ser visto por lo miembros o pastores en el futuro cuando el pastor esta fallecido
+        type: string
+        example: Lorem ipsum estri deli...
       nombre:
         type: string
         description: nombre de la persona
@@ -332,7 +352,7 @@ definitions:
         description: Biografia del pastor su historia y logros ministeriales
         type: string
         example: Lorem ipsum estri deli...
-      memoria_fallecimiento:
+      memoriaFallecimiento:
         description: Reseña para que pueda ser visto por lo miembros o pastores en el futuro cuando el pastor esta fallecido
         type: string
         example: Lorem ipsum estri deli...
