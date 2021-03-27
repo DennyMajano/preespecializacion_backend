@@ -13,6 +13,7 @@ const pastoresRouter = require("./Pastores/Pastores.router")();
 const maestroInformeRouter = require("./MaestroInforme/MaestroInforme.router")();
 const nivelPastorRouter = require("./NivelPastor/NivelPastor.router")();
 const nivelesAcademicosRouter = require("./NivelesAcademicos/NivelesAcademicos.router")();
+const periodosMinisterialesRouter = require("./PeriodosMinisteriales/PeriodosMinisteriales.router")();
 
 module.exports = function (app) {
   //rutas configuracion
@@ -30,6 +31,7 @@ module.exports = function (app) {
   app.use("/api", maestroInformeRouter);
   app.use("/api", nivelPastorRouter);
   app.use("/api", nivelesAcademicosRouter);
+  app.use("/api", periodosMinisterialesRouter);
 
   //Rutas de prueba
   app.use("/api", testRoutes);

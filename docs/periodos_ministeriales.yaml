@@ -1,0 +1,227 @@
+paths:
+  /periodos: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: Guardar los datos de un nuevo periodo ministerial
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos del nuevo periodo ministerial
+          required: true
+          schema:
+            $ref: "#/definitions/createperiodo"
+      responses: # server responses
+        201:
+          description: Se creó con éxito el nuevo pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: Actualizar los datos de un periodo ministerial
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos a actualizar del periodo ministerial
+          required: true
+          schema:
+            $ref: "#/definitions/updateperiodo"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /periodos/all/{filter}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: obtener los periodos ministeriales por el filtro dado en las descripciones de los periodos ministeriales
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: filter
+          in: path
+          description: palabras de la descripción
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+  /periodos/all/:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: obtener los periodos ministeriales por el filtro dado en las descripciones de los periodos ministeriales
+      consume: application/json
+      produces:
+        - application/json 
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /periodos/estado/{estado}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: obtener los periodos ministeriales por el estado especificado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: estado
+          in: path
+          description: 1 = configurado, 2 = vigente, 3 = finalizado
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+  /periodo/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: obtener un periodo ministerial por código o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: id o código del periodo ministerial. Si no se se encuentra el periodo ministerial, la propiedad data es null
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito. Si no se se encuentra el periodo ministerial,  la propiedad data es null
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /periodo/finalizar: # path of the user from your endpoint
+   put: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: finalizar un periodo ministerial indicando el código, siempreq que el periodo ministerial no tenga gestiones no finalizadas
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo del periodo ministerial
+          required: true
+          schema:
+            $ref: "#/definitions/finalizarperiodo"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+        403:
+          description: No se puede realizar la acción porque no se cumplen condiciones
+  /periodo/finalizar/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: Devuelve true si el periodo se puede finalizar (Sino existe dicho en periodos codigo tambien) false en caso contrario. Esto con la condicion que el periodo ministerial no tenga gestiones sin finalizar
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código del periodo ministerial.
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito. se devuelve una propiedad de data llamada puedeFinalizar con un booleano
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /periodo/vigente: # path of the user from your endpoint
+   put: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: cambiar el estado del periodo que tiene el codigo dado a vigente, si este esta en estado 1 = configurado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo del periodo ministerial
+          required: true
+          schema:
+            $ref: "#/definitions/vigentarperiodo"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+        403:
+          description: No se puede realizar la acción porque no se cumplen condiciones
+   
+  
+definitions:
+  createperiodo:
+    type: object
+    properties:
+      descripcion:
+        description: descripción del periodo ministerial
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      anio:
+        description: año en el que se va ejecutar el periodo
+        type: integer,
+        example: 2021
+  updateperiodo:
+    type: object
+    properties:
+      codigo:
+        description: codigo o id del periodo a actualizar
+        type: string,
+        example: "PM-1212121212"
+      descripcion:
+        description: descripción del periodo ministerial
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      anio:
+        description: año en el que se va ejecutar el periodo
+        type: integer,
+        example: 2021
+  finalizarperiodo:
+    type: object
+    properties:
+      codigo:
+        description: codigo del periodo a finalizar
+        type: string,
+        example: "PM-1212121212"
+
+  vigentarperiodo:
+    type: object
+    properties:
+      codigo:
+        description: codigo del periodo a cambiar estado a vigente
+        type: string,
+        example: "PM-1212121212"
+     
