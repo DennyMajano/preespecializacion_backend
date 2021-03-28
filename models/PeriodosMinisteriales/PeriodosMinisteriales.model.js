@@ -75,7 +75,7 @@ module.exports = {
     }
 
     return simpleTransactionQuery(
-      "select * from periodo_ministerial where id = ? OR codigo = ? limit 50",
+      "select * from periodo_ministerial where estado = 1 AND(id = ? OR codigo = ?) limit 50",
       [codigo, codigo]
     );
   },
