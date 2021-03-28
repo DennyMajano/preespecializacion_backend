@@ -114,7 +114,7 @@ function validateResultForInsert201(
   if (result.errno || result instanceof Error) throw result;
   //Si los datos de entrada son validos y no se devolvio error entonces
   if (result.affectedRows > 0) {
-    res.status(201).json({ success: true, data: onSucces(result) });
+    res.status(201).json(onSucces(result) );
   } else {
     throw new Error("Los datos no pudieron ser registrados");
   }
@@ -131,7 +131,7 @@ function validateResultForUpdate200(
   //Si los datos de entrada son validos y no se devolvio error entonces
   console.log(result);
   if (result.affectedRows >= 0) {
-    res.status(200).json({ success: true, data: onSucces(result) });
+    res.status(200).json(onSucces(result) );
   } else {
     throw new Error(
       "Los datos no pudieron ser registrados, probablemente el registro especificado no existe"
