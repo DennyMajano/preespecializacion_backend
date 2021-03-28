@@ -99,6 +99,18 @@ module.exports = () => {
       sendError(error, res);
     }
   };
+  periodosministeriales.delete = async (req, res) => {
+    try {
+      console.log(req.body);
+      const result = await modelPeriodos.deletePeriodo(
+        req.body.id
+      );
+      console.log(result);
+      validateResultForDelete200(result, res);
+    } catch (error) {
+      sendError(error, res);
+    }
+  };
   return periodosministeriales;
 };
 
@@ -169,7 +181,22 @@ function validateResultForSelect200(
   //res.status(200).json({ success: true, data: onSucces(result) });
   res.status(200).json(onSucces(result));
 }
+function validateResultForDelete200(
+  result,
+  res,
+  onSucces = (result) => {
+    return "Registro eliminado";
+  }
+) {
+  //Verificacion de error devuelto
+  if (result.errno || result instanceof Error) throw result;
+  //Si los datos de entrada son validos y no se devolvio error entonces
+  console.log(result);
+  //res.status(200).json({ success: true, data: onSucces(result) });
+  res.status(200).json(onSucces(result));
+}
 function sendError(error, res) {
+  console.log(error);
   if (error.errno) {
     if (error.errno == 1) {
       return res.status(400).json({ success: false, error: "Faltan datos" });

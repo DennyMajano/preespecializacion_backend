@@ -137,6 +137,19 @@ module.exports = {
       [codigo]
     );
   },
+  deletePeriodo: async (id) =>{
+    if (!areFieldsValid([id])) {
+      return {
+        errno: 1,
+        error: new Error("Faltan datos"),
+      };
+    }
+
+    return await simpleTransactionQuery(
+      "DELETE FROM periodo_ministerial WHERE id = ?",
+      [id]
+    );
+  }
 };
 
 //Base

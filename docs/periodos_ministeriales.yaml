@@ -93,6 +93,29 @@ paths:
           description: Se ejecutó la consulta con éxito
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
+  /periodo:
+    delete: # endpoint request type (post request)
+      tags: # Tag property
+        - Periodos Ministeriales # Value of the tag
+      summary: eliminar un periodo ministerial por id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: id del periodo ministerial
+          required: true
+          schema:
+            $ref: "#/definitions/deleteperiodo"
+         
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
   /periodo/{codigo}:
     get: # endpoint request type (post request)
       tags: # Tag property
@@ -104,15 +127,16 @@ paths:
       parameters: # request parameters
         - name: codigo
           in: path
-          description: id o código del periodo ministerial. Si no se se encuentra el periodo ministerial, la propiedad data es null
+          description: id o código del periodo ministerial.
           required: true       
       responses: # server responses
         200:
-          description: Se ejecutó la consulta con éxito. Si no se se encuentra el periodo ministerial,  la propiedad data es null
+          description: Se ejecutó la consulta con éxito.
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
+
   /periodo/finalizar: # path of the user from your endpoint
    put: # endpoint request type (post request)
       tags: # Tag property
@@ -151,7 +175,7 @@ paths:
           description: código del periodo ministerial.
       responses: # server responses
         200:
-          description: Se ejecutó la consulta con éxito. se devuelve una propiedad de data llamada puedeFinalizar con un booleano
+          description: Se ejecutó la consulta con éxito
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
@@ -224,4 +248,11 @@ definitions:
         description: codigo del periodo a cambiar estado a vigente
         type: string,
         example: "PM-1212121212"
+  deleteperiodo:
+    type: object
+    properties:
+      id:
+        description: id del periodo ministerial
+        type: string,
+        example: "12"
      

@@ -11,6 +11,7 @@ module.exports = () => {
     router.get("/periodos/all", periodosController.getAll);
     router.get("/periodos/estado/:estado", periodosController.getByState);
     router.get("/periodo/:codigo", periodosController.getByCodigoOrId);
+    router.delete("/periodo", periodosController.delete);
     router.put("/periodo/finalizar", periodosController.finalizarPeriodo);
     router.put("/periodo/vigente", periodosController.ponerVigentePeriodo);
     router.get("/periodo/finalizar/:codigo", periodosController.isPeriodoMinisterialValidForFinalizar);
