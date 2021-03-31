@@ -1,20 +1,17 @@
 const GeneratorCode = require("../../helpers/GeneratorCode");
-const database = require("../../config/database.async");
-const db = require("../../config/conexion");
-const isUndefinedOrNull = require("validate.io-undefined-or-null/lib");
+const model = require("../Model");
+const comprobations = require("../../helpers/DataComprobations");
+const errors = require ("../../helpers/OurErrors");
 
 module.exports = {
   create: async (data) => {
     const { descripcion, anio } = data;
-    if (!areFieldsValid([descripcion, anio])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([descripcion, anio])) {
+      return errors.faltanDatosError()
     }
 
     const periodoCodigo = GeneratorCode("PM");
-    let result = await simpleTransactionQuery(
+    let result = await model.simpleTransactionQuery(
       "INSERT INTO `periodo_ministerial`(`codigo`, `descripcion`, `anio`) VALUES (?,?,?) ",
       [periodoCodigo, descripcion, anio]
     );
@@ -23,22 +20,18 @@ module.exports = {
   },
   update: async (data) => {
     const { descripcion, anio, codigo } = data;
-    if (!areFieldsValid([descripcion, anio, codigo])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([descripcion, anio, codigo])) {
+      return errors.faltanDatosError()
     }
 
-    return await simpleTransactionQuery(
+    return await model.simpleTransactionQuery(
       "update periodo_ministerial set descripcion=?, anio =? where codigo=? OR id =? ",
       [descripcion, anio, codigo, codigo]
     );
   },
-
   getAllPeriodosMinisteriales: async (filter) => {
     if (isUndefinedOrNull(filter)) {
-      return await simpleTransactionQuery(
+      return await model.simpleTransactionQuery(
         "select * from periodo_ministerial limit 50"
       );
     } else {
@@ -50,133 +43,83 @@ module.exports = {
       }
       query += " ORDER BY PM.codigo DESC LIMIT 50";
       console.log(query);
-      return await simpleTransactionQuery(query);
+      return await model.simpleTransactionQuery(query);
     }
   },
   getAllPeriodosMinisterialesByState: async (estado) => {
-    if (!areFieldsValid([estado])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([estado])) {
+      return errors.faltanDatosError();
     }
 
-    return simpleTransactionQuery(
+    return model.simpleTransactionQuery(
       "select * from periodo_ministerial where estado = ? limit 50",
       [estado]
     );
   },
   getPeriodoMinisterialByCodigoOrId: async (codigo) => {
-    if (!areFieldsValid([codigo])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([codigo])) {
+      return errors.faltanDatosError();
     }
-
-    return simpleTransactionQuery(
+    return model.simpleTransactionQuery(
       "select * from periodo_ministerial where estado = 1 AND(id = ? OR codigo = ?) limit 50",
       [codigo, codigo]
     );
   },
   isPeriodoMinisterialValidToFinalizar: async (codigo) => {
-    if (!areFieldsValid([codigo])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
-    }
-    
-    const gestionesNoFinalizadas = await simpleTransactionQuery(
-        "SELECT count(*) as cantidad FROM gestiones WHERE periodo = ? AND (estado = 1 OR estado = 3)",
-        [codigo]
-      );
-
-      return {puedeFinalizar: gestionesNoFinalizadas[0].cantidad < 1};
-  },
-  setFinalizadoPeriodoMinisterial: async (data) => {
-    const { codigo } = data;
-    if (!areFieldsValid([codigo])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([codigo])) {
+      return errors.faltanDatosError();
     }
 
-    const gestionesNoFinalizadas = await simpleTransactionQuery(
+    const gestionesNoFinalizadas = await model.simpleTransactionQuery(
       "SELECT count(*) as cantidad FROM gestiones WHERE periodo = ? AND (estado = 1 OR estado = 3)",
       [codigo]
     );
-    console.log(gestionesNoFinalizadas);
-    //Si las gestiones no finalizadas son menor que uno es decir cero se actualiza de lo contrario no.
-    if (gestionesNoFinalizadas[0].cantidad < 1) {
-      return await simpleTransactionQuery(
-        "UPDATE `periodo_ministerial`set estado=3 WHERE codigo=?",
-        [codigo]
-      );
-    } else {
-      return {
-        errno: 2,
-        error: new Error(
-          "No se puede finalizar por gestiones aun no finalizadas"
-        ),
-      };
-    }
+
+    return { puedeFinalizar: gestionesNoFinalizadas[0].cantidad < 1 };
   },
   setVigentePeriodoMinisterial: async (data) => {
     const { codigo } = data;
-    if (!areFieldsValid([codigo])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+    if (!comprobations.areFieldsValid([codigo])) {
+      return errors.faltanDatosError();
     }
 
-    return await simpleTransactionQuery(
+    return await model.simpleTransactionQuery(
       "update periodo_ministerial set estado=2 where codigo=? and estado = 1",
       [codigo]
     );
   },
-  deletePeriodo: async (id) =>{
-    if (!areFieldsValid([id])) {
-      return {
-        errno: 1,
-        error: new Error("Faltan datos"),
-      };
+  deletePeriodo: async (id) => {
+    if (!comprobations.areFieldsValid([id])) {
+      return errors.faltanDatosError();
     }
 
-    return await simpleTransactionQuery(
+    return await model.simpleTransactionQuery(
       "DELETE FROM periodo_ministerial WHERE id = ?",
       [id]
     );
-  }
-};
-
-//Base
-async function simpleTransactionQuery(
-  sqlQuery,
-  params,
-  callback = async (queryResult) => {
-    return queryResult;
-  }
-) {
-  try {
-    let result;
-    const transactionResult = await database.Transaction(db, async () => {
-      //cosas
-      const queryResult = await db.query(sqlQuery, params);
-
-      result = await callback(queryResult);
-    });
-
-    if (transactionResult.errno || transactionResult instanceof Error) {
-      throw transactionResult;
+  },
+  setFinalizadoPeriodoMinisterial: async (data) => {
+    const { codigo } = data;
+    if (!comprobations.areFieldsValid([codigo])) {
+      return errors.faltanDatosError();
     }
-    return result;
-  } catch (error) {
-    return error;
-  }
-}
-function areFieldsValid(fields = []) {
-  return !fields.some((field) => isUndefinedOrNull(field));
-}
+
+    return await model.multipleTransactionQuery(
+      async (dbConnection) => {
+        const gestionesNoFinalizadas = await dbConnection.query(
+          "SELECT count(*) as cantidad FROM gestiones WHERE periodo = ? AND (estado = 1 OR estado = 3)",
+          [codigo]
+        );
+        if (gestionesNoFinalizadas[0].cantidad < 1) {
+          return dbConnection.query(
+            "UPDATE `periodo_ministerial`set estado=3 WHERE codigo=?",
+            [codigo]
+          );
+        } else {
+          return errors.requerimientosNoPasados("No se pueden finalizar periodos ministeriales con gestiones no finalizadas");
+        }
+      }
+    );
+
+  },
+};
