@@ -1,0 +1,249 @@
+paths:
+  /gestiones: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Guardar los datos de una nueva gestión
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos de la nueva gestión
+          required: true
+          schema:
+            $ref: "#/definitions/creategestion"
+      responses: # server responses
+        201:
+          description: Se creó con éxito la nueva gestión
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+    put: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Actualizar los datos de una gestión
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos a actualizar
+          required: true
+          schema:
+            $ref: "#/definitions/updategestion"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /gestion:
+    delete: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: eliminar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/deletegestion"
+         
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestion/asignacion:
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Guardar los datos de una nueva asignación
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos de la asignación
+          required: true
+          schema:
+            $ref: "#/definitions/createasignacioninforme"
+      responses: # server responses
+        201:
+          description: Se creó con éxito la nueva gestión
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
+    delete: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: eliminar una asignacion de informe
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo de la gestion y id de la asignacion
+          required: true
+          schema:
+            $ref: "#/definitions/deleteasignaciongestion"
+         
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestion/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: id o código 
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestiones/informes/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener los informes de una gestion con el codigo de la gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código 
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  
+  /gestiones/activas:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener lista de gestiones actualmente activas
+      consume: application/json
+      produces:
+        - application/json   
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+  
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  creategestion:
+    type: object
+    properties:
+      descripcion:
+        description: descripción de la nueva gestión
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      tipo:
+        description: id del tipo de gestión
+        type: integer,
+        example: 1
+      fechaRecibirFin:
+        description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
+        type: string,
+        example: "2021-05-03"
+      periodo:
+        description: codigo del periodo al que pertenece la gestión
+        type: string
+        example: "PM-12212121"
+  updategestion:
+    type: object
+    properties:
+      descripcion:
+        description: descripción de la gestión
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      tipo:
+        description: id del tipo de gestión
+        type: integer,
+        example: 1
+      fechaRecibirFin:
+        description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
+        type: string
+        example: "2021-05-03"
+      codigoGestion:
+        description: codigo de la gestión
+        type: string
+        example: "GE-12212121"
+  deletegestion:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo o id de la gestion
+        type: string,
+        example: "GE-121212"
+  deleteasignaciongestion:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo de la gestion
+        type: string
+        example: "GE-121212"
+      idGestionInforme:
+        description: id de la asignacion
+        type: integer
+        example: 1
+  createasignacioninforme:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo de la gestión
+        type: string
+        example: "GE-121212"
+      informeId:
+        description: id del infome a asignar
+        type: integer
+        example: 1
+      mesId:
+        description: id del mes del informe
+        type: integer
+        example: 5
+  
