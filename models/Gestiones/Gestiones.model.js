@@ -145,5 +145,24 @@ module.exports = {
       return gestionInformeResult;
     });
   },
+  getIglesiasQueHanReportado: async (codigoGestion) => {
+    if (!comprobations.areFieldsValid([codigoGestion])) {
+      return errors.faltanDatosError();
+    }
+
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      return dbConnection.query(
+        `
+      SELECT I.id, I.codigo,nombre, telefono, 
+      (select nombre from departamentos WHERE id = I.departamento) as departamento,
+      (select nombre from municipios WHERE id = I.municipio) as municipio, 
+      (select nombre from cantones WHERE id = I.canton) as canton, distrito,
+      (select nombre from tipo_iglesias WHERE id = I.tipo_iglesia) as tipo_iglesia,
+      zona, condicion  FROM iglesias as I join informes_recibidos_gestion as IRG on IRG.iglesia = I.codigo where IRG.gestion = ? LIMIT 50
+        `,
+        [codigoGestion]
+      );
+    });
+  },
   template: async (data) => {},
 };

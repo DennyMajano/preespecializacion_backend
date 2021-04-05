@@ -77,6 +77,14 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.getIglesiasQueHanReportado = async (req, res) => {
+    try {
+      const result = await modelGestiones.getIglesiasQueHanReportado(req.params.codigo);
+      controller.validateResultForSelect(result,res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.template = async (req, res) => {
     try {
     } catch (error) {

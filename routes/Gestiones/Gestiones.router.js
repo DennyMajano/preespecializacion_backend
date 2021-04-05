@@ -11,6 +11,7 @@ module.exports = () => {
   router.get("/gestion/:codigo", gestionesController.getByCodigoOrId);
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
   router.get("/gestiones/informes/:codigo", gestionesController.getInformesAsignados);
+  router.get("/gestion/iglesias/enviado/:codigo", gestionesController.getIglesiasQueHanReportado);
   /*   router.get("/periodos/all/:filter", periodosController.getAll);
     router.get("/periodos/all", periodosController.getAll);
     router.get("/periodos/estado/:estado", periodosController.getByState);
