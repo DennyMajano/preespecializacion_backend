@@ -135,7 +135,18 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion, informeId, mesId])) {
       return errors.faltanDatosError();
     }
+    
     return await model.multipleTransactionQuery(async (dbConnection) => {
+
+      const verificacionInformeDuplicados = await dbConnection.query(
+        "select informe,mes from gestion_informes as GI join meses_gestion_informe MGI on GI.id = MGI.gestion_informe where MGI.mes = ? AND GI.informe = ?",
+        [mesId, informeId]
+        );
+      
+      if(verificacionInformeDuplicados.length>0){
+        return errors.requerimientosNoPasados();
+      }
+
       const gestionInformeResult = await dbConnection.query(
         "INSERT INTO `gestion_informes`(`gestion`, `informe`) VALUES (?,?)",
         [codigoGestion, informeId]
