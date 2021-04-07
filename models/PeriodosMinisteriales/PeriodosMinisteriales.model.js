@@ -1,13 +1,13 @@
 const GeneratorCode = require("../../helpers/GeneratorCode");
 const model = require("../Model");
 const comprobations = require("../../helpers/DataComprobations");
-const errors = require ("../../helpers/OurErrors");
+const errors = require("../../helpers/OurErrors");
 
 module.exports = {
   create: async (data) => {
     const { descripcion, anio } = data;
     if (!comprobations.areFieldsValid([descripcion, anio])) {
-      return errors.faltanDatosError()
+      return errors.faltanDatosError();
     }
 
     const periodoCodigo = GeneratorCode("PM");
@@ -21,7 +21,7 @@ module.exports = {
   update: async (data) => {
     const { descripcion, anio, codigo } = data;
     if (!comprobations.areFieldsValid([descripcion, anio, codigo])) {
-      return errors.faltanDatosError()
+      return errors.faltanDatosError();
     }
 
     return await model.simpleTransactionQuery(
@@ -83,10 +83,21 @@ module.exports = {
       return errors.faltanDatosError();
     }
 
-    return await model.simpleTransactionQuery(
-      "update periodo_ministerial set estado=2 where codigo=? and estado = 1",
-      [codigo]
-    );
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const resultVigentes = await  dbConnection.query(
+        "SELECT * FROM `periodo_ministerial` WHERE`estado` = 2"
+      );
+
+      console.log(resultVigentes);
+      if (resultVigentes.length > 0) {
+        return errors.requerimientosNoPasados();
+      } else {
+        return await dbConnection.query(
+          "update periodo_ministerial set estado=2 where codigo=? and estado = 1",
+          [codigo]
+        );
+      }
+    });
   },
   deletePeriodo: async (id) => {
     if (!comprobations.areFieldsValid([id])) {
@@ -104,22 +115,21 @@ module.exports = {
       return errors.faltanDatosError();
     }
 
-    return await model.multipleTransactionQuery(
-      async (dbConnection) => {
-        const gestionesNoFinalizadas = await dbConnection.query(
-          "SELECT count(*) as cantidad FROM gestiones WHERE periodo = ? AND (estado = 1 OR estado = 3)",
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const gestionesNoFinalizadas = await dbConnection.query(
+        "SELECT count(*) as cantidad FROM gestiones WHERE periodo = ? AND (estado = 1 OR estado = 3)",
+        [codigo]
+      );
+      if (gestionesNoFinalizadas[0].cantidad < 1) {
+        return dbConnection.query(
+          "UPDATE `periodo_ministerial`set estado=3 WHERE codigo=?",
           [codigo]
         );
-        if (gestionesNoFinalizadas[0].cantidad < 1) {
-          return dbConnection.query(
-            "UPDATE `periodo_ministerial`set estado=3 WHERE codigo=?",
-            [codigo]
-          );
-        } else {
-          return errors.requerimientosNoPasados("No se pueden finalizar periodos ministeriales con gestiones no finalizadas");
-        }
+      } else {
+        return errors.requerimientosNoPasados(
+          "No se pueden finalizar periodos ministeriales con gestiones no finalizadas"
+        );
       }
-    );
-
+    });
   },
 };
