@@ -304,4 +304,29 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-};
+  findAllMeses: async () => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        data = await db.query(`SELECT id, nombre, numerico FROM meses`);
+
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: element.id,
+              nombre: element.nombre,
+              numerico: element.numerico,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+}

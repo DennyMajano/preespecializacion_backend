@@ -137,6 +137,18 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   };
+  generales.getSelectMeses = async (req, res) => {
+    try {
+      let result = await modelGenerales.findAllMeses();
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      res.status(500).json("Error de servidor");
+    }
+  };
 
   return generales;
 };

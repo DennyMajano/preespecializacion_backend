@@ -254,4 +254,25 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de meses
+  /generales/meses:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene todos los Meses
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código                                                            
