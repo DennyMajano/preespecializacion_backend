@@ -32,7 +32,7 @@ module.exports = {
       const result = await dbConnection.query(
         "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
         //"INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?)",
-        [codigoGestion, descripcion, tipo, usuario,fechaRecibirInicio, fechaRecibirFin, periodo]
+        [codigoGestion, descripcion, tipo, usuario,fechaRecibirInicio, fechaRecibirFin+" 23:59:00", periodo]
       );
       result.code = codigoGestion;
       return result;
@@ -64,7 +64,7 @@ module.exports = {
       const result = await dbConnection.query(
         // "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
         "UPDATE `gestiones` SET `descripcion`=?,`tipo_gestion`=?,`usuario_uac`=?,`fecha_recibir_fin`=? WHERE `codigo` = ?",
-        [descripcion, tipo, usuario, fechaRecibirFin, codigoGestion]
+        [descripcion, tipo, usuario, fechaRecibirFin+" 23:59:00", codigoGestion]
       );
       return result;
     });
