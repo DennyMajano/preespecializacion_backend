@@ -6,21 +6,17 @@ const Token = require("../../services/security/Token");
 
 module.exports = {
   create: async (data) => {
-    const { usuarioToken, descripcion, tipo, fechaRecibirFin, periodo } = data;
-    console.log([
-      usuarioToken,
-      descripcion,
-      tipo,
-      /* fechaRecibirInicio,*/ fechaRecibirFin,
-      periodo,
-    ]);
+    const { usuarioToken, descripcion, tipo,fechaRecibirInicio, fechaRecibirFin, periodo } = data;
+    console.log(data);
+    console.log("----");
     //Comprobamos que los campos sean validos
     if (
       !comprobations.areFieldsValid([
         usuarioToken,
         descripcion,
         tipo,
-        /* fechaRecibirInicio,*/ fechaRecibirFin,
+        fechaRecibirInicio,
+        fechaRecibirFin,
         periodo,
       ])
     ) {
@@ -34,9 +30,9 @@ module.exports = {
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
-        // "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
-        "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?)",
-        [codigoGestion, descripcion, tipo, usuario, fechaRecibirFin, periodo]
+        "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
+        //"INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?)",
+        [codigoGestion, descripcion, tipo, usuario,fechaRecibirInicio, fechaRecibirFin, periodo]
       );
       result.code = codigoGestion;
       return result;

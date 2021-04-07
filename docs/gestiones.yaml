@@ -211,6 +211,10 @@ definitions:
         description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
         type: string,
         example: "2021-05-03"
+      fechaRecibirInicio:
+        description: fecha en la que incia el espacio para recibir los reportes de las iglesias
+        type: string,
+        example: "2021-05-03"
       periodo:
         description: codigo del periodo al que pertenece la gestión
         type: string
