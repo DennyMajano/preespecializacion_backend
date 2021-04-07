@@ -159,14 +159,14 @@ paths:
     get: # endpoint request type (post request)
       tags: # Tag property
         - Gestiones # Value of the tag
-      summary: obtener los informes de una gestion con el codigo de la gestion
+      summary: obtener los informes de una gestion con el codigo o id de la gestion
       consume: application/json
       produces:
         - application/json
       parameters: # request parameters
         - name: codigo
           in: path
-          description: código 
+          description: código o id 
           required: true       
       responses: # server responses
         200:

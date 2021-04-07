@@ -125,8 +125,8 @@ module.exports = {
     }
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        "select informe as informe_id, (select nombre from maestro_de_informes where id = informe) as informe_nombre, mes as mes_id, (select nombre from meses where id = MGI.mes) as mes_nombre, gestion_informe from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe where GI.gestion = ?",
-        [codigoGestion]
+        "select informe as informe_id, (select nombre from maestro_de_informes where id = informe) as informe_nombre, mes as mes_id, (select nombre from meses where id = MGI.mes) as mes_nombre, gestion_informe from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion  where GI.gestion = ?  OR G.id = ?",
+        [codigoGestion,codigoGestion]
       );
     });
   },
