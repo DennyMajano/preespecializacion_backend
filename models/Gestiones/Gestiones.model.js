@@ -100,7 +100,7 @@ module.exports = {
 
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return dbConnection.query(
-        "select id, codigo, tipo_gestion as tipo_gestion_id, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, fecha_publicacion, fecha_recibir_inicio, fecha_recibir_fin from gestiones WHERE codigo = ? or id =?",
+        "select id, codigo,descripcion, tipo_gestion as tipo_gestion_id, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y %r') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin from gestiones WHERE codigo = ? or id =?",
         [codigoGestion, codigoGestion]
       );
     });
@@ -108,14 +108,14 @@ module.exports = {
   getGestionesActivas: async () => {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        "select id, codigo, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, fecha_publicacion, fecha_recibir_inicio, fecha_recibir_fin from gestiones where estado = 2"
+        "select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y %r') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin from gestiones where estado = 2"
       );
     });
   },
   getGestionesInactivas: async () => {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        "select id, codigo, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, fecha_publicacion, fecha_recibir_inicio, fecha_recibir_fin from gestiones where estado = 1"
+        "select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y %r') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin from gestiones where estado = 1"
       );
     });
   },
