@@ -112,6 +112,13 @@ module.exports = {
       );
     });
   },
+  getGestionesInactivas: async () => {
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      return await dbConnection.query(
+        "select id, codigo, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, fecha_publicacion, fecha_recibir_inicio, fecha_recibir_fin from gestiones where estado = 1"
+      );
+    });
+  },
   getInformesAsignados: async (codigoGestion) => {
     if (!comprobations.areFieldsValid([codigoGestion])) {
       return errors.faltanDatosError();

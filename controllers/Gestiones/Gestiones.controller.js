@@ -61,6 +61,14 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.getGestionesInactivas = async (req, res) => {
+    try {
+      const result = await modelGestiones.getGestionesInactivas();
+      validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.getInformesAsignados = async (req, res) => {
     try {
       const result = await modelGestiones.getInformesAsignados(req.params.codigo);

@@ -10,6 +10,7 @@ module.exports = () => {
   router.delete("/gestion/asignacion", gestionesController.deleteAsignacionInforme);
   router.get("/gestion/:codigo", gestionesController.getByCodigoOrId);
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
+  router.get("/gestiones/inactivas", gestionesController.getGestionesInactivas);
   router.get("/gestiones/informes/:codigo", gestionesController.getInformesAsignados);
   router.get("/gestion/iglesias/enviado/:codigo", gestionesController.getIglesiasQueHanReportado);
   /*   router.get("/periodos/all/:filter", periodosController.getAll);

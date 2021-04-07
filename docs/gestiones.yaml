@@ -180,7 +180,21 @@ paths:
     get: # endpoint request type (post request)
       tags: # Tag property
         - Gestiones # Value of the tag
-      summary: obtener lista de gestiones actualmente activas
+      summary: obtener lista de gestiones actualmente publicadas estado = 2
+      consume: application/json
+      produces:
+        - application/json   
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /gestiones/inactivas:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener lista de gestiones actualmente no publicadas, estado = 1
       consume: application/json
       produces:
         - application/json   
