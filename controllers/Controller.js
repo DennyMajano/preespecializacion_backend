@@ -126,6 +126,7 @@ module.exports = {
     }
   },
 
+  ///Solo es una prueba de concepto...
   controllerMethod: async (req, res, bodyMethod=async(req, res)=>{}) =>{
     try {
       return await bodyMethod(req, res);
