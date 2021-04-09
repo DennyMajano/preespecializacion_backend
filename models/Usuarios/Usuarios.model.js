@@ -9,6 +9,7 @@ const GenerateUID = require("../../helpers/UID");
 const Datetime = require("../../services/Date/Datetime");
 const { copySync } = require("fs-extra");
 const isUndefinedOrNull = require("validate.io-undefined-or-null/lib");
+const EmailTemplates = require("../../helpers/EmailTemplates");
 
 module.exports = {
   create: async (data) => {
@@ -48,19 +49,12 @@ module.exports = {
             );
 
             //Aqui enviar el correo
-
-            let html_message = `
-            Bienvenido al sistema ${alias} esta es tu codigo de seguridad: ${password_generate} 
-            <br/>
-            <a href='${process.env.URL_FRONTEND}validar_acceso/${uidChange}'>Enlace</a>
-            
-            `;
             let info = mail.send(
               "Bienvenido al SISTEMA",
               correo_electronico,
               "ASIGNACION DE CONTRASEÑA",
               ``,
-              html_message
+              EmailTemplates.WelcomeEmail(alias,password_generate,`${process.env.URL_FRONTEND}validar_acceso/${uidChange}`)
             );
 
             console.log(info);
@@ -381,10 +375,12 @@ module.exports = {
               );
               let htmlForMail;
               if (changeRequestType == 1){
-                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+                /* htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>"; */
+                htmlForMail = EmailTemplates.UserChangePasswordEmail(userRegisteredRow[0].alias,process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken);
               }
               else{
-                htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>";
+                /* htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>"; */
+                htmlForMail = EmailTemplates.AdministratorChangePasswordEmail(userRegisteredRow[0].alias,temporalPassword,process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken)
               }
               let info = mail.send(
                 "Administración de IDDPU El Salvador",
@@ -492,3 +488,4 @@ module.exports = {
   },
   
 };
+
