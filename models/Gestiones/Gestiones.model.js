@@ -6,7 +6,14 @@ const Token = require("../../services/security/Token");
 
 module.exports = {
   create: async (data) => {
-    const { usuarioToken, descripcion, tipo,fechaRecibirInicio, fechaRecibirFin, periodo } = data;
+    const {
+      usuarioToken,
+      descripcion,
+      tipo,
+      fechaRecibirInicio,
+      fechaRecibirFin,
+      periodo,
+    } = data;
     console.log(data);
     console.log("----");
     //Comprobamos que los campos sean validos
@@ -32,7 +39,15 @@ module.exports = {
       const result = await dbConnection.query(
         "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
         //"INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?)",
-        [codigoGestion, descripcion, tipo, usuario,fechaRecibirInicio, fechaRecibirFin+" 23:59:00", periodo]
+        [
+          codigoGestion,
+          descripcion,
+          tipo,
+          usuario,
+          fechaRecibirInicio,
+          fechaRecibirFin + " 23:59:00",
+          periodo,
+        ]
       );
       result.code = codigoGestion;
       return result;
@@ -64,7 +79,13 @@ module.exports = {
       const result = await dbConnection.query(
         // "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
         "UPDATE `gestiones` SET `descripcion`=?,`tipo_gestion`=?,`usuario_uac`=?,`fecha_recibir_fin`=? WHERE `codigo` = ?",
-        [descripcion, tipo, usuario, fechaRecibirFin+" 23:59:00", codigoGestion]
+        [
+          descripcion,
+          tipo,
+          usuario,
+          fechaRecibirFin + " 23:59:00",
+          codigoGestion,
+        ]
       );
       return result;
     });
@@ -126,7 +147,7 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
         "select informe as informe_id, (select nombre from maestro_de_informes where id = informe) as informe_nombre, mes as mes_id, (select nombre from meses where id = MGI.mes) as mes_nombre, gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion  where GI.gestion = ?  OR G.id = ?",
-        [codigoGestion,codigoGestion]
+        [codigoGestion, codigoGestion]
       );
     });
   },
@@ -135,15 +156,14 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion, informeId, mesId])) {
       return errors.faltanDatosError();
     }
-    
-    return await model.multipleTransactionQuery(async (dbConnection) => {
 
+    return await model.multipleTransactionQuery(async (dbConnection) => {
       const verificacionInformeDuplicados = await dbConnection.query(
         "select informe,mes from gestion_informes as GI join meses_gestion_informe MGI on GI.id = MGI.gestion_informe where MGI.mes = ? AND GI.informe = ?",
         [mesId, informeId]
-        );
-      
-      if(verificacionInformeDuplicados.length>0){
+      );
+
+      if (verificacionInformeDuplicados.length > 0) {
         return errors.requerimientosNoPasados();
       }
 
@@ -183,21 +203,49 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion, codigoIglesia])) {
       return errors.faltanDatosError();
     }
-
-    return await model.multipleTransactionQuery(async(dbConnection)=>{
-
-      const testGestion = await dbConnection.query("SELECT codigo from gestiones where codigo=?",[codigoGestion]);
-      const testiglesia = await dbConnection.query("SELECT codigo from iglesias where codigo=?",[codigoIglesia]);
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const testGestion = await dbConnection.query(
+        "SELECT codigo from gestiones where codigo=?",
+        [codigoGestion]
+      );
+      const testiglesia = await dbConnection.query(
+        "SELECT codigo from iglesias where codigo=?",
+        [codigoIglesia]
+      );
       console.log(testGestion.length);
       console.log(testiglesia.length);
-      if(testGestion.length==0 || (testiglesia.length==0)){
+      if (testGestion.length == 0 || testiglesia.length == 0) {
         return errors.datosNoEncontrados();
       }
       console.log("pasaron");
       return await dbConnection.query(
         "SELECT GI.gestion, (select nombre from maestro_de_informes where id=GI.informe )as informe, IF(IRG.informe_ide is NULL,0,1) as estado FROM  gestion_informes as GI  left join informes_recibidos_gestion as IRG on GI.informe = IRG.informe_maestro where GI.gestion = ? AND (IRG.iglesia = ? OR IRG.iglesia is NULL) AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
-        [codigoGestion,codigoIglesia,codigoIglesia]
-        );
+        [codigoGestion, codigoIglesia, codigoIglesia]
+      );
+    });
+  },
+  getInformesAEnviarDeIglesia: async (data) => {
+    const { codigoGestion, codigoIglesia } = data;
+    if (!comprobations.areFieldsValid([codigoGestion, codigoIglesia])) {
+      return errors.faltanDatosError();
+    }
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const testGestion = await dbConnection.query(
+        "SELECT codigo from gestiones where codigo=?",
+        [codigoGestion]
+      );
+      const testiglesia = await dbConnection.query(
+        "SELECT codigo from iglesias where codigo=?",
+        [codigoIglesia]
+      );
+      if (testGestion.length == 0 || testiglesia.length == 0) {
+        return errors.datosNoEncontrados();
+      }
+      console.log("pasaron");
+      return await dbConnection.query(
+        "SELECT II.iglesia, GI.gestion, (select nombre from maestro_de_informes where id = II.informe) as informe_nombre, II.informe as informe_id FROM iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where II.iglesia = ? AND GI.gestion = ?",
+        [codigoIglesia, codigoGestion]
+      );
     });
   },
   template: async (data) => {},

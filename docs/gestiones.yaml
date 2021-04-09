@@ -158,6 +158,63 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+  
+  /gestion/iglesia/informes/{codigoGestion}/{codigoIglesia}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene los informes que debe enviar la iglesia segun que informes esté en la gestión y los que estan asignados a la iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true              
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+
+  /gestion/{codigoGestion}/iglesia/{codigoIglesia}/informes:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene los informes que debe enviar la iglesia segun que informes esté en la gestión y los que estan asignados a la iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true              
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+
   /gestion/iglesias/enviado/{codigo}:
     get: # endpoint request type (post request)
       tags: # Tag property

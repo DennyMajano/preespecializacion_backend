@@ -71,7 +71,9 @@ module.exports = () => {
   };
   gestiones.getInformesAsignados = async (req, res) => {
     try {
-      const result = await modelGestiones.getInformesAsignados(req.params.codigo);
+      const result = await modelGestiones.getInformesAsignados(
+        req.params.codigo
+      );
       controller.validateResultForSelect(result, res);
     } catch (error) {
       controller.sendError(error, res);
@@ -80,22 +82,37 @@ module.exports = () => {
   gestiones.asignarInforme = async (req, res) => {
     try {
       const result = await modelGestiones.asignarInforme(req.body);
-      controller.validateResultForInsert(result,res);
+      controller.validateResultForInsert(result, res);
     } catch (error) {
       controller.sendError(error, res);
     }
   };
   gestiones.getIglesiasQueHanReportado = async (req, res) => {
     try {
-      const result = await modelGestiones.getIglesiasQueHanReportado(req.params.codigo);
-      controller.validateResultForSelect(result,res);
+      const result = await modelGestiones.getIglesiasQueHanReportado(
+        req.params.codigo
+      );
+      controller.validateResultForSelect(result, res);
     } catch (error) {
       controller.sendError(error, res);
     }
   };
   gestiones.getDetalleDeInformesDeIglesia = async (req, res) => {
     try {
-      const result = await modelGestiones.getDetalleDeInformesDeIglesia(req.params)
+      const result = await modelGestiones.getDetalleDeInformesDeIglesia(
+        req.params
+      );
+
+      controller.validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
+  gestiones.getDetalleDeInformesDeIglesia = async (req, res) => {
+    try {
+      const result = await modelGestiones.getInformesAEnviarDeIglesia(
+        req.params
+      );
 
       controller.validateResultForSelect(result, res);
     } catch (error) {
