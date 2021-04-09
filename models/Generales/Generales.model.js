@@ -329,4 +329,31 @@ module.exports = {
 
     return data !== undefined ? (!data.errno ? data_final : data) : transaction;
   },
-}
+
+  findAllTiposGestiones: async () => {
+    let data;
+    let transaction;
+    let data_final;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        data = await db.query(
+          `SELECT id, nombre FROM tipo_gestiones WHERE condicion=1`
+        );
+
+        if (!data.errno) {
+          data_final = data.map((element) => {
+            return {
+              id: element.id,
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return data !== undefined ? (!data.errno ? data_final : data) : transaction;
+  },
+};

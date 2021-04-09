@@ -41,7 +41,7 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de municipios where id departamento     
+  #get de municipios where id departamento
   /generales/municipios/{dep}:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -75,10 +75,10 @@ paths:
           name: dep # name of request, can be any name
           description: Colocar id del departamento
           required: true # can also be true depending on user preference
-          type: integer        
+          type: integer
         - in: path # request body
           name: filter # name of request, can be any name
-          description: Valor a buscar nombre del municipio 
+          description: Valor a buscar nombre del municipio
           required: true # can also be true depending on user preference
           type: string
       responses: # server responses
@@ -87,7 +87,7 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de cantones where municipios 
+  #get de cantones where municipios
   /generales/cantones/{municipio}:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -106,8 +106,8 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código     
- 
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
   #get de cantones where municipios filter
   /generales/cantones/{municipio}/{filter}:
     get: # endpoint request type (put request)
@@ -131,9 +131,9 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código     
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de nacionalidad  
+  #get de nacionalidad
   /generales/nacionalidad:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -153,7 +153,7 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de nacionalidades filter 
+  #get de nacionalidades filter
   /generales/nacionalidad/{filter}:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -172,9 +172,9 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código             
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de comodin 
+  #get de comodin
   /generales/comodin/{grupo}:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -194,9 +194,9 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código   
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de tipo_documento 
+  #get de tipo_documento
   /generales/tipo_documento:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -214,9 +214,9 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código       
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
-  #get de tipo_iglesia 
+  #get de tipo_iglesia
   /generales/tipo_iglesia:
     get: # endpoint request type (put request)
       tags: # Tag property
@@ -234,7 +234,7 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código  
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
 
   #get de tipo_informe
   /generales/tipo_informe:
@@ -275,4 +275,24 @@ paths:
         200:
           description: Datos consultados con éxito
         500:
-          description: Error de servidor ya sea por problemas de base de datos o logica en código                                                            
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+    #get de tipos gestiones
+  /generales/tipos_gestiones:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipos de gestiones
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código

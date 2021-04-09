@@ -62,10 +62,10 @@ module.exports = () => {
     "/generales/tipo_informe",
     generalesController.getSelectTipoInforme
   );
+  router.get("/generales/meses", generalesController.getSelectMeses);
   router.get(
-    "/generales/meses",
-    generalesController.getSelectMeses
+    "/generales/tipos_gestiones",
+    generalesController.getSelectTiposGestiones
   );
-
   return router;
 };
