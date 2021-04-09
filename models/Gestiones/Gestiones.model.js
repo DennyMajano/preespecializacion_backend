@@ -178,5 +178,27 @@ module.exports = {
       );
     });
   },
+  getDetalleDeInformesDeIglesia: async (data) => {
+    const { codigoGestion, codigoIglesia } = data;
+    if (!comprobations.areFieldsValid([codigoGestion, codigoIglesia])) {
+      return errors.faltanDatosError();
+    }
+
+    return await model.multipleTransactionQuery(async(dbConnection)=>{
+
+      const testGestion = await dbConnection.query("SELECT codigo from gestiones where codigo=?",[codigoGestion]);
+      const testiglesia = await dbConnection.query("SELECT codigo from iglesias where codigo=?",[codigoIglesia]);
+      console.log(testGestion.length);
+      console.log(testiglesia.length);
+      if(testGestion.length==0 || (testiglesia.length==0)){
+        return errors.datosNoEncontrados();
+      }
+      console.log("pasaron");
+      return await dbConnection.query(
+        "SELECT GI.gestion, (select nombre from maestro_de_informes where id=GI.informe )as informe, IF(IRG.informe_ide is NULL,0,1) as estado FROM  gestion_informes as GI  left join informes_recibidos_gestion as IRG on GI.informe = IRG.informe_maestro where GI.gestion = ? AND (IRG.iglesia = ? OR IRG.iglesia is NULL) AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
+        [codigoGestion,codigoIglesia,codigoIglesia]
+        );
+    });
+  },
   template: async (data) => {},
 };

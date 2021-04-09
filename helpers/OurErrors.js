@@ -21,4 +21,17 @@ module.exports = {
       ),
     };
   },
+  DATOS_NO_ENCONTRADOS: 3, //Una constante indicando el numero de error personalizado
+  datosNoEncontrados: (
+    message = "La información solicitada no fue enocontrada"
+  ) => {
+    return {
+      customErrno: 3,
+      message: message, //Mensaje personalizado al crear el error (tiene uno por defecto)
+      responseState: 404, //codigo de http de Estado que se deberia responder
+      error: new Error(
+        "La información solicitada no fue enocontrada" //Instancia del error generado
+      ),
+    };
+  },
 };

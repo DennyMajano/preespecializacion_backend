@@ -93,6 +93,15 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.getDetalleDeInformesDeIglesia = async (req, res) => {
+    try {
+      const result = await modelGestiones.getDetalleDeInformesDeIglesia(req.params)
+
+      controller.validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.template = async (req, res) => {
     try {
     } catch (error) {

@@ -134,6 +134,30 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
+  /gestion/iglesia/detalle/{codigoGestion}/{codigoIglesia}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene el detalle de los informes de la gestion especificada para la iglesia especificada, estado = 1 es enviado, estado = 0 es no enviado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true              
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
   /gestion/iglesias/enviado/{codigo}:
     get: # endpoint request type (post request)
       tags: # Tag property

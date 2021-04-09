@@ -9,6 +9,7 @@ module.exports = () => {
   router.delete("/gestion", gestionesController.delete);
   router.delete("/gestion/asignacion", gestionesController.deleteAsignacionInforme);
   router.get("/gestion/:codigo", gestionesController.getByCodigoOrId);
+  router.get("/gestion/iglesia/detalle/:codigoGestion/:codigoIglesia", gestionesController.getDetalleDeInformesDeIglesia);
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
   router.get("/gestiones/inactivas", gestionesController.getGestionesInactivas);
   router.get("/gestiones/informes/:codigo", gestionesController.getInformesAsignados);
