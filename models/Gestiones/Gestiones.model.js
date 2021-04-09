@@ -106,7 +106,7 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion, idGestionInforme])) {
       return errors.faltanDatosError();
     }
-
+    
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
         "DELETE FROM gestion_informes WHERE id = ? AND gestion = ?",

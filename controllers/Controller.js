@@ -72,9 +72,13 @@ module.exports = {
     result,
     res,
     onSucces = (result) => {
+      console.log(result);
       return "Registro eliminado";
     }
   ) => {
+    if(result.affectedRows==0){
+      result = OurErrors.datosNoEncontrados();
+    }
     //Verificacion de error devuelto
     resultErrorComprobation(result);
     //Si los datos de entrada son validos y no se devolvio error entonces
