@@ -106,7 +106,7 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion, idGestionInforme])) {
       return errors.faltanDatosError();
     }
-    
+
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
         "DELETE FROM gestion_informes WHERE id = ? AND gestion = ?",
@@ -246,6 +246,32 @@ module.exports = {
         "SELECT II.iglesia, GI.gestion, (select nombre from maestro_de_informes where id = II.informe) as informe_nombre, II.informe as informe_id FROM iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where II.iglesia = ? AND GI.gestion = ?",
         [codigoIglesia, codigoGestion]
       );
+    });
+  },
+  publicarGestion: async (codigoGestion) => {
+    if (!comprobations.areFieldsValid([codigoGestion])) {
+      return errors.faltanDatosError();
+    }
+    //llamamos la transaccion
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const result = await dbConnection.query(
+        "UPDATE `gestiones` SET `estado`=2 WHERE `codigo` = ? OR `id`=?",
+        [codigoGestion,codigoGestion]
+      );
+      return result;
+    });
+  },
+  cerrarGestion: async (codigoGestion) => {
+    if (!comprobations.areFieldsValid([codigoGestion])) {
+      return errors.faltanDatosError();
+    }
+    //llamamos la transaccion
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const result = await dbConnection.query(
+        "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ? OR `id`=?",
+        [codigoGestion, codigoGestion]
+      );
+      return result;
     });
   },
   template: async (data) => {},

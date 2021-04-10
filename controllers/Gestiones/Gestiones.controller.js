@@ -119,6 +119,22 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.publicarGestion = async (req, res) => {
+    try {
+      const result = await modelGestiones.publicarGestion(req.body.codigoGestion);
+      controller.validateResultForUpdate(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
+  gestiones.cerrarGestion = async (req, res) => {
+    try {
+      const result = await modelGestiones.publicarGestion(req.body.codigoGestion);
+      controller.validateResultForUpdate(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.template = async (req, res) => {
     try {
     } catch (error) {

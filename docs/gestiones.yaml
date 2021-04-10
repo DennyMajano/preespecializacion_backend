@@ -285,6 +285,55 @@ paths:
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
   
+
+  /gestion/cerrar:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: cerrar o finalizar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/idOrCodigo"
+         
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestion/publicar:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: publicar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/idOrCodigo"
+         
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -366,4 +415,10 @@ definitions:
         description: id del mes del informe
         type: integer
         example: 5
-  
+  idOrCodigo:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo o id de la gestion
+        type: string,
+        example: "GE-121212"

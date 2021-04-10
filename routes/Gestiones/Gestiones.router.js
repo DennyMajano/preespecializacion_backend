@@ -6,6 +6,8 @@ module.exports = () => {
   router.post("/gestiones", gestionesController.create);
   router.post("/gestion/asignacion", gestionesController.asignarInforme);
   router.put("/gestiones", gestionesController.update);
+  router.put("/gestion/publicar", gestionesController.publicarGestion);
+  router.put("/gestion/cerrar", gestionesController.cerrarGestion);
   router.delete("/gestion", gestionesController.delete);
   router.delete(
     "/gestion/asignacion",
