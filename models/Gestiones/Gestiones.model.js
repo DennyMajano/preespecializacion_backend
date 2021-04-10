@@ -60,6 +60,7 @@ module.exports = {
       descripcion,
       tipo,
       fechaRecibirFin,
+      fechaRecibirInicio
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -67,6 +68,7 @@ module.exports = {
         descripcion,
         tipo,
         fechaRecibirFin,
+        fechaRecibirInicio
       ])
     ) {
       return errors.faltanDatosError();
@@ -78,11 +80,12 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         // "INSERT INTO `gestiones`(`codigo`, `descripcion`, `tipo_gestion`,`usuario_cr`,`fecha_recibir_inicio`, `fecha_recibir_fin`, `periodo`) VALUES (?,?,?,?,?,?,?)",
-        "UPDATE `gestiones` SET `descripcion`=?,`tipo_gestion`=?,`usuario_uac`=?,`fecha_recibir_fin`=? WHERE `codigo` = ?",
+        "UPDATE `gestiones` SET `descripcion`=?,`tipo_gestion`=?,`usuario_uac`=?,`fecha_recibir_inicio`=?,`fecha_recibir_fin`=? WHERE `codigo` = ?",
         [
           descripcion,
           tipo,
           usuario,
+          fechaRecibirInicio,
           fechaRecibirFin + " 23:59:00",
           codigoGestion,
         ]

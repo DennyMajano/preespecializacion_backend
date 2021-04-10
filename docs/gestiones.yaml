@@ -378,6 +378,10 @@ definitions:
         description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
         type: string
         example: "2021-05-03"
+      fechaRecibirInicio:
+        description: fecha en la que inicia el espacio para recibir los reportes de las iglesias
+        type: string
+        example: "2021-05-03"
       codigoGestion:
         description: codigo de la gestión
         type: string
