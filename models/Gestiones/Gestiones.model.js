@@ -132,7 +132,7 @@ module.exports = {
   getGestionesActivas: async () => {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        "select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y %r') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin, DATE_FORMAT(fecha_cr,'%d/%m/%Y %r') as fecha_cr from gestiones where estado = 2"
+        "select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin, DATE_FORMAT(fecha_cr,'%d/%m/%Y %r') as fecha_cr from gestiones where estado = 2"
       );
     });
   },
