@@ -129,7 +129,7 @@ module.exports = () => {
   };
   gestiones.cerrarGestion = async (req, res) => {
     try {
-      const result = await modelGestiones.publicarGestion(req.body.codigoGestion);
+      const result = await modelGestiones.cerrarGestion(req.body.codigoGestion);
       controller.validateResultForUpdate(result, res);
     } catch (error) {
       controller.sendError(error, res);

@@ -268,11 +268,13 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion])) {
       return errors.faltanDatosError();
     }
+    console.log(codigoGestion
+    )
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ?",
-        [codigoGestion, codigoGestion]
+        [codigoGestion,]
       );
       return result;
     });
