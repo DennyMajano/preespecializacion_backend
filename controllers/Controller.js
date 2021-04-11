@@ -48,6 +48,9 @@ module.exports = {
       }
     }
   ) => {
+    if(result.length == 0){
+      result = OurErrors.datosNoEncontrados();
+    }
     //Verificacion de error devuelto
     resultErrorComprobation(result);
     //Si los datos de entrada son validos y no se devolvio error entonces
