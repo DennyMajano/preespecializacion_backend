@@ -124,7 +124,7 @@ module.exports = {
 
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return dbConnection.query(
-        "select id, codigo,descripcion, tipo_gestion as tipo_gestion_id, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y %r') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y') as fecha_recibir_fin from gestiones WHERE codigo = ? or id =?",
+        "select id, codigo,descripcion, tipo_gestion as tipo_gestion_id, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y') as fecha_recibir_fin from gestiones WHERE codigo = ? or id =?",
         [codigoGestion, codigoGestion]
       );
     });
