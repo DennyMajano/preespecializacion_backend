@@ -258,7 +258,7 @@ module.exports = {
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
-        "UPDATE `gestiones` SET `estado`=2 WHERE `codigo` = ? OR `id`=?",
+        "UPDATE `gestiones` SET `estado`=2 WHERE `codigo` = ?",
         [codigoGestion,codigoGestion]
       );
       return result;
@@ -271,7 +271,7 @@ module.exports = {
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
-        "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ? OR `id`=?",
+        "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ?",
         [codigoGestion, codigoGestion]
       );
       return result;
