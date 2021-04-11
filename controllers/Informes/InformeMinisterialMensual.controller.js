@@ -32,11 +32,9 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  informe.update = async (req, res) => {
+  informe.updateDetalleInforme = async (req, res) => {
     try {
-      console.log(req.body);
-      const result = await modelInforme.update(req.body);
-      console.log(result);
+      const result = await modelInforme.updateDetalleInforme(req.body);
       controller.validateResultForUpdate(result, res);
     } catch (error) {
       controller.sendError(error, res);

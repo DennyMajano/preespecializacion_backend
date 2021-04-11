@@ -188,6 +188,109 @@ module.exports = {
       return result;
     });
   },
-
+  updateDetalleInforme: async (data) => {
+    const {
+      codigoInforme,
+      mensajes,
+      convertidos,
+      santificados,
+      bautismosAgua,
+      bautismosEs,
+      agregados,
+      hogaresMiembrosV,
+      hogaresProspectosV,
+      diezmoRecibido,
+      diezmoPagado,
+      ofrendaRecibida,
+      gastosMinisteriales,
+      actividadesOracion,
+      vidaOracion,
+      actividadesMisiones,
+      actividadesLiderazgo,
+      lideresInvolucrados,
+      mejoraMinisterial,
+      miembrosActivos,
+      miembrosSalvos,
+      miembrosSantificados,
+      miembrosBautizadosEs,
+      promedioAsistenciaAdultos,
+      promedioAsistenciaNiJov,
+      ministerioAlcanceSemanal,
+      santaCena,
+      lavatorios,
+    } = data;
+    if (
+      !comprobations.areFieldsValid([
+        codigoInforme,
+        mensajes,
+        convertidos,
+        santificados,
+        bautismosAgua,
+        bautismosEs,
+        agregados,
+        hogaresMiembrosV,
+        hogaresProspectosV,
+        diezmoRecibido,
+        diezmoPagado,
+        ofrendaRecibida,
+        gastosMinisteriales,
+        actividadesOracion,
+        vidaOracion,
+        actividadesMisiones,
+        actividadesLiderazgo,
+        lideresInvolucrados,
+        mejoraMinisterial,
+        miembrosActivos,
+        miembrosSalvos,
+        miembrosSantificados,
+        miembrosBautizadosEs,
+        promedioAsistenciaAdultos,
+        promedioAsistenciaNiJov,
+        ministerioAlcanceSemanal,
+        santaCena,
+        lavatorios,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //llamamos la transaccion
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
+      const result = await dbConnection.query(
+        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=? WHERE `informe_ministerial` = ?",
+        [
+          mensajes,
+          convertidos,
+          santificados,
+          bautismosAgua,
+          bautismosEs,
+          agregados,
+          hogaresMiembrosV,
+          hogaresProspectosV,
+          diezmoRecibido,
+          diezmoPagado,
+          ofrendaRecibida,
+          gastosMinisteriales,
+          actividadesOracion,
+          vidaOracion,
+          actividadesMisiones,
+          actividadesLiderazgo,
+          lideresInvolucrados,
+          mejoraMinisterial,
+          miembrosActivos,
+          miembrosSalvos,
+          miembrosSantificados,
+          miembrosBautizadosEs,
+          promedioAsistenciaAdultos,
+          promedioAsistenciaNiJov,
+          ministerioAlcanceSemanal,
+          santaCena,
+          lavatorios,
+          codigoInforme,
+        ]
+      );
+      return result;
+    });
+  },
   template: async (data) => {},
 };
