@@ -13,6 +13,10 @@ module.exports = () => {
     usuariosController.validar_persona
   );
   router.get("/usuarios/:code", usuariosController.getById);
+  router.get(
+    "/usuarios/iglesias_asignadas/:code",
+    usuariosController.getIglesiasUsuario
+  );
 
   router.get(
     "/usuarios/validar/correo/:valor",
@@ -26,10 +30,7 @@ module.exports = () => {
     "/usuarios/request_new_password",
     usuariosController.requestEmailToChangePassword
   );
-  router.put(
-    "/usuarios/change_password",
-    usuariosController.changePassword
-  );
+  router.put("/usuarios/change_password", usuariosController.changePassword);
 
   router.post("/usuarios/bloqueo", usuariosController.BloquearDesbloquear);
 

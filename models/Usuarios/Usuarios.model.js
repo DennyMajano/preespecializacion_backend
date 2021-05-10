@@ -54,7 +54,11 @@ module.exports = {
               correo_electronico,
               "ASIGNACION DE CONTRASEÑA",
               ``,
-              EmailTemplates.WelcomeEmail(alias,password_generate,`${process.env.URL_FRONTEND}validar_acceso/${uidChange}`)
+              EmailTemplates.WelcomeEmail(
+                alias,
+                password_generate,
+                `${process.env.URL_FRONTEND}validar_acceso/${uidChange}`
+              )
             );
 
             console.log(info);
@@ -201,6 +205,44 @@ module.exports = {
         : usuario
       : transaction;
   },
+
+  getIglesiasUser: async (code) => {
+    let iglesia;
+    let transaction;
+    let data_iglesias;
+    try {
+      transaction = await database.Transaction(db, async () => {
+        iglesia = await db.query(
+          `SELECT I.id, I.codigo, I.nombre AS iglesia, CONCAT(P.nombres,' ',P.apellidos) AS pastor, D.nombre AS departamento, M.nombre AS municipio, C.nombre AS canton, Z.nombre AS zona, DIS.nombre AS distrito FROM administracion_iglesias AI LEFT JOIN iglesias I ON AI.iglesia=I.codigo LEFT JOIN nombramientos_pastorales NP ON NP.estado=2 AND NP.condicion=1 LEFT JOIN detalle_nombramientos_pastorales DNP ON NP.id= DNP.nombramiento AND DNP.iglesia=I.codigo LEFT JOIN pastores PS ON PS.codigo= DNP.pastor LEFT JOIN personas P ON PS.persona=P.codigo LEFT JOIN departamentos D ON D.id=I.departamento LEFT JOIN municipios M ON M.id = I.municipio LEFT JOIN cantones C ON C.id = I.canton LEFT JOIN zonas Z ON Z.codigo=I.zona LEFT JOIN distritos DIS ON DIS.codigo=I.distrito WHERE AI.persona=?`,
+          [code]
+        );
+
+        if (!iglesia.errno) {
+          data_iglesias = iglesia.map((element) => {
+            return {
+              id: element.id,
+              codigo: element.codigo,
+              iglesia: element.iglesia,
+              pastor: element.pastor,
+              departamento: element.departamento,
+              municipio: element.municipio,
+              canton: element.canton,
+              zona: element.zona,
+              distrito: element.canton,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return iglesia !== undefined
+      ? !iglesia.errno
+        ? data_iglesias
+        : iglesia
+      : transaction;
+  },
   getImage: async (usuario) => {
     let data;
     let transaction;
@@ -338,10 +380,10 @@ module.exports = {
         console.log(userRegisteredRow);
 
         if (userRegisteredRow.length > 0) {
-         
           const uidRequestToken = GenerateUID();
-         
-          if(changeRequestType == 3){ // Si el tipo de cambio es por admin resetear por defecto el pass
+
+          if (changeRequestType == 3) {
+            // Si el tipo de cambio es por admin resetear por defecto el pass
             temporalPassword = GeneratePassword();
             console.log("TEMP PASS" + temporalPassword);
             updatedUser = await db.query(
@@ -353,7 +395,7 @@ module.exports = {
               ]
             );
           }
-         
+
           console.log("Usuario actualizado-------------------------");
           console.log(updatedUser);
           if (changeRequestType == 1 || updatedUser.changedRows > 0) {
@@ -374,13 +416,19 @@ module.exports = {
                 "MAIL enviado en teoria --------------------------------------"
               );
               let htmlForMail;
-              if (changeRequestType == 1){
+              if (changeRequestType == 1) {
                 /* htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, ingresa al siguiente enlace: <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>"; */
-                htmlForMail = EmailTemplates.UserChangePasswordEmail(userRegisteredRow[0].alias,process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken);
-              }
-              else{
+                htmlForMail = EmailTemplates.UserChangePasswordEmail(
+                  userRegisteredRow[0].alias,
+                  process.env.URL_FRONTEND + "validar_acceso/" + uidRequestToken
+                );
+              } else {
                 /* htmlForMail = "<p>Hola "+userRegisteredRow[0].alias+", para cambiar tu contraseña, este es tu codigo de seguridad: "+temporalPassword+"</p><p>Ingresa al siguiente enlace para cambiar la contraseña:  <a href='"+process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken+"'>Cambiar contraseña</a></p>"; */
-                htmlForMail = EmailTemplates.AdministratorChangePasswordEmail(userRegisteredRow[0].alias,temporalPassword,process.env.URL_FRONTEND+"validar_acceso/"+uidRequestToken)
+                htmlForMail = EmailTemplates.AdministratorChangePasswordEmail(
+                  userRegisteredRow[0].alias,
+                  temporalPassword,
+                  process.env.URL_FRONTEND + "validar_acceso/" + uidRequestToken
+                );
               }
               let info = mail.send(
                 "Administración de IDDPU El Salvador",
@@ -389,8 +437,7 @@ module.exports = {
                 "",
                 htmlForMail
               );
-             
-            
+
               result = true;
             } else {
               console.log("cambios pasword no guardado");
@@ -414,78 +461,80 @@ module.exports = {
       return error;
     }
   },
-  changePassword: async (changePasswordData) =>{
-    const {securityCode, type, newPassword, token} = changePasswordData;
+  changePassword: async (changePasswordData) => {
+    const { securityCode, type, newPassword, token } = changePasswordData;
     let result;
     try {
-      const transactionResult = await database.Transaction(db, async()=>{
-
+      const transactionResult = await database.Transaction(db, async () => {
         const userToChangePassword = await db.query(
           "SELECT usuarios.id as id , usuarios.password as password, cambios_password.tipo_cambio as tipo FROM cambios_password join usuarios on usuarios.id = cambios_password.usuario where token = ?",
           [token]
         );
-          console.log("Usuario a cambiar-----------");
-          console.log(userToChangePassword);
-        if(userToChangePassword.length > 0 && userToChangePassword[0].tipo == type){ //Si se contro el usuario con ese token y si el tipo de cambio coincide con el recibido
-          const userPasswordIsCorrect = (type == 3 || type == 2)
-          ?password_encryption.validation_password(securityCode,userToChangePassword[0].password) //Se valida la contraseña temporal si es por admin
-          : true //Si el cambio es solicitado desde login no se valida
-          
+        console.log("Usuario a cambiar-----------");
+        console.log(userToChangePassword);
+        if (
+          userToChangePassword.length > 0 &&
+          userToChangePassword[0].tipo == type
+        ) {
+          //Si se contro el usuario con ese token y si el tipo de cambio coincide con el recibido
+          const userPasswordIsCorrect =
+            type == 3 || type == 2
+              ? password_encryption.validation_password(
+                  securityCode,
+                  userToChangePassword[0].password
+                ) //Se valida la contraseña temporal si es por admin
+              : true; //Si el cambio es solicitado desde login no se valida
+
           console.log("Codigo correcto: " + userPasswordIsCorrect);
-          if(userPasswordIsCorrect){ // Si el codigo de seguridad es correcto
+          if (userPasswordIsCorrect) {
+            // Si el codigo de seguridad es correcto
             const changePasswordResult = await db.query(
               "update usuarios set password = ?, password_defecto=? where id = ?",
               [
                 password_encryption.encrypt_password(newPassword),
                 0,
-                userToChangePassword[0].id
+                userToChangePassword[0].id,
               ]
             );
             console.log("Cambio de contraseña--------------");
             console.log(changePasswordResult);
-            if(changePasswordResult.changedRows > 0){
+            if (changePasswordResult.changedRows > 0) {
               //Inhabilitar el token usado
               const updatedToken = await db.query(
                 "update cambios_password set vigente = ?, utilizado = ?, fecha_utilizado=? where token = ? ",
-                [
-                  0,
-                  1,
-                  Datetime.getDateTime(),
-                  token
-                ]
+                [0, 1, Datetime.getDateTime(), token]
               );
-              if(updatedToken.changedRows > 0){
+              if (updatedToken.changedRows > 0) {
                 result = true;
+              } else {
+                throw new Error(
+                  "No se actualizó el historial de cambio de contraseña"
+                );
               }
-              else{
-                throw new Error("No se actualizó el historial de cambio de contraseña");
-              }
+            } else {
+              // No se cambió la contraseña
+              throw new Error(
+                "Se encontró el codigo pero no se actualizó la contraseña"
+              );
             }
-            else{ // No se cambió la contraseña
-              throw new Error("Se encontró el codigo pero no se actualizó la contraseña");
-            }
-          }
-          else{ //la contraseña temporal es incorrecta
+          } else {
+            //la contraseña temporal es incorrecta
             result = false;
           }
-          
+        } else {
+          //No se encontro usuario con ese token...
+          throw new Error(
+            "Token no asociado con usuario o tipo de solicitud incorrecta"
+          );
         }
-        else{ //No se encontro usuario con ese token...
-          throw new Error("Token no asociado con usuario o tipo de solicitud incorrecta");
-        }
-  
       });
 
-     
-      if(transactionResult.errno || transactionResult instanceof Error ){
+      if (transactionResult.errno || transactionResult instanceof Error) {
         throw transactionResult;
       }
       return result;
     } catch (error) {
       return error;
     }
-
   },
-  
 };
-

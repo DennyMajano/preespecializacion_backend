@@ -128,7 +128,26 @@ paths:
           description: Datos con valor del numero de registros
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
-
+  /usuarios/iglesias_asignadas/{code}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Obtiene iglesias asignadas al usuario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: code # name of request, can be any name
+          description: codigo de persona del usuario
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            type: string
+            minimum: 1
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
   #get para validar persona
   /usuarios/validar/persona/{valor}:
     get: # endpoint request type (put request)
@@ -251,7 +270,7 @@ paths:
         404:
           description: no se pudo encontrar el usuario
   /usuarios/request_new_password:
-     put: # endpoint request type (put request)
+    put: # endpoint request type (put request)
       tags: # Tag property
         - Usuarios # Value of the tag
       summary: Solicitar correo con enlace para cambio de contraseña
@@ -276,19 +295,19 @@ paths:
           description: Faltan datos, o el tipo no es una opcion válida
   /usuarios/change_password:
     put: # endpoint request type (put request)
-     tags: # Tag property
-       - Usuarios # Value of the tag
-     summary: Restabler contraseña de usuario
-     produces:
-       - application/json
-     parameters: # request parameters
-       - in: body # request body
-         name: datos # name of request, can be any name
-         description: Datos para realizar el cambio de contraseña
-         required: true # can also be true depending on user preference
-         schema: # Schema definition
-           $ref: "#/definitions/changePasswordRequest"
-     responses: # server responses
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Restabler contraseña de usuario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: datos # name of request, can be any name
+          description: Datos para realizar el cambio de contraseña
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/changePasswordRequest"
+      responses: # server responses
         200:
           description: El proceso se realizó pero no se cambio la contraseña. Lo mismo que 201 pero resultado false.
         201:
@@ -301,7 +320,7 @@ paths:
           description: Faltan datos
         403:
           description: El token es inválido
-  
+
 definitions: # Schema defination for request body
   create:
     type: object
@@ -364,44 +383,44 @@ definitions: # Schema defination for request body
   requestMail:
     type: object
     properties:
-        email:
-          type: string
-          description: Correo electrónico a mandar el enlace
-          example: denny.majano13@gmail.com
-        changeRequestType: 
-          type: integer
-          description: Tipo de solicitud, 1 es por usuario, 2 por primera vez, 3 por admin
-          example: 1
+      email:
+        type: string
+        description: Correo electrónico a mandar el enlace
+        example: denny.majano13@gmail.com
+      changeRequestType:
+        type: integer
+        description: Tipo de solicitud, 1 es por usuario, 2 por primera vez, 3 por admin
+        example: 1
   responseRequestMail:
     type: object
     properties:
-        estado:
-          type: boolean
-          description: es verdadero si se envió, falso si no encontró el correo
-          example: true
+      estado:
+        type: boolean
+        description: es verdadero si se envió, falso si no encontró el correo
+        example: true
   changePasswordRequest:
     type: object
     properties:
-        securityCode:
-          type: string
-          description: Código de seguridad para realizar el cambio de contraseña. Se requiere si es tipo 2 y 3 (cambio inicial del usario despues de registro y restablecimiento por admin respectivamente)
-          example: C6IVKGSP8GT5
-        newPassword: 
-          type: string
-          description: Contraseña nueva a registrar
-          example: 12345Abc
-        token: 
-          type: string
-          description: Token que permite el cambio de contraseña
-          example: fc531c89-8e3a-454a-b90a-c8bf9ed19b4d
-        type: 
-          type: integer
-          description: Tipo de cambio a realizar
-          example: 1
+      securityCode:
+        type: string
+        description: Código de seguridad para realizar el cambio de contraseña. Se requiere si es tipo 2 y 3 (cambio inicial del usario despues de registro y restablecimiento por admin respectivamente)
+        example: C6IVKGSP8GT5
+      newPassword:
+        type: string
+        description: Contraseña nueva a registrar
+        example: 12345Abc
+      token:
+        type: string
+        description: Token que permite el cambio de contraseña
+        example: fc531c89-8e3a-454a-b90a-c8bf9ed19b4d
+      type:
+        type: integer
+        description: Tipo de cambio a realizar
+        example: 1
   responseChangePasswordRequest:
     type: object
     properties:
-        estado:
-          type: boolean
-          description: es verdadero si se envió, falso si no encontró el correo
-          example: true
+      estado:
+        type: boolean
+        description: es verdadero si se envió, falso si no encontró el correo
+        example: true
