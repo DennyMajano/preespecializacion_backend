@@ -228,7 +228,7 @@ module.exports = {
               municipio: element.municipio,
               canton: element.canton,
               zona: element.zona,
-              distrito: element.canton,
+              distrito: element.distrito,
             };
           });
         }

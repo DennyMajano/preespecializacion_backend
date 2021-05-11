@@ -36,6 +36,7 @@ module.exports = () => {
             usuario: result.acceso[0].id,
             correo: result.acceso[0].correo_electronico,
             alias: result.acceso[0].alias,
+            codigo_persona: result.acceso[0].persona,
 
             modulos: result.modulos.map((x) => {
               return x.modulo;
@@ -77,29 +78,25 @@ module.exports = () => {
       console.log(error);
     }
   };
-  
-  acceso.checkTokenToChangePassword = async(req, res) =>{
-    const {token} = req.body;
+
+  acceso.checkTokenToChangePassword = async (req, res) => {
+    const { token } = req.body;
     console.log(token);
-    try{
-      if(!isUndefinedOrNull(token)){
+    try {
+      if (!isUndefinedOrNull(token)) {
         const result = await modelAcceso.checkTokenToChangePassword(token);
-        if(result.errno){
+        if (result.errno) {
           throw result;
-        }
-        else{
+        } else {
           res.status(200).json(result);
         }
-      }
-      else{
+      } else {
         res.status(400).json("Faltan datos");
       }
-    
-    }
-    catch(error){
+    } catch (error) {
       console.log(error);
       res.status(500).json("Error de servidor");
     }
-  }
+  };
   return acceso;
 };
