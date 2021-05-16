@@ -1,6 +1,7 @@
 const controller = require("../Controller");
 const modelGestiones = require("../../models/Gestiones/Gestiones.model");
 const { validateResultForSelect } = require("../Controller");
+const Token = require("../../services/security/Token");
 
 module.exports = () => {
   let gestiones = {};
@@ -97,7 +98,7 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  gestiones.getDetalleDeInformesDeIglesia = async (req, res) => {
+  gestiones.getDetalleDeInformesDeIglesiaAEnviar = async (req, res) => {
     try {
       const result = await modelGestiones.getDetalleDeInformesDeIglesia(
         req.params
@@ -119,9 +120,25 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.getActivasEnvioDeIglesias = async (req, res) => {
+    try {
+      const usuarioToken = req.headers.authorization.split(" ")[1];
+      const persona = Token.decodeToken(usuarioToken).codigo_persona;
+      const result = await modelGestiones.getActivasEnvioDeIglesias(
+        req.params,
+        persona
+      );
+
+      controller.validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.publicarGestion = async (req, res) => {
     try {
-      const result = await modelGestiones.publicarGestion(req.body.codigoGestion);
+      const result = await modelGestiones.publicarGestion(
+        req.body.codigoGestion
+      );
       controller.validateResultForUpdate(result, res);
     } catch (error) {
       controller.sendError(error, res);

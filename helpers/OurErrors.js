@@ -34,4 +34,14 @@ module.exports = {
       ),
     };
   },
+  NO_AUTORIZADO: 4, //Una constante indicando el numero de error personalizado
+  RecursoNoAutorizado: (
+    message = "No tiene autorización para consultar el recurso"
+  ) => {
+    return {
+      customErrno: 4,
+      message: message, //Mensaje personalizado al crear el error (tiene uno por defecto)
+      responseState: 403, //codigo de http de Estado que se deberia responder
+    };
+  },
 };

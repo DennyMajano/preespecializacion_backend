@@ -61,7 +61,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/deletegestion"
-         
+
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -106,7 +106,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/deleteasignaciongestion"
-         
+
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -125,8 +125,8 @@ paths:
       parameters: # request parameters
         - name: codigo
           in: path
-          description: id o código 
-          required: true       
+          description: id o código
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -150,7 +150,7 @@ paths:
         - name: codigoIglesia
           in: path
           description: código de iglesia
-          required: true              
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -160,7 +160,7 @@ paths:
           description: Faltan datos para realizar la consulta
         404:
           description: No se encuentran los registros buscados
-  
+
   /gestion/iglesia/informes/{codigoGestion}/{codigoIglesia}:
     get: # endpoint request type (post request)
       tags: # Tag property
@@ -177,7 +177,7 @@ paths:
         - name: codigoIglesia
           in: path
           description: código de iglesia
-          required: true              
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -204,7 +204,7 @@ paths:
         - name: codigoIglesia
           in: path
           description: código de iglesia
-          required: true              
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -227,7 +227,7 @@ paths:
         - name: codigo
           in: path
           description: código de gestion
-          required: true       
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -235,7 +235,7 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
-  
+
   /gestiones/informes/{codigo}:
     get: # endpoint request type (post request)
       tags: # Tag property
@@ -247,8 +247,8 @@ paths:
       parameters: # request parameters
         - name: codigo
           in: path
-          description: código o id 
-          required: true       
+          description: código o id
+          required: true
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -256,7 +256,7 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
-  
+
   /gestiones/activas:
     get: # endpoint request type (post request)
       tags: # Tag property
@@ -264,7 +264,7 @@ paths:
       summary: obtener lista de gestiones actualmente publicadas estado = 2
       consume: application/json
       produces:
-        - application/json   
+        - application/json
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -278,14 +278,33 @@ paths:
       summary: obtener lista de gestiones actualmente no publicadas, estado = 1
       consume: application/json
       produces:
-        - application/json   
+        - application/json
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
-  
 
+  /gestiones/disponibles/iglesia/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener las gestiones disponibles para cada iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código iglesia
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
   /gestion/cerrar:
     put: # endpoint request type (post request)
       tags: # Tag property
@@ -301,7 +320,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/idOrCodigo"
-         
+
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -325,7 +344,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/idOrCodigo"
-         
+
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.

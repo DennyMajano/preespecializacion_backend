@@ -60,7 +60,7 @@ module.exports = {
       descripcion,
       tipo,
       fechaRecibirFin,
-      fechaRecibirInicio
+      fechaRecibirInicio,
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -68,7 +68,7 @@ module.exports = {
         descripcion,
         tipo,
         fechaRecibirFin,
-        fechaRecibirInicio
+        fechaRecibirInicio,
       ])
     ) {
       return errors.faltanDatosError();
@@ -162,8 +162,8 @@ module.exports = {
 
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const verificacionInformeDuplicados = await dbConnection.query(
-        "select informe,mes from gestion_informes as GI join meses_gestion_informe MGI on GI.id = MGI.gestion_informe where MGI.mes = ? AND GI.informe = ?",
-        [mesId, informeId]
+        "select informe,mes from gestion_informes as GI join meses_gestion_informe MGI on GI.id = MGI.gestion_informe where MGI.mes = ? AND GI.informe = ? AND GI.gestion=?",
+        [mesId, informeId, codigoGestion]
       );
 
       if (verificacionInformeDuplicados.length > 0) {
@@ -259,7 +259,7 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         "UPDATE `gestiones` SET `estado`=2 WHERE `codigo` = ?",
-        [codigoGestion,codigoGestion]
+        [codigoGestion, codigoGestion]
       );
       return result;
     });
@@ -268,15 +268,58 @@ module.exports = {
     if (!comprobations.areFieldsValid([codigoGestion])) {
       return errors.faltanDatosError();
     }
-    console.log(codigoGestion
-    )
+    console.log(codigoGestion);
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ?",
-        [codigoGestion,]
+        [codigoGestion]
       );
       return result;
+    });
+  },
+
+  getActivasEnvioDeIglesias: async (data, persona) => {
+    const { codigoIglesia } = data;
+
+    if (!comprobations.areFieldsValid([codigoIglesia])) {
+      return errors.faltanDatosError();
+    }
+
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      const permiso_iglesia = await dbConnection.query(
+        "SELECT COUNT(*) AS cantidad FROM administracion_iglesias WHERE persona=? AND iglesia=?",
+        [persona, codigoIglesia]
+      );
+      if (parseInt(permiso_iglesia[0].cantidad) === 0) {
+        return errors.RecursoNoAutorizado();
+      }
+      const gestiones = await dbConnection.query(
+        "select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin, DATE_FORMAT(fecha_cr,'%d/%m/%Y %r') as fecha_cr from gestiones where estado = 2 AND tipo_gestion=1 ORDER BY fecha_cr DESC LIMIT 5"
+      );
+      //  console.log("gestiones", gestiones);
+      let data = await Promise.all(
+        gestiones.map(async (element) => {
+          let validator = await dbConnection.query(
+            "SELECT COUNT(*) as cantidad FROM gestion_informes WHERE gestion=? AND informe IN (SELECT informe FROM iglesias_informes WHERE iglesia=?)",
+            [element.codigo, codigoIglesia]
+          );
+          if (parseInt(validator[0].cantidad) > 0) {
+            return {
+              id: element.id,
+              codigo: element.codigo,
+              descripcion: element.descripcion,
+              tipo_gestion_name: element.tipo_gestion_name,
+              estado: element.estado,
+              fecha_publicacion: element.fecha_publicacion,
+              fecha_recibir_inicio: element.fecha_recibir_inicio,
+              fecha_recibir_fin: element.fecha_recibir_fin,
+              fecha_cr: element.fecha_cr,
+            };
+          }
+        })
+      );
+      return await data;
     });
   },
   template: async (data) => {},

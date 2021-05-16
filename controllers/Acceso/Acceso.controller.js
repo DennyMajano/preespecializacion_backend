@@ -18,7 +18,7 @@ module.exports = () => {
         let token;
         let data_send;
         if (result.acceso.length > 0) {
-          token = encryption.encrypt(
+          token = await encryption.encrypt(
             String(
               Token.createToken({
                 usuario: result.acceso[0].id,

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const gestionesController = require("../../controllers/Gestiones/Gestiones.controller")();
+const gestionesController =
+  require("../../controllers/Gestiones/Gestiones.controller")();
 
 module.exports = () => {
   router.post("/gestiones", gestionesController.create);
@@ -20,7 +21,11 @@ module.exports = () => {
   );
   router.get(
     "/gestion/iglesia/informes/:codigoGestion/:codigoIglesia",
-    gestionesController.getDetalleDeInformesDeIglesia
+    gestionesController.getDetalleDeInformesDeIglesiaAEnviar
+  );
+  router.get(
+    "/gestiones/disponibles/iglesia/:codigoIglesia",
+    gestionesController.getActivasEnvioDeIglesias
   );
   router.get(
     "/gestion/:codigoGestion/iglesia/:codigoIglesia/informes",
