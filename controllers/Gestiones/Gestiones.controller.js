@@ -108,7 +108,7 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  gestiones.getDetalleDeInformesDeIglesia = async (req, res) => {
+  gestiones.getDetalleDeInformesAEnviarDeIglesia = async (req, res) => {
     try {
       const result = await modelGestiones.getInformesAEnviarDeIglesia(
         req.params

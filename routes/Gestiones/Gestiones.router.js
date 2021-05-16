@@ -20,12 +20,12 @@ module.exports = () => {
   );
   router.get(
     "/gestion/iglesia/informes/:codigoGestion/:codigoIglesia",
-    gestionesController.getDetalleDeInformesDeIglesia
+    gestionesController.getDetalleDeInformesAEnviarDeIglesia
   );
-  router.get(
+/*   router.get(
     "/gestion/:codigoGestion/iglesia/:codigoIglesia/informes",
     gestionesController.getDetalleDeInformesDeIglesia
-  );
+  ); */
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
   router.get("/gestiones/inactivas", gestionesController.getGestionesInactivas);
   router.get(
