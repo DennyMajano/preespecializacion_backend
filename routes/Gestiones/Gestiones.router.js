@@ -27,10 +27,10 @@ module.exports = () => {
     "/gestiones/disponibles/iglesia/:codigoIglesia",
     gestionesController.getActivasEnvioDeIglesias
   );
-  router.get(
+  /*   router.get(
     "/gestion/:codigoGestion/iglesia/:codigoIglesia/informes",
     gestionesController.getDetalleDeInformesDeIglesia
-  );
+  ); */
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
   router.get("/gestiones/inactivas", gestionesController.getGestionesInactivas);
   router.get(
