@@ -298,7 +298,7 @@ module.exports = {
                   ? {
                       label: element.distrito_nombre,
                       value: element.distrito_id,
-                      codgio: element.distrito_codigo,
+                      codigo: element.distrito_codigo,
                     }
                   : "",
               fecha_ordenamiento: element.fecha_ordenamiento,
