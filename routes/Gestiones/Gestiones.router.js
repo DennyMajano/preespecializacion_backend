@@ -17,7 +17,7 @@ module.exports = () => {
   router.get("/gestion/:codigo", gestionesController.getByCodigoOrId);
   router.get(
     "/gestion/iglesia/detalle/:codigoGestion/:codigoIglesia",
-    gestionesController.getDetalleDeInformesDeIglesia
+    gestionesController.getDetalleDeInformesAEnviarDeIglesia
   );
   router.get(
     "/gestion/iglesia/informes/:codigoGestion/:codigoIglesia",
