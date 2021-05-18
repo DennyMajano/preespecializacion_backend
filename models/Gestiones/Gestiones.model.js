@@ -222,7 +222,7 @@ module.exports = {
       }
       console.log("pasaron");
       return await dbConnection.query(
-        "SELECT GI.gestion, (select nombre from maestro_de_informes where id=GI.informe )as informe, IF(IRG.informe_ide is NULL,0,1) as estado FROM  gestion_informes as GI  left join informes_recibidos_gestion as IRG on GI.informe = IRG.informe_maestro where GI.gestion = ? AND (IRG.iglesia = ? OR IRG.iglesia is NULL) AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
+        "SELECT GI.gestion, MI.nombre as informe, MI.ruta, IRG.informe_ide, IF(IRG.informe_ide is NULL,0,1) as estado FROM  gestion_informes as GI  left join informes_recibidos_gestion as IRG on GI.informe = IRG.informe_maestro left join maestro_de_informes MI ON GI.informe=MI.id where GI.gestion =? AND (IRG.iglesia = ? OR IRG.iglesia is NULL) AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
         [codigoGestion, codigoIglesia, codigoIglesia]
       );
     });
