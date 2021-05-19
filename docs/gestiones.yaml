@@ -134,6 +134,7 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
+
   /gestion/iglesia/detalle/{codigoGestion}/{codigoIglesia}:
     get: # endpoint request type (post request)
       tags: # Tag property
@@ -256,6 +257,57 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar la consulta
+  /gestiones/informes/iglesias/enviados/{codigoGestion}/{idInforme}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Obtiene una lista de iglesias que han enviado un informe en una gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de la gestion
+          required: true
+        - name: idInforme
+          in: path
+          description: id del informe
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestiones/informes/iglesias/no_enviados/{codigoGestion}/{idInforme}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Obtiene una lista de iglesias que no han enviado un informe en una gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de la gestion
+          required: true
+        - name: idInforme
+          in: path
+          description: id del informe
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: El informe no esta asignado a la gestión o ninguna iglesia tiene asignado el informe especificado.
 
   /gestiones/activas:
     get: # endpoint request type (post request)

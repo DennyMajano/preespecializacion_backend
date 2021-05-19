@@ -38,6 +38,14 @@ module.exports = () => {
     gestionesController.getInformesAsignados
   );
   router.get(
+    "/gestiones/informes/iglesias/enviados/:codigoGestion/:idInforme",
+    gestionesController.getIglesiasConInformeEnviadoEnGestion
+  );
+  router.get(
+    "/gestiones/informes/iglesias/no_enviados/:codigoGestion/:idInforme",
+    gestionesController.getIglesiasConInformeNoEnviadoEnGestion
+  );
+  router.get(
     "/gestion/iglesias/enviado/:codigo",
     gestionesController.getIglesiasQueHanReportado
   );

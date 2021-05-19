@@ -322,5 +322,71 @@ module.exports = {
       return await data;
     });
   },
+  
+  //Obtiene las iglesias que han enviado un informe en una gesttion
+  //data contiene dos parametros idInforme que es el id del informe y codigoGestion de la gestion en la que quiere buscarse
+  getIglesiasConInformeEnviadoEnGestion: 
+  async (data) => {
+    const { codigoGestion, idInforme } = data;
+    if (!comprobations.areFieldsValid([codigoGestion, idInforme])) {
+      return errors.faltanDatosError();
+    }
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      return await dbConnection.query(
+        `SELECT I.codigo, I.nombre, I.telefono,
+        (select nombre from departamentos where I.departamento = id) as departamento,
+        (select nombre from municipios where I.municipio = id) as municipio,
+        (select nombre from cantones where I.canton = id) as canton,
+        I.direccion,
+        I.src_google,
+        I.distrito,
+        (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
+        (select nombre from zonas where I.zona = id) as zona
+        FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE gestion = ? AND informe_maestro = ? LIMIT 10`,
+        [codigoGestion, idInforme]
+      );
+    });
+  },
+  //Obtiene las iglesias que han enviado un informe en una gesttion
+  //data contiene dos parametros idInforme que es el id del informe y codigoGestion de la gestion en la que quiere buscarse
+  getIglesiasConInformeNoEnviadoEnGestion: 
+  async (data) => {
+    const { codigoGestion, idInforme } = data;
+    if (!comprobations.areFieldsValid([codigoGestion, idInforme])) {
+      return errors.faltanDatosError();
+    }
+
+
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      //comprobamos que el informe esté asignado a la gestion
+      const informeTest = await dbConnection.query(
+        "SELECT id FROM `gestion_informes` WHERE informe = ? AND gestion = ?",
+        [idInforme,codigoGestion]
+      );
+      if(informeTest.length == 0){
+        return errors.datosNoEncontrados("El informe no está asignado a la gestión");
+      }
+      //Obtenemos el listado de iglesias que deben enviar el informe especificado
+      //Solo se incluyen aquellas iglesias que tienen asignado el informe especificado
+      const listadoDeIglesias = await dbConnection.query("SELECT iglesia FROM `iglesias_informes` WHERE informe = ?",[idInforme]);
+      
+      if(listadoDeIglesias.length == 0){
+        return errors.datosNoEncontrados("El informe no está asignado a ninguna iglesia");; // Ninguna iglesia tiene especificado el informe
+      }
+
+      return await dbConnection.query(
+        `SELECT I.codigo, I.nombre, I.telefono,
+        (select nombre from departamentos where I.departamento = id) as departamento,
+        (select nombre from municipios where I.municipio = id) as municipio,
+        (select nombre from cantones where I.canton = id) as canton,
+        I.direccion,
+        I.src_google,
+        I.distrito,
+        (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
+        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? ) LIMIT 10`,
+        [idInforme, codigoGestion, idInforme ]
+      );
+    });
+  },
   template: async (data) => {},
 };

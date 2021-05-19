@@ -152,6 +152,26 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.getIglesiasConInformeEnviadoEnGestion = async (req, res) => {
+    try {
+      const result = await modelGestiones.getIglesiasConInformeEnviadoEnGestion(
+        req.params
+      );
+      controller.validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
+  gestiones.getIglesiasConInformeNoEnviadoEnGestion = async (req, res) => {
+    try {
+      const result = await modelGestiones.getIglesiasConInformeNoEnviadoEnGestion(
+        req.params
+      );
+      controller.validateResultForSelect(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.template = async (req, res) => {
     try {
     } catch (error) {
