@@ -222,8 +222,8 @@ module.exports = {
       }
       console.log("pasaron");
       return await dbConnection.query(
-        "SELECT GI.gestion, MI.nombre as informe, MI.ruta, IRG.informe_ide, IF(IRG.informe_ide is NULL,0,1) as estado FROM  gestion_informes as GI  left join informes_recibidos_gestion as IRG on GI.informe = IRG.informe_maestro left join maestro_de_informes MI ON GI.informe=MI.id where GI.gestion =? AND (IRG.iglesia = ? OR IRG.iglesia is NULL) AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
-        [codigoGestion, codigoIglesia, codigoIglesia]
+        "SELECT GI.gestion, MI.nombre as informe, MI.ruta, IRG.informe_ide, IF(IRG.estado is NULL,0,IRG.estado) as estado FROM  gestion_informes as GI  left join maestro_de_informes MI ON GI.informe=MI.id left join informes_recibidos_gestion as IRG on (IRG.gestion = GI.gestion AND IRG.iglesia=?) AND IRG.informe_maestro=MI.id where GI.gestion =? AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)",
+        [codigoIglesia, codigoGestion, codigoIglesia]
       );
     });
   },
@@ -322,11 +322,10 @@ module.exports = {
       return await data;
     });
   },
-  
+
   //Obtiene las iglesias que han enviado un informe en una gesttion
   //data contiene dos parametros idInforme que es el id del informe y codigoGestion de la gestion en la que quiere buscarse
-  getIglesiasConInformeEnviadoEnGestion: 
-  async (data) => {
+  getIglesiasConInformeEnviadoEnGestion: async (data) => {
     const { codigoGestion, idInforme } = data;
     if (!comprobations.areFieldsValid([codigoGestion, idInforme])) {
       return errors.faltanDatosError();
@@ -349,29 +348,34 @@ module.exports = {
   },
   //Obtiene las iglesias que han enviado un informe en una gesttion
   //data contiene dos parametros idInforme que es el id del informe y codigoGestion de la gestion en la que quiere buscarse
-  getIglesiasConInformeNoEnviadoEnGestion: 
-  async (data) => {
+  getIglesiasConInformeNoEnviadoEnGestion: async (data) => {
     const { codigoGestion, idInforme } = data;
     if (!comprobations.areFieldsValid([codigoGestion, idInforme])) {
       return errors.faltanDatosError();
     }
 
-
     return await model.multipleTransactionQuery(async (dbConnection) => {
       //comprobamos que el informe esté asignado a la gestion
       const informeTest = await dbConnection.query(
         "SELECT id FROM `gestion_informes` WHERE informe = ? AND gestion = ?",
-        [idInforme,codigoGestion]
+        [idInforme, codigoGestion]
       );
-      if(informeTest.length == 0){
-        return errors.datosNoEncontrados("El informe no está asignado a la gestión");
+      if (informeTest.length == 0) {
+        return errors.datosNoEncontrados(
+          "El informe no está asignado a la gestión"
+        );
       }
       //Obtenemos el listado de iglesias que deben enviar el informe especificado
       //Solo se incluyen aquellas iglesias que tienen asignado el informe especificado
-      const listadoDeIglesias = await dbConnection.query("SELECT iglesia FROM `iglesias_informes` WHERE informe = ?",[idInforme]);
-      
-      if(listadoDeIglesias.length == 0){
-        return errors.datosNoEncontrados("El informe no está asignado a ninguna iglesia");; // Ninguna iglesia tiene especificado el informe
+      const listadoDeIglesias = await dbConnection.query(
+        "SELECT iglesia FROM `iglesias_informes` WHERE informe = ?",
+        [idInforme]
+      );
+
+      if (listadoDeIglesias.length == 0) {
+        return errors.datosNoEncontrados(
+          "El informe no está asignado a ninguna iglesia"
+        ); // Ninguna iglesia tiene especificado el informe
       }
 
       return await dbConnection.query(
@@ -384,7 +388,7 @@ module.exports = {
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
         (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? ) LIMIT 10`,
-        [idInforme, codigoGestion, idInforme ]
+        [idInforme, codigoGestion, idInforme]
       );
     });
   },

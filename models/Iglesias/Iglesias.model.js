@@ -338,7 +338,7 @@ module.exports = {
     try {
       transaction = await database.Transaction(db, async () => {
         iglesias = await db.query(
-          `SELECT I.id, I.codigo, I.nombre, I.telefono, D.nombre AS departamento_nombre, M.nombre AS municipio_nombre, C.nombre AS canton_nombre, I.direccion, I.src_google, I.distrito AS distrito_codigo, DTTO.nombre AS distrito_nombre, I.fecha_ordenamiento,TI.nombre AS tipo_iglesia_nombre, I.zona AS zona_codigo,Z.nombre AS zona_nombre FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id WHERE I.id=? OR I.codigo=? LIMIT 1`,
+          `SELECT I.id, I.codigo, I.nombre,CONCAT(P.nombres,' ',P.apellidos) AS pastor, PS.codigo as codigo_pastor, I.telefono, D.nombre AS departamento_nombre, M.nombre AS municipio_nombre, C.nombre AS canton_nombre, I.direccion, I.src_google, I.distrito AS distrito_codigo, DTTO.nombre AS distrito_nombre, I.fecha_ordenamiento,TI.nombre AS tipo_iglesia_nombre, I.zona AS zona_codigo,Z.nombre AS zona_nombre FROM iglesias I LEFT JOIN departamentos D ON I.departamento=D.id LEFT JOIN municipios M ON I.municipio=M.id LEFT JOIN cantones C ON I.canton= C.id LEFT JOIN distritos DTTO ON I.distrito=DTTO.codigo LEFT JOIN zonas Z ON I.zona=Z.codigo LEFT JOIN tipo_iglesias TI ON I.tipo_iglesia=TI.id LEFT JOIN nombramientos_pastorales NP ON NP.estado=2 AND NP.condicion=1 LEFT JOIN detalle_nombramientos_pastorales DNP ON NP.id= DNP.nombramiento AND DNP.iglesia=I.codigo LEFT JOIN pastores PS ON PS.codigo= DNP.pastor LEFT JOIN personas P ON PS.persona=P.codigo WHERE I.id=? OR I.codigo=? LIMIT 1`,
           [code, code]
         );
 
@@ -350,6 +350,8 @@ module.exports = {
               codigo: element.codigo,
               telefono: element.telefono,
               nombre: element.nombre,
+              codigo_pastor: element.codigo_pastor,
+              pastor: element.pastor,
               departamento: element.departamento_nombre,
               municipio: element.municipio_nombre,
               canton: element.canton_nombre,
