@@ -241,7 +241,7 @@ paths:
     get: # endpoint request type (post request)
       tags: # Tag property
         - Gestiones # Value of the tag
-      summary: obtener los informes de una gestion con el codigo o id de la gestion
+      summary: Obtiene la lista de informes asignados para la gestión especificada
       consume: application/json
       produces:
         - application/json

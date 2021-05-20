@@ -149,8 +149,18 @@ module.exports = {
     }
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        "select informe as informe_id, (select nombre from maestro_de_informes where id = informe) as informe_nombre, mes as mes_id, (select nombre from meses where id = MGI.mes) as mes_nombre, gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion  where GI.gestion = ?  OR G.id = ?",
-        [codigoGestion, codigoGestion]
+        `
+        select informe as informe_id, 
+        (select nombre from maestro_de_informes where id = informe) as informe_nombre, 
+        mes as mes_id, 
+        (select nombre from meses where id = MGI.mes) as mes_nombre, 
+        gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion, 
+        (select count(*) as total from iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where GI.gestion = ? and GI.informe = informe_id group by GI.informe) as total, 
+        (select count(*) from informes_recibidos_gestion as IRG where IRG.gestion = ? and IRG.informe_maestro = informe_id) as recibidos 
+        from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion 
+        where GI.gestion = ? OR G.id = ?
+        `,
+        [codigoGestion, codigoGestion, codigoGestion, codigoGestion]
       );
     });
   },
