@@ -116,6 +116,7 @@ module.exports = {
       ministerioAlcanceSemanal,
       santaCena,
       lavatorios,
+      diezmosIncluidosInforme
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -147,6 +148,7 @@ module.exports = {
         ministerioAlcanceSemanal,
         santaCena,
         lavatorios,
+        diezmosIncluidosInforme
       ])
     ) {
       return errors.faltanDatosError();
@@ -155,7 +157,7 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
       const result = await dbConnection.query(
-        "INSERT INTO `detalle_informe_ministerial_mensual`(`informe_ministerial`, `mensajes`, `convertidos`, `santificados`, `bautismos_agua`, `bautismos_es`, `agregados`, `hogares_miembros_v`, `hogares_prospectos_v`, `diezmo_recibido`, `diezmo_pagado`, `ofrenda_recibida`, `gastos_ministeriales`, `actividades_oracion`, `vida_oracion`, `actividades_misiones`, `actividades_liderazgo`, `liderez_involucrados`, `mejora_ministerial`, `miembros_activos`, `miembros_salvos`, `miembros_santificados`, `miembros_bautizados_es`, `promedio_asistencia_adultos`, `promedio_asitencia_ni_jov`, `ministerio_alcance_semanal`, `santa_cena`, `lavatorio`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `detalle_informe_ministerial_mensual`(`informe_ministerial`, `mensajes`, `convertidos`, `santificados`, `bautismos_agua`, `bautismos_es`, `agregados`, `hogares_miembros_v`, `hogares_prospectos_v`, `diezmo_recibido`, `diezmo_pagado`, `ofrenda_recibida`, `gastos_ministeriales`, `actividades_oracion`, `vida_oracion`, `actividades_misiones`, `actividades_liderazgo`, `liderez_involucrados`, `mejora_ministerial`, `miembros_activos`, `miembros_salvos`, `miembros_santificados`, `miembros_bautizados_es`, `promedio_asistencia_adultos`, `promedio_asitencia_ni_jov`, `ministerio_alcance_semanal`, `santa_cena`, `lavatorio`, `diezmos_incluidos_informe`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           codigoInforme,
           mensajes,
@@ -185,6 +187,7 @@ module.exports = {
           ministerioAlcanceSemanal,
           santaCena,
           lavatorios,
+          diezmosIncluidosInforme
         ]
       );
       result.code = codigoInforme;
@@ -221,7 +224,8 @@ module.exports = {
       ministerioAlcanceSemanal,
       santaCena,
       lavatorios,
-      estado
+      estado,
+      diezmosIncluidosInforme
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -253,7 +257,8 @@ module.exports = {
         ministerioAlcanceSemanal,
         santaCena,
         lavatorios,
-        estado
+        estado,
+        diezmosIncluidosInforme
       ])
     ) {
       return errors.faltanDatosError();
@@ -264,7 +269,7 @@ module.exports = {
 
       await dbConnection.query("UPDATE `informe_ministerial_mensual` SET `estado`= ? WHERE codigo = ?",[estado, codigoInforme]);
       const result = await dbConnection.query(
-        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=? WHERE `informe_ministerial` = ?",
+        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=?, `diezmos_incluidos_informe` = ? WHERE `informe_ministerial` = ?",
         [
           mensajes,
           convertidos,
@@ -293,7 +298,9 @@ module.exports = {
           ministerioAlcanceSemanal,
           santaCena,
           lavatorios,
-          codigoInforme,
+          diezmosIncluidosInforme,
+          codigoInforme
+          
         ]
       );
       return result;
@@ -311,5 +318,6 @@ module.exports = {
       );
     });
   },
+  
   template: async (data) => {},
 };

@@ -117,6 +117,7 @@ definitions:
         description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
         example: 1
 
+
   createInformeMinisterialMensualDetalle:
     type: object
     properties:
@@ -232,6 +233,10 @@ definitions:
         type: integer
         description: cantidad de lavatorios de pies que se realizaron en el mes
         example: 12
+      diezmosIncluidosInforme:
+        type: number
+        description: diezmos incluidos en el informe
+        example: 1
 
   updateInformeMinisterialMensualDetalle:
     type: object
@@ -351,6 +356,10 @@ definitions:
       estado:
         type: number
         description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+      diezmosIncluidosInforme:
+        type: number
+        description: diezmos incluidos en el informe
         example: 1
 
 
