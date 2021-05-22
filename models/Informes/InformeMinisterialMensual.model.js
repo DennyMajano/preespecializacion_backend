@@ -12,6 +12,7 @@ module.exports = {
     //nombrePastor
     //idUsuario -->usuario_cr
     const {
+      estado,
       usuarioToken,
       codigoIglesia,
       codigoPastor,
@@ -22,6 +23,7 @@ module.exports = {
     //Comprobamos que los campos sean validos
     if (
       !comprobations.areFieldsValid([
+        estado,
         usuarioToken,
         codigoIglesia,
         codigoPastor,
@@ -66,7 +68,7 @@ module.exports = {
         );
       //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
       const result = await dbConnection.query(
-        "INSERT INTO `informe_ministerial_mensual`(`codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `usuario_cr`) VALUES (?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `informe_ministerial_mensual`(`codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `usuario_cr`, estado) VALUES (?,?,?,?,?,?,?,?,?,?)",
         [
           codigoInforme,
           codigoIglesia,
@@ -77,6 +79,7 @@ module.exports = {
           gestionMesResult[0].mes,
           gestionAnioResult[0].anio,
           usuario,
+          estado
         ]
       );
       result.code = codigoInforme;

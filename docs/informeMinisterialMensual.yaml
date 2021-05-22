@@ -112,6 +112,11 @@ definitions:
         type: string
         description: codigo de la gestión
         example: GE-121212
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+
   createInformeMinisterialMensualDetalle:
     type: object
     properties:
