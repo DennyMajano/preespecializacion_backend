@@ -51,6 +51,8 @@ paths:
         400:
           description: no se pudo crear por que faltan datos obligatorios
     put:
+      security:
+        - Bearer: []
       #security:
       #  - Bearer: []
       tags:
@@ -95,8 +97,8 @@ paths:
           description: Faltan datos para realizar la consulta
         404:
           description: informe no encontrado
-  /informe/ministerial/enviar/{codigo}:
-    get: # endpoint request type (post request)
+  /informe/ministerial/enviar/:
+    put: # endpoint request type (post request)
       security:
         - Bearer: []
       tags: # Tag property
@@ -107,9 +109,11 @@ paths:
         - application/json
       parameters: # request parameters
         - name: codigo
-          in: path
+          in: body
           description: código del informe
           required: true
+          schema: # Schema definition
+            $ref: "#/definitions/setProcesado"
       responses: # server responses
         200:
           description: Se ejecutó la consulta con éxito.
@@ -384,5 +388,10 @@ definitions:
         description: diezmos incluidos en el informe
         example: 1
 
-
-  
+  setProcesado:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo del reporte
+        example: IM-12121212

@@ -5,16 +5,27 @@ const GeneratorCode = require("../../helpers/GeneratorCode");
 const Token = require("../../services/security/Token");
 
 const idInformeMinisterialmensual = 2;
-const prefijoDeInforme = "I";
+const prefijoDeInforme = "IM";
 const IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL =
   "51ae4740-172b-4242-aa65-8244aa374141";
 module.exports = {
   SetProcesado: async (codigoInforme, usuarioToken) => {
     if (!comprobations.areFieldsValid([codigoInforme, usuarioToken])) {
       return errors.faltanDatosError();
-    }
-    const usuario = Token.decodeToken(usuarioToken).usuario;
-    this.saveInformesRecibidos(codigoInforme, usuario, 2);
+    }const usuario = Token.decodeToken(usuarioToken).usuario;
+    return await model.multipleTransactionQuery(async (dbConnection)=>{
+      
+    const usuarioCodigo = await dbConnection.query(
+      "SELECT persona FROM `usuarios` WHERE id = ?",
+      [usuario]
+    );
+    await dbConnection.query(
+      "update informe_ministerial_mensual set estado = 2, usuario_procesado=?, fecha_procesado=current_date() where codigo = ?",
+      [usuarioCodigo[0].persona,codigoInforme]
+    );
+
+    return await dbConnection.query("update informes_recibidos_gestion set estado = 2 where informe_ide=?",[codigoInforme]);
+    });
   },
   createCabeceraInforme: async (data) => {
     //nombreIglesia
@@ -446,3 +457,4 @@ async function saveInformesRecibidos(codigoInforme, usuario, estado) {
     );
   });
 }
+
