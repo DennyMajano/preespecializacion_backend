@@ -95,6 +95,28 @@ paths:
           description: Faltan datos para realizar la consulta
         404:
           description: informe no encontrado
+  /informe/ministerial/enviar/{codigo}:
+    get: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Informe Ministerial Mensual # Value of the tag
+      summary: establece el informe como enviado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código del informe
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
 
 definitions:
   createInformeMinisterialMensualCabecera:

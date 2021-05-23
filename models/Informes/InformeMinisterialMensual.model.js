@@ -6,6 +6,7 @@ const Token = require("../../services/security/Token");
 
 const idInformeMinisterialmensual = 2;
 const prefijoDeInforme = "I";
+const IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL = "51ae4740-172b-4242-aa65-8244aa374141";
 module.exports = {
   createCabeceraInforme: async (data) => {
     //nombreIglesia
@@ -372,6 +373,23 @@ module.exports = {
       return informeFinal;
     });
   },
+  SetEnviado: async(codigoInforme, usuarioToken)=>{
 
+    if(!comprobations.areFieldsValid([codigoInforme, usuarioToken])){
+      return errors.faltanDatosError();
+    }
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    return await model.multipleTransactionQuery(async (dbConnection)=>{
+      //Actualizamos el estado del informe a 2
+      await dbConnection.query("update informe_ministerial_mensual set estado = 2 where codigo = ?",[codigoInforme]);
+      const informeData = await dbConnection.query("select gestion, iglesia from informe_ministerial_mensual where codigo = ?",[codigoInforme]);
+      const informeTipoData = await dbConnection.query("SELECT tipo_informe, id FROM `maestro_de_informes` WHERE identificador = ?",[IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL]);
+      const usuarioCodigo = await dbConnection.query("SELECT persona FROM `usuarios` WHERE id = ?", [usuario]);
+      return await dbConnection.query("INSERT INTO `informes_recibidos_gestion`(`gestion`, `iglesia`, `tipo_informe`, `informe_maestro`, `informe_ide`, `estado`, `usuario`) VALUES (?,?,?,?,?,?,?)",
+      [informeData[0].gestion,informeData[0].iglesia,informeTipoData[0].tipo_informe, informeTipoData[0].id,codigoInforme,2,usuarioCodigo[0].persona]
+      );
+    });
+
+  },
   template: async (data) => {},
 };
