@@ -51,9 +51,9 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  informe.setEnviado = async (req, res) => {
+  informe.setProcesado = async (req, res) => {
     try {
-      const result = await modelInforme.SetEnviado(req.params.codigo,req.headers.authorization.split(" ")[1]);
+      const result = await modelInforme.SetProcesado(req.params.codigo,req.headers.authorization.split(" ")[1]);
       controller.validateResultForInsert(result, res);
     } catch (error) {
       controller.sendError(error, res);

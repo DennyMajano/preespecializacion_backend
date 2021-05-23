@@ -6,8 +6,16 @@ const Token = require("../../services/security/Token");
 
 const idInformeMinisterialmensual = 2;
 const prefijoDeInforme = "I";
-const IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL = "51ae4740-172b-4242-aa65-8244aa374141";
+const IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL =
+  "51ae4740-172b-4242-aa65-8244aa374141";
 module.exports = {
+  SetProcesado: async (codigoInforme, usuarioToken) => {
+    if (!comprobations.areFieldsValid([codigoInforme, usuarioToken])) {
+      return errors.faltanDatosError();
+    }
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    this.saveInformesRecibidos(codigoInforme, usuario, 2);
+  },
   createCabeceraInforme: async (data) => {
     //nombreIglesia
     //nombrePastor
@@ -63,26 +71,56 @@ module.exports = {
         "select MGI.mes, GI.informe, GI.gestion from gestiones as G join gestion_informes as GI on G.codigo = GI.gestion join meses_gestion_informe as MGI on MGI.gestion_informe = GI.id where G.codigo=? AND GI.informe = ?",
         [codigoGestion, idInformeMinisterialmensual]
       );
+
       if (gestionMesResult.length == 0)
         return errors.datosNoEncontrados(
           "Mes del informe para la gestión no encontrado"
         );
-      //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
-      const result = await dbConnection.query(
-        "INSERT INTO `informe_ministerial_mensual`(`codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `usuario_cr`, estado) VALUES (?,?,?,?,?,?,?,?,?,?)",
-        [
-          codigoInforme,
-          codigoIglesia,
-          iglesiaResult[0].nombre,
-          codigoPastor,
-          pastorResult[0].nombre,
-          gestionAnioResult[0].codigo,
-          gestionMesResult[0].mes,
-          gestionAnioResult[0].anio,
-          usuario,
-          estado
-        ]
+
+      const usuarioCodigo = await dbConnection.query(
+        "SELECT persona FROM `usuarios` WHERE id = ?",
+        [usuario]
       );
+      let result;
+      if (estado == 2) {
+        //Si entra aqui esque esta procesado se debe actualizar fecha procesado y usuario procesado
+        result = await dbConnection.query(
+          "INSERT INTO `informe_ministerial_mensual`(`codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `usuario_cr`, estado, fecha_procesado, usuario_procesado  ) VALUES (?,?,?,?,?,?,?,?,?,?,current_date(),?)",
+          [
+            codigoInforme,
+            codigoIglesia,
+            iglesiaResult[0].nombre,
+            codigoPastor,
+            pastorResult[0].nombre,
+            gestionAnioResult[0].codigo,
+            gestionMesResult[0].mes,
+            gestionAnioResult[0].anio,
+            usuarioCodigo[0].persona,
+            estado,
+            usuarioCodigo[0].persona,
+          ]
+        );
+      } else {
+        //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
+        result = await dbConnection.query(
+          "INSERT INTO `informe_ministerial_mensual`(`codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `usuario_cr`, estado) VALUES (?,?,?,?,?,?,?,?,?,?)",
+          [
+            codigoInforme,
+            codigoIglesia,
+            iglesiaResult[0].nombre,
+            codigoPastor,
+            pastorResult[0].nombre,
+            gestionAnioResult[0].codigo,
+            gestionMesResult[0].mes,
+            gestionAnioResult[0].anio,
+            usuario,
+            estado,
+          ]
+        );
+      }
+
+      await saveInformesRecibidos(codigoInforme, usuario, estado);
+
       result.code = codigoInforme;
       return result;
     });
@@ -117,7 +155,7 @@ module.exports = {
       ministerioAlcanceSemanal,
       santaCena,
       lavatorios,
-      diezmosIncluidosInforme
+      diezmosIncluidosInforme,
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -149,7 +187,7 @@ module.exports = {
         ministerioAlcanceSemanal,
         santaCena,
         lavatorios,
-        diezmosIncluidosInforme
+        diezmosIncluidosInforme,
       ])
     ) {
       return errors.faltanDatosError();
@@ -188,7 +226,7 @@ module.exports = {
           ministerioAlcanceSemanal,
           santaCena,
           lavatorios,
-          diezmosIncluidosInforme
+          diezmosIncluidosInforme,
         ]
       );
       result.code = codigoInforme;
@@ -226,7 +264,7 @@ module.exports = {
       santaCena,
       lavatorios,
       estado,
-      diezmosIncluidosInforme
+      diezmosIncluidosInforme,
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -259,7 +297,7 @@ module.exports = {
         santaCena,
         lavatorios,
         estado,
-        diezmosIncluidosInforme
+        diezmosIncluidosInforme,
       ])
     ) {
       return errors.faltanDatosError();
@@ -268,7 +306,10 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
 
-      await dbConnection.query("UPDATE `informe_ministerial_mensual` SET `estado`= ? WHERE codigo = ?",[estado, codigoInforme]);
+      await dbConnection.query(
+        "UPDATE `informe_ministerial_mensual` SET `estado`= ? WHERE codigo = ?",
+        [estado, codigoInforme]
+      );
       const result = await dbConnection.query(
         "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=?, `diezmos_incluidos_informe` = ? WHERE `informe_ministerial` = ?",
         [
@@ -300,8 +341,7 @@ module.exports = {
           santaCena,
           lavatorios,
           diezmosIncluidosInforme,
-          codigoInforme
-          
+          codigoInforme,
         ]
       );
       return result;
@@ -319,77 +359,90 @@ module.exports = {
       );
       informeData = informeData[0];
       console.log(informeData);
-        let informeFinal = {
-          mensajes: informeData.mensajes,
-          convertidos: informeData.convertidos,
-          santificados: informeData.santificados,
-          bautismosAgua: informeData.bautismos_agua,
-          bautismosEs: informeData.bautismos_es,
-          agregados: informeData.agregados,
-          hogaresMiembrosV: informeData.hogares_miembros_v,
-          hogaresProspectosV: informeData.hogares_prospectos_v,
-          diezmoRecibido: informeData.diezmo_recibido,
-          diezmoPagado: informeData.diezmo_pagado,
-          ofrendaRecibida: informeData.ofrenda_recibida,
-          diezmosIncluidosInforme: informeData.diezmos_incluidos_informe,
-          gastosMinisteriales: informeData.gastos_ministeriales,
-          actividadesOracion: informeData.actividades_oracion,
-          //es bool  `promedio_asistencia_adultos
-          vidaOracion: informeData.vida_oracion,
-          actividadesMisiones: informeData.actividades_misiones,
-          actividadesLiderazgo: informeData.actividades_liderazgo,
-          lideresInvolucrados: informeData.liderez_involucrados,
-          //es bool
-          mejoraMinisterial: informeData.mejora_ministerial,
-          miembrosActivos: informeData.miembros_activos,
-          miembrosSalvos: informeData.miembros_salvos,
-          miembrosSantificados: informeData.miembros_santificados,
-          miembrosBautizadosEs: informeData.miembros_bautizados_es,
-          promedioAsistenciaAdultos: informeData.promedio_asistencia_adultos,
-          promedioAsistenciaNiJov: informeData.promedio_asitencia_ni_jov,
-          //es bool
-          ministerioAlcanceSemanal: informeData.ministerio_alcance_semanal,
-          santaCena: informeData.santa_cena,
-          lavatorios: informeData.lavatorio,
-          codigo: informeData.codigo,
-          iglesia: informeData.iglesia,
-          nombreIglesia: informeData.nombre_iglesia,
-          pastor: informeData.pastor,
-          nombrePastor: informeData.nombre_pastor,
-          fechaProcesado: informeData.fecha_procesado,
-          usuarioProcesado: informeData.usuario_procesado,
-          gestion: informeData.gestion,
-          mes: informeData.mes,
-          anio: informeData.anio,
-          usuarioCreo: informeData.usuario_cr,
-          estado: informeData.estado,
-          fechaCr: informeData.fecha_cr,
-          fechaUac: informeData.fecha_uac
-
-        };
-
-
+      let informeFinal = {
+        mensajes: informeData.mensajes,
+        convertidos: informeData.convertidos,
+        santificados: informeData.santificados,
+        bautismosAgua: informeData.bautismos_agua,
+        bautismosEs: informeData.bautismos_es,
+        agregados: informeData.agregados,
+        hogaresMiembrosV: informeData.hogares_miembros_v,
+        hogaresProspectosV: informeData.hogares_prospectos_v,
+        diezmoRecibido: informeData.diezmo_recibido,
+        diezmoPagado: informeData.diezmo_pagado,
+        ofrendaRecibida: informeData.ofrenda_recibida,
+        diezmosIncluidosInforme: informeData.diezmos_incluidos_informe,
+        gastosMinisteriales: informeData.gastos_ministeriales,
+        actividadesOracion: informeData.actividades_oracion,
+        //es bool  `promedio_asistencia_adultos
+        vidaOracion: informeData.vida_oracion,
+        actividadesMisiones: informeData.actividades_misiones,
+        actividadesLiderazgo: informeData.actividades_liderazgo,
+        lideresInvolucrados: informeData.liderez_involucrados,
+        //es bool
+        mejoraMinisterial: informeData.mejora_ministerial,
+        miembrosActivos: informeData.miembros_activos,
+        miembrosSalvos: informeData.miembros_salvos,
+        miembrosSantificados: informeData.miembros_santificados,
+        miembrosBautizadosEs: informeData.miembros_bautizados_es,
+        promedioAsistenciaAdultos: informeData.promedio_asistencia_adultos,
+        promedioAsistenciaNiJov: informeData.promedio_asitencia_ni_jov,
+        //es bool
+        ministerioAlcanceSemanal: informeData.ministerio_alcance_semanal,
+        santaCena: informeData.santa_cena,
+        lavatorios: informeData.lavatorio,
+        codigo: informeData.codigo,
+        iglesia: informeData.iglesia,
+        nombreIglesia: informeData.nombre_iglesia,
+        pastor: informeData.pastor,
+        nombrePastor: informeData.nombre_pastor,
+        fechaProcesado: informeData.fecha_procesado,
+        usuarioProcesado: informeData.usuario_procesado,
+        gestion: informeData.gestion,
+        mes: informeData.mes,
+        anio: informeData.anio,
+        usuarioCreo: informeData.usuario_cr,
+        estado: informeData.estado,
+        fechaCr: informeData.fecha_cr,
+        fechaUac: informeData.fecha_uac,
+      };
 
       return informeFinal;
     });
   },
-  SetEnviado: async(codigoInforme, usuarioToken)=>{
 
-    if(!comprobations.areFieldsValid([codigoInforme, usuarioToken])){
-      return errors.faltanDatosError();
-    }
-    const usuario = Token.decodeToken(usuarioToken).usuario;
-    return await model.multipleTransactionQuery(async (dbConnection)=>{
-      //Actualizamos el estado del informe a 2
-      await dbConnection.query("update informe_ministerial_mensual set estado = 2 where codigo = ?",[codigoInforme]);
-      const informeData = await dbConnection.query("select gestion, iglesia from informe_ministerial_mensual where codigo = ?",[codigoInforme]);
-      const informeTipoData = await dbConnection.query("SELECT tipo_informe, id FROM `maestro_de_informes` WHERE identificador = ?",[IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL]);
-      const usuarioCodigo = await dbConnection.query("SELECT persona FROM `usuarios` WHERE id = ?", [usuario]);
-      return await dbConnection.query("INSERT INTO `informes_recibidos_gestion`(`gestion`, `iglesia`, `tipo_informe`, `informe_maestro`, `informe_ide`, `estado`, `usuario`) VALUES (?,?,?,?,?,?,?)",
-      [informeData[0].gestion,informeData[0].iglesia,informeTipoData[0].tipo_informe, informeTipoData[0].id,codigoInforme,2,usuarioCodigo[0].persona]
-      );
-    });
-
-  },
   template: async (data) => {},
 };
+
+async function saveInformesRecibidos(codigoInforme, usuario, estado) {
+  return await model.multipleTransactionQuery(async (dbConnection) => {
+    await dbConnection.query(
+      "update informe_ministerial_mensual set estado = 2 where codigo = ?",
+      [codigoInforme]
+    );
+    const informeData = await dbConnection.query(
+      "select gestion, iglesia from informe_ministerial_mensual where codigo = ?",
+      [codigoInforme]
+    );
+    const informeTipoData = await dbConnection.query(
+      "SELECT tipo_informe, id FROM `maestro_de_informes` WHERE identificador = ?",
+      [IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL]
+    );
+    const usuarioCodigo = await dbConnection.query(
+      "SELECT persona FROM `usuarios` WHERE id = ?",
+      [usuario]
+    );
+    return await dbConnection.query(
+      "INSERT INTO `informes_recibidos_gestion`(`gestion`, `iglesia`, `tipo_informe`, `informe_maestro`, `informe_ide`, `estado`, `usuario`) VALUES (?,?,?,?,?,?,?)",
+      [
+        informeData[0].gestion,
+        informeData[0].iglesia,
+        informeTipoData[0].tipo_informe,
+        informeTipoData[0].id,
+        codigoInforme,
+        estado,
+        usuarioCodigo[0].persona,
+      ]
+    );
+  });
+}
