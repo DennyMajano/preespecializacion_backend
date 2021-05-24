@@ -35,6 +35,7 @@ module.exports = () => {
   informe.updateDetalleInforme = async (req, res) => {
     try {
       console.log(req.body);
+      req.body.usuarioToken = req.headers.authorization.split(" ")[1];
       const result = await modelInforme.updateDetalleInforme(req.body);
       controller.validateResultForUpdate(result, res);
     } catch (error) {

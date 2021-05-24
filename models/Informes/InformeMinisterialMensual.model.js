@@ -244,120 +244,7 @@ module.exports = {
       return result;
     });
   },
-  updateDetalleInforme: async (data) => {
-    const {
-      codigoInforme,
-      mensajes,
-      convertidos,
-      santificados,
-      bautismosAgua,
-      bautismosEs,
-      agregados,
-      hogaresMiembrosV,
-      hogaresProspectosV,
-      diezmoRecibido,
-      diezmoPagado,
-      ofrendaRecibida,
-      gastosMinisteriales,
-      actividadesOracion,
-      vidaOracion,
-      actividadesMisiones,
-      actividadesLiderazgo,
-      lideresInvolucrados,
-      mejoraMinisterial,
-      miembrosActivos,
-      miembrosSalvos,
-      miembrosSantificados,
-      miembrosBautizadosEs,
-      promedioAsistenciaAdultos,
-      promedioAsistenciaNiJov,
-      ministerioAlcanceSemanal,
-      santaCena,
-      lavatorios,
-      estado,
-      diezmosIncluidosInforme,
-    } = data;
-    if (
-      !comprobations.areFieldsValid([
-        codigoInforme,
-        mensajes,
-        convertidos,
-        santificados,
-        bautismosAgua,
-        bautismosEs,
-        agregados,
-        hogaresMiembrosV,
-        hogaresProspectosV,
-        diezmoRecibido,
-        diezmoPagado,
-        ofrendaRecibida,
-        gastosMinisteriales,
-        actividadesOracion,
-        vidaOracion,
-        actividadesMisiones,
-        actividadesLiderazgo,
-        lideresInvolucrados,
-        mejoraMinisterial,
-        miembrosActivos,
-        miembrosSalvos,
-        miembrosSantificados,
-        miembrosBautizadosEs,
-        promedioAsistenciaAdultos,
-        promedioAsistenciaNiJov,
-        ministerioAlcanceSemanal,
-        santaCena,
-        lavatorios,
-        estado,
-        diezmosIncluidosInforme,
-      ])
-    ) {
-      return errors.faltanDatosError();
-    }
-    //llamamos la transaccion
-    return await model.multipleTransactionQuery(async (dbConnection) => {
-      //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
 
-      await dbConnection.query(
-        "UPDATE `informe_ministerial_mensual` SET `estado`= ? WHERE codigo = ?",
-        [estado, codigoInforme]
-      );
-      const result = await dbConnection.query(
-        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=?, `diezmos_incluidos_informe` = ? WHERE `informe_ministerial` = ?",
-        [
-          mensajes,
-          convertidos,
-          santificados,
-          bautismosAgua,
-          bautismosEs,
-          agregados,
-          hogaresMiembrosV,
-          hogaresProspectosV,
-          diezmoRecibido,
-          diezmoPagado,
-          ofrendaRecibida,
-          gastosMinisteriales,
-          actividadesOracion,
-          vidaOracion,
-          actividadesMisiones,
-          actividadesLiderazgo,
-          lideresInvolucrados,
-          mejoraMinisterial,
-          miembrosActivos,
-          miembrosSalvos,
-          miembrosSantificados,
-          miembrosBautizadosEs,
-          promedioAsistenciaAdultos,
-          promedioAsistenciaNiJov,
-          ministerioAlcanceSemanal,
-          santaCena,
-          lavatorios,
-          diezmosIncluidosInforme,
-          codigoInforme,
-        ]
-      );
-      return result;
-    });
-  },
   getInfoByCodigo: async (codigoInforme) => {
     if (!comprobations.areFieldsValid([codigoInforme])) {
       return errors.faltanDatosError();
@@ -421,7 +308,149 @@ module.exports = {
       return informeFinal;
     });
   },
+  updateDetalleInforme: async (data) => {
+    const {
+      usuarioToken,
+      codigoInforme,
+      mensajes,
+      convertidos,
+      santificados,
+      bautismosAgua,
+      bautismosEs,
+      agregados,
+      hogaresMiembrosV,
+      hogaresProspectosV,
+      diezmoRecibido,
+      diezmoPagado,
+      ofrendaRecibida,
+      gastosMinisteriales,
+      actividadesOracion,
+      vidaOracion,
+      actividadesMisiones,
+      actividadesLiderazgo,
+      lideresInvolucrados,
+      mejoraMinisterial,
+      miembrosActivos,
+      miembrosSalvos,
+      miembrosSantificados,
+      miembrosBautizadosEs,
+      promedioAsistenciaAdultos,
+      promedioAsistenciaNiJov,
+      ministerioAlcanceSemanal,
+      santaCena,
+      lavatorios,
+      estado,
+      diezmosIncluidosInforme,
+    } = data;
+    if (
+      !comprobations.areFieldsValid([
+        usuarioToken,
+        codigoInforme,
+        mensajes,
+        convertidos,
+        santificados,
+        bautismosAgua,
+        bautismosEs,
+        agregados,
+        hogaresMiembrosV,
+        hogaresProspectosV,
+        diezmoRecibido,
+        diezmoPagado,
+        ofrendaRecibida,
+        gastosMinisteriales,
+        actividadesOracion,
+        vidaOracion,
+        actividadesMisiones,
+        actividadesLiderazgo,
+        lideresInvolucrados,
+        mejoraMinisterial,
+        miembrosActivos,
+        miembrosSalvos,
+        miembrosSantificados,
+        miembrosBautizadosEs,
+        promedioAsistenciaAdultos,
+        promedioAsistenciaNiJov,
+        ministerioAlcanceSemanal,
+        santaCena,
+        lavatorios,
+        estado,
+        diezmosIncluidosInforme,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
 
+    //llamamos la transaccion
+    return await model.multipleTransactionQuery(async (dbConnection) => {
+      //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
+
+      await dbConnection.query(
+        "UPDATE `informe_ministerial_mensual` SET `estado`= ? WHERE codigo = ?",
+        [estado, codigoInforme]
+      );
+      if(estado == 2){
+            //Obtenemos el id del usuario del token.
+        const usuario = Token.decodeToken(usuarioToken).usuario;
+        const usuarioCodigo = await dbConnection.query(
+          "SELECT persona FROM `usuarios` WHERE id = ?",
+          [usuario]
+        );
+        await dbConnection.query(
+          "UPDATE `informes_recibidos_gestion` SET `estado`= 2 WHERE informe_ide = ?",
+          [codigoInforme]
+        );
+        await dbConnection.query(
+          "update informe_ministerial_mensual set fecha_procesado=current_date(), usuario_procesado=?, estado = 2  where codigo = ?",
+          [usuarioCodigo[0].persona, codigoInforme]
+        );
+      }
+      else{
+        await dbConnection.query(
+          "UPDATE `informes_recibidos_gestion` SET `estado`= ? WHERE informe_ide = ?",
+          [estado, codigoInforme]
+        );
+        await dbConnection.query(
+          "update informe_ministerial_mensual set estado = 1  where codigo = ?",
+          [ codigoInforme]
+        );
+      }
+      const result = await dbConnection.query(
+        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=?, `diezmos_incluidos_informe` = ? WHERE `informe_ministerial` = ?",
+        [
+          mensajes,
+          convertidos,
+          santificados,
+          bautismosAgua,
+          bautismosEs,
+          agregados,
+          hogaresMiembrosV,
+          hogaresProspectosV,
+          diezmoRecibido,
+          diezmoPagado,
+          ofrendaRecibida,
+          gastosMinisteriales,
+          actividadesOracion,
+          vidaOracion,
+          actividadesMisiones,
+          actividadesLiderazgo,
+          lideresInvolucrados,
+          mejoraMinisterial,
+          miembrosActivos,
+          miembrosSalvos,
+          miembrosSantificados,
+          miembrosBautizadosEs,
+          promedioAsistenciaAdultos,
+          promedioAsistenciaNiJov,
+          ministerioAlcanceSemanal,
+          santaCena,
+          lavatorios,
+          diezmosIncluidosInforme,
+          codigoInforme,
+        ]
+      );
+      return result;
+    });
+  },
   template: async (data) => {},
 };
 
