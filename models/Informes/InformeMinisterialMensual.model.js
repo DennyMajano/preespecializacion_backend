@@ -9,6 +9,7 @@ const prefijoDeInforme = "IM";
 const IDENTIFICADOR_INFORME_MINISTERIAL_MENSUAL =
   "51ae4740-172b-4242-aa65-8244aa374141";
 module.exports = {
+  //SER REMOVIDO //debe usar el del modelo de informe.controller
   SetProcesado: async (codigoInforme, usuarioToken) => {
     if (!comprobations.areFieldsValid([codigoInforme, usuarioToken])) {
       return errors.faltanDatosError();

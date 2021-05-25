@@ -127,7 +127,11 @@ definitions:
       mail:
         type: string
         description: correo electrónico del tesorero
-        example: tesorero@mail.com
+        example: tesorero@mail.com 
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
   createInformeTesoreroMensualDetalle:
     type: object
     properties:

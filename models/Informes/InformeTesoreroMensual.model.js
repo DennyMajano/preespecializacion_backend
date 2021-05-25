@@ -5,13 +5,16 @@ const GeneratorCode = require("../../helpers/GeneratorCode");
 const Token = require("../../services/security/Token");
 
 const ID_INFORME_TESORERO_MENSUAL = 2;
-const PREFIJO_INFORME = "I";
+const PREFIJO_INFORME = "IT";
+const IDENTIFICADOR_INFORME_TESORERO_MENSUAL =
+  "74a9f3a5-6339-488c-8451-e1c190d41a78";
 module.exports = {
   createCabeceraInforme: async (data) => {
     //nombreIglesia
     //nombrePastor
     //idUsuario -->usuario_cr
     const {
+      estado,
       usuarioToken,
       codigoIglesia,
       nombreTesorero,
@@ -19,12 +22,13 @@ module.exports = {
       codigoGestion,
       telefono,
       direccion,
-      mail
+      mail,
       //idInformeMinisterialmensual
     } = data;
     //Comprobamos que los campos sean validos
     if (
       !comprobations.areFieldsValid([
+        estado,
         usuarioToken,
         codigoIglesia,
         nombreTesorero,
@@ -32,7 +36,7 @@ module.exports = {
         codigoGestion,
         telefono,
         direccion,
-        mail
+        mail,
       ])
     ) {
       return errors.faltanDatosError();
@@ -71,25 +75,55 @@ module.exports = {
         return errors.datosNoEncontrados(
           "Mes del informe para la gestión no encontrado"
         );
-      //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
-      const result = await dbConnection.query(
-        "INSERT INTO `informe_mesual_tesorero` (`codigo`, `iglesia`, `tesorero`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `telefono`, `direccion`, `correo_electronico`, `usuario_cr`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          codigoInforme,
-          codigoIglesia,
-          nombreTesorero,
-          iglesiaResult[0].nombre,
-          codigoPastor,
-          pastorResult[0].nombre,
-          gestionAnioResult[0].codigo,
-          gestionMesResult[0].mes,
-          gestionAnioResult[0].anio,
-          telefono,
-          direccion,
-          mail,
-          usuario,
-        ]
+      const usuarioCodigo = await dbConnection.query(
+        "SELECT persona FROM `usuarios` WHERE id = ?",
+        [usuario]
       );
+
+      let result;
+      if(estado ==2){
+        result = await dbConnection.query(
+          "INSERT INTO `informe_mesual_tesorero` (`codigo`, `iglesia`, `tesorero`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `telefono`, `direccion`, `correo_electronico`, `usuario_cr`, fecha_procesado, usuario_procesado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,current_date(),?)",
+          [
+            codigoInforme,
+            codigoIglesia,
+            nombreTesorero,
+            iglesiaResult[0].nombre,
+            codigoPastor,
+            pastorResult[0].nombre,
+            gestionAnioResult[0].codigo,
+            gestionMesResult[0].mes,
+            gestionAnioResult[0].anio,
+            telefono,
+            direccion,
+            mail,
+            usuario,
+            usuarioCodigo[0].persona
+          ]
+        );
+      }
+      else{
+        result = await dbConnection.query(
+          "INSERT INTO `informe_mesual_tesorero` (`codigo`, `iglesia`, `tesorero`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `telefono`, `direccion`, `correo_electronico`, `usuario_cr`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            codigoInforme,
+            codigoIglesia,
+            nombreTesorero,
+            iglesiaResult[0].nombre,
+            codigoPastor,
+            pastorResult[0].nombre,
+            gestionAnioResult[0].codigo,
+            gestionMesResult[0].mes,
+            gestionAnioResult[0].anio,
+            telefono,
+            direccion,
+            mail,
+            usuario
+          ]
+        );
+      }
+
+      await saveInformesRecibidos(codigoInforme, usuario, estado);
       result.code = codigoInforme;
       return result;
     });
@@ -115,7 +149,7 @@ module.exports = {
       masculinos,
       femeninos,
       excluidos,
-      trasladados
+      trasladados,
     } = data;
     if (
       !comprobations.areFieldsValid([
@@ -138,7 +172,7 @@ module.exports = {
         masculinos,
         femeninos,
         excluidos,
-        trasladados
+        trasladados,
       ])
     ) {
       return errors.faltanDatosError();
@@ -149,26 +183,26 @@ module.exports = {
       const result = await dbConnection.query(
         "INSERT INTO `detalle_informe_mensual_tesorero`(`informe_mesual_tesorero`, `diezmos_recibidos_iglesia`, `diezmo_enviado_oficina`, `diezmos_entregados_pastor`, `membresia_patrimonio_historico`, `ofrenda_misionera_segundo_domingo`, `impulso_misiones`, `porcentaje_misioneros_oficina`, `misiones_nacionales`, `entrada_fondo_local`, `diezmos_fondo_local`, `fondo_retiro_pastoral`, `dinero_otros_propositos`, `ofrenda_emergencia_nacional`, `fondo_solidario_ministerial`, `total_miembros`, `masculinos`, `femeninos`, `excluidos`, `trasladados`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
-        codigoInforme, //codigo de la cabecera
-        diezmoseRecibidosIglesia,
-        diezmoEnviadoOficina,
-        diezmosEntregadosPastor,
-        membresiaPatrimonioHistorico,
-        ofrendaMisioneraSegundoDomingo,
-        impulsoMisiones,
-        porcentajeMisionerosOficina,
-        misionesNacionales,
-        entradaFondoLocal,
-        diezmosfondoLocal,
-        fondoRetiroPastoral,
-        dineroOtrosPropositos,
-        ofrendaEmergenciaNacional,
-        fondoSolidarioMinisterial,
-        totalMiembros,
-        masculinos,
-        femeninos,
-        excluidos,
-        trasladados
+          codigoInforme, //codigo de la cabecera
+          diezmoseRecibidosIglesia,
+          diezmoEnviadoOficina,
+          diezmosEntregadosPastor,
+          membresiaPatrimonioHistorico,
+          ofrendaMisioneraSegundoDomingo,
+          impulsoMisiones,
+          porcentajeMisionerosOficina,
+          misionesNacionales,
+          entradaFondoLocal,
+          diezmosfondoLocal,
+          fondoRetiroPastoral,
+          dineroOtrosPropositos,
+          ofrendaEmergenciaNacional,
+          fondoSolidarioMinisterial,
+          totalMiembros,
+          masculinos,
+          femeninos,
+          excluidos,
+          trasladados,
         ]
       );
       result.code = codigoInforme;
@@ -293,3 +327,33 @@ module.exports = {
   },
   template: async (data) => {},
 };
+
+async function saveInformesRecibidos(codigoInforme, usuario, estado ) {
+  return await model.multipleTransactionQuery(async (dbConnection) => {
+    const informeData = await dbConnection.query(
+      "select gestion, iglesia from informe_mesual_tesorero where codigo = ?",
+      [codigoInforme]
+    );
+    const informeTipoData = await dbConnection.query(
+      "SELECT tipo_informe, id FROM `maestro_de_informes` WHERE identificador = ?",
+      [IDENTIFICADOR_INFORME_TESORERO_MENSUAL]
+    );
+    const usuarioCodigo = await dbConnection.query(
+      "SELECT persona FROM `usuarios` WHERE id = ?",
+      [usuario]
+    );
+    return await dbConnection.query(
+      "INSERT INTO `informes_recibidos_gestion`(`gestion`, `iglesia`, `tipo_informe`, `informe_maestro`, `informe_ide`, `estado`, `usuario`) VALUES (?,?,?,?,?,?,?)",
+      [
+        informeData[0].gestion,
+        informeData[0].iglesia,
+        informeTipoData[0].tipo_informe,
+        informeTipoData[0].id,
+        codigoInforme,
+        estado,
+        usuarioCodigo[0].persona,
+      ]
+    );
+  });
+}
+
