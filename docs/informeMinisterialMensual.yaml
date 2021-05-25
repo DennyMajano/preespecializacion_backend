@@ -103,7 +103,7 @@ paths:
         - Bearer: []
       tags: # Tag property
         - Informe Ministerial Mensual # Value of the tag
-      summary: establece el informe como enviado
+      summary: (SERÁ REMOVIDO) establece el informe como enviado
       consume: application/json
       produces:
         - application/json
