@@ -26,7 +26,29 @@ paths:
           description: no se pudo crear por que faltan datos obligatorios
         404:
           description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
-
+  /informe/financiero/mensual/detalle: # path of the user from your endpoint
+    post:
+      #security:
+      #  - Bearer: []
+      tags:
+        - Informe Financiero Mensual
+      summary: Crear el detalle de un Informe Financiero Mensual
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/createInformeFinancieroMensualDetalle"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: no se pudo crear por que faltan datos obligatoriosS
 
 definitions:
   createInformeFinancieroMensualCabecera:
@@ -58,85 +80,94 @@ definitions:
       codigoInforme:
         type: string
         description: codigo de la cabecera del reporte
-        example: I-12121212
-      diezmoseRecibidosIglesia:
-        type: decimal
-        description: cantidad monetaria de diezmos recibidos por la iglesia
-        example: 1.00
-      diezmoEnviadoOficina:
-        type: decimal
-        description: cantidad monetaria de diezmos enviados a la oficina nacional
-        example: 2.00
-      diezmosEntregadosPastor:
-        type: decimal
-        description: cantidad monetaria de diezmos entregados al pastor
-        example: 3.00
-      membresiaPatrimonioHistorico:
-        type: decimal
-        description: cantidad monetaria de la membrecia para patrimonio historico
-        example: 4.00
-      ofrendaMisioneraSegundoDomingo:
-        type: decimal
-        description: cantidad monetaria de ofrenda misionera del segundo domingo
-        example: 5.00
-      impulsoMisiones:
-        type: decimal
-        description: cantidad monetaria para impulso de misones de marzo a octubre
-        example: 6.00
-      porcentajeMisionerosOficina: 
-        type: decimal
-        description: cantidad monetaria del 50% de los mismisterio para la oficina nacional
-        example: 7.00
-      misionesNacionales:
-        type: decimal
-        description: cantidad monetaria para misiones nacionales de julio a diciembre
-        example: 8.00
-      entradaFondoLocal:
-        type: decimal
-        description: cantidad monetaria de entrada de fondo local
-        example: 9.00
-      diezmosfondoLocal: 
-        type: decimal
-        description: cantidad monetaria de diezmos para fondo local
-        example: 10.00
-      fondoRetiroPastoral:
-        type: decimal
-        description: cantidad monetaria para fonde de retiro pastoral
-        example: 11.00
-      dineroOtrosPropositos:
-        type: decimal
-        description: cantidad monetaria para dinero de otros propositos
-        example: 12.00
-      ofrendaEmergenciaNacional:
-        type: decimal
-        description: cantidad monetaria para ofrenda emergencia nacional
-        example: 13.00
-      fondoSolidarioMinisterial:
-        type: decimal
-        description: cantidad monetaria para fondo solidario ministerial
-        example: 14.00
-      totalMiembros:
-        type: decimal
-        description: cantidad total de miembros
-        example: 15.00
-      masculinos:
-        type: integer
-        description: total de miembros masculinos
-        example: 16
-      femeninos:
-        type: integer
-        description: cantidad de miembros femeninos
-        example: 17
-      excluidos:
-        type: integer
-        description: cantidad de miembros excluidos
-        example: 18
-      trasladados:
-        type: integer
-        description: cantidad de miembros trasladado a otra iglesias
-        example: 19
-      estado:
+        example: IF-12121212
+      oficinasInternacionales: 
         type: number
-        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        format: float
+        description: cantidad monetaria para oficinas nacionales
         example: 1
-  
+      sociosAmip:
+        type: number
+        format: float
+        description: cantidad monetaria para socios amip
+        example: 2
+      misionesMundiales:
+        type: number
+        format: float
+        description: cantidad monetaria para misiones mundiales
+        example: 3
+      tributosAnuales:
+        type: number
+        format: float
+        description: cantidad monetaria para tributos anuales
+        example: 4
+      ministroOrdenado:
+        type: number
+        format: float
+        description: cantidad monetaria reportada por ministro ordenado
+        example: 5
+      pastorLaico:
+        type: number
+        format: float
+        description: cantidad monetaria a reportar por pastor laico
+        example: 6
+      fondoLocal:
+        type: number
+        format: float
+        description: cantidad monetaria de fondo local
+        example: 7
+      retiroPastoral:
+        type: number
+        format: float
+        description: cantidad monetaria de retiro pastoral
+        example: 8
+      segundaParteOfrendaministerios:
+        type: number
+        format: float
+        description: cantidad monetaria de segunda parde de ofrenda ministerial
+        example: 9
+      fondoEmergenciaNacional:
+        type: number
+        format: float
+        description: cantidad monetaria para fondo emergencia nacional
+        example: 10
+      misionesNacionales:
+        type: number
+        format: float
+        description: cantidad monetaria para miniones nacionales
+        example: 11
+      diezmosMinistros:
+        type: number
+        format: float
+        description: cantidad monetaria de diezmos para ministros
+        example: 12
+      compraPropiedadNacional:
+        type: number
+        format: float
+        description: cantidad monetaria para compra de propiedad naciones
+        example: 13
+      construccionTemplosNuevos:
+        type: number
+        format: float
+        description: cantidad monetaria para construccion de templos
+        example: 14
+      cotizacionPrestaciones:
+        type: number
+        format: float
+        description: cantidad monetaria para prestacion isss y afp
+        example: 15
+      seguroVida:
+        type: number
+        format: float
+        description: cantidad monetaria para seguro de vida
+        example: 16
+      fondoSolidarioMinisterial:
+        type: number
+        format: float
+        description: cantidad monetaria para fondo solidario ministerial
+        example: 17
+      otros:
+        type: number
+        format: float
+        description: cantidad monetaria para otros
+        example: 18

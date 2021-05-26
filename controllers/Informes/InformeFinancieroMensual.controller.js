@@ -22,7 +22,7 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-/*   informe.createDetalleInforme = async (req, res) => {
+  informe.createDetalleInforme = async (req, res) => {
     console.log(req.body);
     try {
       const result = await modelInforme.createDetalleInforme(req.body);
@@ -34,6 +34,7 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  /*
   informe.updateDetalleInforme = async (req, res) => {
     try {
       console.log(req.body);
