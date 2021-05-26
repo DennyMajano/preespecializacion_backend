@@ -12,11 +12,11 @@ module.exports = () => {
     "/informe/financiero/mensual/detalle",
     informeFinancieroMensualController.createDetalleInforme
   );
+  router.put(
+    "/informe/financiero/mensual/detalle",
+    informeFinancieroMensualController.updateDetalleInforme
+  );
   /*
-    router.put(
-      "/informe/financiero/mensual/detalle",
-      informeFinancieroMensualController.updateDetalleInforme
-    );
     router.get(
       "/informe/financiero/mensual/info/:codigo",
       informeFinancieroMensualController.getByCodigo

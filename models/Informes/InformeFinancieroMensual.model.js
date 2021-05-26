@@ -193,56 +193,54 @@ module.exports = {
       return result;
     });
   },
-  /*
+
   updateDetalleInforme: async (data) => {
     const {
       usuarioToken,
       estado,
       codigoInforme, //codigo de la cabecera
-      diezmoseRecibidosIglesia,
-      diezmoEnviadoOficina,
-      diezmosEntregadosPastor,
-      membresiaPatrimonioHistorico,
-      ofrendaMisioneraSegundoDomingo,
-      impulsoMisiones,
-      porcentajeMisionerosOficina,
+      oficinasInternacionales,
+      sociosAmip,
+      misionesMundiales,
+      tributosAnuales,
+      ministroOrdenado,
+      pastorLaico,
+      fondoLocal,
+      retiroPastoral,
+      segundaParteOfrendaministerios,
+      fondoEmergenciaNacional,
       misionesNacionales,
-      entradaFondoLocal,
-      diezmosfondoLocal,
-      fondoRetiroPastoral,
-      dineroOtrosPropositos,
-      ofrendaEmergenciaNacional,
+      diezmosMinistros,
+      compraPropiedadNacional,
+      construccionTemplosNuevos,
+      cotizacionPrestaciones,
+      seguroVida,
       fondoSolidarioMinisterial,
-      totalMiembros,
-      masculinos,
-      femeninos,
-      excluidos,
-      trasladados,
+      otros,
     } = data;
     if (
       !comprobations.areFieldsValid([
         usuarioToken,
         estado,
         codigoInforme, //codigo de la cabecera
-        diezmoseRecibidosIglesia,
-        diezmoEnviadoOficina,
-        diezmosEntregadosPastor,
-        membresiaPatrimonioHistorico,
-        ofrendaMisioneraSegundoDomingo,
-        impulsoMisiones,
-        porcentajeMisionerosOficina,
+        oficinasInternacionales,
+        sociosAmip,
+        misionesMundiales,
+        tributosAnuales,
+        ministroOrdenado,
+        pastorLaico,
+        fondoLocal,
+        retiroPastoral,
+        segundaParteOfrendaministerios,
+        fondoEmergenciaNacional,
         misionesNacionales,
-        entradaFondoLocal,
-        diezmosfondoLocal,
-        fondoRetiroPastoral,
-        dineroOtrosPropositos,
-        ofrendaEmergenciaNacional,
+        diezmosMinistros,
+        compraPropiedadNacional,
+        construccionTemplosNuevos,
+        cotizacionPrestaciones,
+        seguroVida,
         fondoSolidarioMinisterial,
-        totalMiembros,
-        masculinos,
-        femeninos,
-        excluidos,
-        trasladados,
+        otros,
       ])
     ) {
       return errors.faltanDatosError();
@@ -258,7 +256,7 @@ module.exports = {
           [usuario]
         );
         await dbConnection.query(
-          "update informe_mesual_tesorero set fecha_procesado=current_date(), usuario_procesado=?  where codigo = ?",
+          "update informe_financiero_mensual set fecha_procesado=current_date(), usuario_procesado=?  where codigo = ?",
           [usuarioCodigo[0].persona, codigoInforme]
         );
       }
@@ -269,33 +267,33 @@ module.exports = {
 
       //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
       const result = await dbConnection.query(
-        "UPDATE `detalle_informe_mensual_tesorero` SET `diezmos_recibidos_iglesia`=?,`diezmo_enviado_oficina`=?,`diezmos_entregados_pastor`=?,`membresia_patrimonio_historico`=?,`ofrenda_misionera_segundo_domingo`=?,`impulso_misiones`=?,`porcentaje_misioneros_oficina`=?,`misiones_nacionales`=?,`entrada_fondo_local`=?,`diezmos_fondo_local`=?,`fondo_retiro_pastoral`=?,`dinero_otros_propositos`=?,`ofrenda_emergencia_nacional`=?,`fondo_solidario_ministerial`=?,`total_miembros`=?,`masculinos`=?,`femeninos`=?,`excluidos`=?,`trasladados`=? WHERE `informe_mesual_tesorero` = ?",
+        "UPDATE `detalle_informe_financiero_mensual` SET `oficinas_internacionales`=?,`socios_amip`=?,`misiones_mundiales`=?,`tributos_anuales`=?,`ministro_ordenado`=?,`pastor_laico`=?,`fondo_local`=?,`retiro_pastoral`=?,`segunda_parte_ofrenda_ministerios`=?,`fondo_emergencia_nacional`=?,`misiones_nacionales`=?,`diezmos_ministros`=?,`compra_propiedad_nacional`=?,`construccion_templos_nuevos`=?,`cotizacion_prestaciones`=?,`seguro_vida`=?,`fondo_solidario_ministerial`=?,`otros`=? WHERE informe_financiero = ?",
         [
-          diezmoseRecibidosIglesia,
-          diezmoEnviadoOficina,
-          diezmosEntregadosPastor,
-          membresiaPatrimonioHistorico,
-          ofrendaMisioneraSegundoDomingo,
-          impulsoMisiones,
-          porcentajeMisionerosOficina,
+          oficinasInternacionales,
+          sociosAmip,
+          misionesMundiales,
+          tributosAnuales,
+          ministroOrdenado,
+          pastorLaico,
+          fondoLocal,
+          retiroPastoral,
+          segundaParteOfrendaministerios,
+          fondoEmergenciaNacional,
           misionesNacionales,
-          entradaFondoLocal,
-          diezmosfondoLocal,
-          fondoRetiroPastoral,
-          dineroOtrosPropositos,
-          ofrendaEmergenciaNacional,
+          diezmosMinistros,
+          compraPropiedadNacional,
+          construccionTemplosNuevos,
+          cotizacionPrestaciones,
+          seguroVida,
           fondoSolidarioMinisterial,
-          totalMiembros,
-          masculinos,
-          femeninos,
-          excluidos,
-          trasladados,
+          otros,
           codigoInforme, //codigo de la cabecera
         ]
       );
       return result;
     });
   },
+  /*
   getInfoByCodigo: async (codigoInforme) => {
     if (!comprobations.areFieldsValid([codigoInforme])) {
       return errors.faltanDatosError();
