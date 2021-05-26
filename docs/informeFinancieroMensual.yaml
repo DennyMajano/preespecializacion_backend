@@ -1,0 +1,142 @@
+paths:
+  #Create maestro_de_informes
+  /informe/financiero/mensual/cabecera: # path of the user from your endpoint
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Informe Financiero Mensual
+      summary: Crear la cabecera de un Informe Financiero Mensual
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/createInformeFinancieroMensualCabecera"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+        404:
+          description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
+
+
+definitions:
+  createInformeFinancieroMensualCabecera:
+    type: object
+    properties:
+      codigoIglesia:
+        type: string
+        description: codigo del iglesia
+        example: IGLE-TEST
+      codigoPastor:
+        type: string
+        description: codigo del pastor
+        example: PAS-TEST
+      codigoGestion:
+        type: string
+        description: codigo de la gestión
+        example: GE-TEST
+      nombreTesorero:
+        type: string
+        description: nombre del tesorero
+        example: Brendariel del campo
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+  createInformeFinancieroMensualDetalle:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo de la cabecera del reporte
+        example: I-12121212
+      diezmoseRecibidosIglesia:
+        type: decimal
+        description: cantidad monetaria de diezmos recibidos por la iglesia
+        example: 1.00
+      diezmoEnviadoOficina:
+        type: decimal
+        description: cantidad monetaria de diezmos enviados a la oficina nacional
+        example: 2.00
+      diezmosEntregadosPastor:
+        type: decimal
+        description: cantidad monetaria de diezmos entregados al pastor
+        example: 3.00
+      membresiaPatrimonioHistorico:
+        type: decimal
+        description: cantidad monetaria de la membrecia para patrimonio historico
+        example: 4.00
+      ofrendaMisioneraSegundoDomingo:
+        type: decimal
+        description: cantidad monetaria de ofrenda misionera del segundo domingo
+        example: 5.00
+      impulsoMisiones:
+        type: decimal
+        description: cantidad monetaria para impulso de misones de marzo a octubre
+        example: 6.00
+      porcentajeMisionerosOficina: 
+        type: decimal
+        description: cantidad monetaria del 50% de los mismisterio para la oficina nacional
+        example: 7.00
+      misionesNacionales:
+        type: decimal
+        description: cantidad monetaria para misiones nacionales de julio a diciembre
+        example: 8.00
+      entradaFondoLocal:
+        type: decimal
+        description: cantidad monetaria de entrada de fondo local
+        example: 9.00
+      diezmosfondoLocal: 
+        type: decimal
+        description: cantidad monetaria de diezmos para fondo local
+        example: 10.00
+      fondoRetiroPastoral:
+        type: decimal
+        description: cantidad monetaria para fonde de retiro pastoral
+        example: 11.00
+      dineroOtrosPropositos:
+        type: decimal
+        description: cantidad monetaria para dinero de otros propositos
+        example: 12.00
+      ofrendaEmergenciaNacional:
+        type: decimal
+        description: cantidad monetaria para ofrenda emergencia nacional
+        example: 13.00
+      fondoSolidarioMinisterial:
+        type: decimal
+        description: cantidad monetaria para fondo solidario ministerial
+        example: 14.00
+      totalMiembros:
+        type: decimal
+        description: cantidad total de miembros
+        example: 15.00
+      masculinos:
+        type: integer
+        description: total de miembros masculinos
+        example: 16
+      femeninos:
+        type: integer
+        description: cantidad de miembros femeninos
+        example: 17
+      excluidos:
+        type: integer
+        description: cantidad de miembros excluidos
+        example: 18
+      trasladados:
+        type: integer
+        description: cantidad de miembros trasladado a otra iglesias
+        example: 19
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+  

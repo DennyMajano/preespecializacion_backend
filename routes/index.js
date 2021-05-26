@@ -20,6 +20,7 @@ const gestionesRouter = require("./Gestiones/Gestiones.router")();
 const informesRouter = require("./Informes/Informes.router")();
 const informeMinisterialMensualRouter = require("./Informes/InformeMinisterialMensual.router")();
 const informeTesoreroMensualRouter = require("./Informes/InformeTesoreroMensual.router")();
+const informeFinancieroMensualRouter = require("./Informes/InformeFinancieroMensual.router")();
 module.exports = function (app) {
   //rutas configuracion
   app.use("/api", modulosRouter);
@@ -41,6 +42,7 @@ module.exports = function (app) {
   app.use("/api", informesRouter);
   app.use("/api", informeMinisterialMensualRouter);
   app.use("/api", informeTesoreroMensualRouter);
+  app.use("/api", informeFinancieroMensualRouter);
 
   //Rutas de prueba
   app.use("/api", testRoutes);
