@@ -27,13 +27,13 @@ module.exports = {
           break;
         case "IT":
           await dbConnection.query(
-            "update informe_mesual_tesorero set estado = 2, usuario_procesado=?, fecha_procesado=current_date() where codigo = ?",
+            "update informe_mesual_tesorero set  usuario_procesado=?, fecha_procesado=current_date() where codigo = ?",
             [usuarioCodigo[0].persona, codigoInforme]
           );
           break;
         case "IF":
           await dbConnection.query(
-            "update informe_financiero_mensual set estado = 2, usuario_procesado=?, fecha_procesado=current_date() where codigo = ?",
+            "update informe_financiero_mensual set  usuario_procesado=?, fecha_procesado=current_date() where codigo = ?",
             [usuarioCodigo[0].persona, codigoInforme]
           );
           break;
