@@ -64,7 +64,7 @@ paths:
           description: Esto es para actualizar el detalle de un informe
           required: true # can also be true depending on user preference
           schema: # Schema definition
-            $ref: "#/definitions/createInformeTesoreroMensualDetalle"
+            $ref: "#/definitions/updateInformeTesoreroMensualDetalle"
       responses: # server responses
         201:
           description: se creó con éxito
@@ -215,8 +215,91 @@ definitions:
         type: integer
         description: cantidad de miembros trasladado a otra iglesias
         example: 19
+  updateInformeTesoreroMensualDetalle:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo de la cabecera del reporte
+        example: I-12121212
+      diezmoseRecibidosIglesia:
+        type: decimal
+        description: cantidad monetaria de diezmos recibidos por la iglesia
+        example: 1.00
+      diezmoEnviadoOficina:
+        type: decimal
+        description: cantidad monetaria de diezmos enviados a la oficina nacional
+        example: 2.00
+      diezmosEntregadosPastor:
+        type: decimal
+        description: cantidad monetaria de diezmos entregados al pastor
+        example: 3.00
+      membresiaPatrimonioHistorico:
+        type: decimal
+        description: cantidad monetaria de la membrecia para patrimonio historico
+        example: 4.00
+      ofrendaMisioneraSegundoDomingo:
+        type: decimal
+        description: cantidad monetaria de ofrenda misionera del segundo domingo
+        example: 5.00
+      impulsoMisiones:
+        type: decimal
+        description: cantidad monetaria para impulso de misones de marzo a octubre
+        example: 6.00
+      porcentajeMisionerosOficina: 
+        type: decimal
+        description: cantidad monetaria del 50% de los mismisterio para la oficina nacional
+        example: 7.00
+      misionesNacionales:
+        type: decimal
+        description: cantidad monetaria para misiones nacionales de julio a diciembre
+        example: 8.00
+      entradaFondoLocal:
+        type: decimal
+        description: cantidad monetaria de entrada de fondo local
+        example: 9.00
+      diezmosfondoLocal: 
+        type: decimal
+        description: cantidad monetaria de diezmos para fondo local
+        example: 10.00
+      fondoRetiroPastoral:
+        type: decimal
+        description: cantidad monetaria para fonde de retiro pastoral
+        example: 11.00
+      dineroOtrosPropositos:
+        type: decimal
+        description: cantidad monetaria para dinero de otros propositos
+        example: 12.00
+      ofrendaEmergenciaNacional:
+        type: decimal
+        description: cantidad monetaria para ofrenda emergencia nacional
+        example: 13.00
+      fondoSolidarioMinisterial:
+        type: decimal
+        description: cantidad monetaria para fondo solidario ministerial
+        example: 14.00
+      totalMiembros:
+        type: decimal
+        description: cantidad total de miembros
+        example: 15.00
+      masculinos:
+        type: integer
+        description: total de miembros masculinos
+        example: 16
+      femeninos:
+        type: integer
+        description: cantidad de miembros femeninos
+        example: 17
+      excluidos:
+        type: integer
+        description: cantidad de miembros excluidos
+        example: 18
+      trasladados:
+        type: integer
+        description: cantidad de miembros trasladado a otra iglesias
+        example: 19
       estado:
         type: number
         description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
         example: 1
-  
+   
