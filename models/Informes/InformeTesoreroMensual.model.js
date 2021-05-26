@@ -211,103 +211,102 @@ module.exports = {
   },
   updateDetalleInforme: async (data) => {
     const {
-      codigoInforme,
-      mensajes,
-      convertidos,
-      santificados,
-      bautismosAgua,
-      bautismosEs,
-      agregados,
-      hogaresMiembrosV,
-      hogaresProspectosV,
-      diezmoRecibido,
-      diezmoPagado,
-      ofrendaRecibida,
-      gastosMinisteriales,
-      actividadesOracion,
-      vidaOracion,
-      actividadesMisiones,
-      actividadesLiderazgo,
-      lideresInvolucrados,
-      mejoraMinisterial,
-      miembrosActivos,
-      miembrosSalvos,
-      miembrosSantificados,
-      miembrosBautizadosEs,
-      promedioAsistenciaAdultos,
-      promedioAsistenciaNiJov,
-      ministerioAlcanceSemanal,
-      santaCena,
-      lavatorios,
+      usuarioToken,
+      estado,
+      codigoInforme, //codigo de la cabecera
+      diezmoseRecibidosIglesia,
+      diezmoEnviadoOficina,
+      diezmosEntregadosPastor,
+      membresiaPatrimonioHistorico,
+      ofrendaMisioneraSegundoDomingo,
+      impulsoMisiones,
+      porcentajeMisionerosOficina,
+      misionesNacionales,
+      entradaFondoLocal,
+      diezmosfondoLocal,
+      fondoRetiroPastoral,
+      dineroOtrosPropositos,
+      ofrendaEmergenciaNacional,
+      fondoSolidarioMinisterial,
+      totalMiembros,
+      masculinos,
+      femeninos,
+      excluidos,
+      trasladados,
     } = data;
     if (
       !comprobations.areFieldsValid([
-        codigoInforme,
-        mensajes,
-        convertidos,
-        santificados,
-        bautismosAgua,
-        bautismosEs,
-        agregados,
-        hogaresMiembrosV,
-        hogaresProspectosV,
-        diezmoRecibido,
-        diezmoPagado,
-        ofrendaRecibida,
-        gastosMinisteriales,
-        actividadesOracion,
-        vidaOracion,
-        actividadesMisiones,
-        actividadesLiderazgo,
-        lideresInvolucrados,
-        mejoraMinisterial,
-        miembrosActivos,
-        miembrosSalvos,
-        miembrosSantificados,
-        miembrosBautizadosEs,
-        promedioAsistenciaAdultos,
-        promedioAsistenciaNiJov,
-        ministerioAlcanceSemanal,
-        santaCena,
-        lavatorios,
+        usuarioToken,
+        estado,
+        codigoInforme, //codigo de la cabecera
+        diezmoseRecibidosIglesia,
+        diezmoEnviadoOficina,
+        diezmosEntregadosPastor,
+        membresiaPatrimonioHistorico,
+        ofrendaMisioneraSegundoDomingo,
+        impulsoMisiones,
+        porcentajeMisionerosOficina,
+        misionesNacionales,
+        entradaFondoLocal,
+        diezmosfondoLocal,
+        fondoRetiroPastoral,
+        dineroOtrosPropositos,
+        ofrendaEmergenciaNacional,
+        fondoSolidarioMinisterial,
+        totalMiembros,
+        masculinos,
+        femeninos,
+        excluidos,
+        trasladados,
       ])
     ) {
       return errors.faltanDatosError();
     }
+
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
+
+      if(estado == 2){
+            //Obtenemos el id del usuario del token.
+        const usuario = Token.decodeToken(usuarioToken).usuario;
+        const usuarioCodigo = await dbConnection.query(
+          "SELECT persona FROM `usuarios` WHERE id = ?",
+          [usuario]
+        );
+        await dbConnection.query(
+          "update informe_mesual_tesorero set fecha_procesado=current_date(), usuario_procesado=?  where codigo = ?",
+          [usuarioCodigo[0].persona, codigoInforme]
+        );
+      }
+      await dbConnection.query(
+        "UPDATE `informes_recibidos_gestion` SET `estado`= ? WHERE informe_ide = ?",
+        [estado, codigoInforme]
+      );
+
       //Si todo fue encontrado correctamente se procede a guardar la cabecera del informe
       const result = await dbConnection.query(
-        "UPDATE `detalle_informe_ministerial_mensual` SET `mensajes`=?,`convertidos`=?,`santificados`=?,`bautismos_agua`=?,`bautismos_es`=?,`agregados`=?,`hogares_miembros_v`=?,`hogares_prospectos_v`=?,`diezmo_recibido`=?,`diezmo_pagado`=?,`ofrenda_recibida`=?,`gastos_ministeriales`=?,`actividades_oracion`=?,`vida_oracion`=?,`actividades_misiones`=?,`actividades_liderazgo`=?,`liderez_involucrados`=?,`mejora_ministerial`=?,`miembros_activos`=?,`miembros_salvos`=?,`miembros_santificados`=?,`miembros_bautizados_es`=?,`promedio_asistencia_adultos`=?,`promedio_asitencia_ni_jov`=?,`ministerio_alcance_semanal`=?,`santa_cena`=?,`lavatorio`=? WHERE `informe_ministerial` = ?",
+        "UPDATE `detalle_informe_mensual_tesorero` SET `diezmos_recibidos_iglesia`=?,`diezmo_enviado_oficina`=?,`diezmos_entregados_pastor`=?,`membresia_patrimonio_historico`=?,`ofrenda_misionera_segundo_domingo`=?,`impulso_misiones`=?,`porcentaje_misioneros_oficina`=?,`misiones_nacionales`=?,`entrada_fondo_local`=?,`diezmos_fondo_local`=?,`fondo_retiro_pastoral`=?,`dinero_otros_propositos`=?,`ofrenda_emergencia_nacional`=?,`fondo_solidario_ministerial`=?,`total_miembros`=?,`masculinos`=?,`femeninos`=?,`excluidos`=?,`trasladados`=? WHERE `informe_mesual_tesorero` = ?",
         [
-          mensajes,
-          convertidos,
-          santificados,
-          bautismosAgua,
-          bautismosEs,
-          agregados,
-          hogaresMiembrosV,
-          hogaresProspectosV,
-          diezmoRecibido,
-          diezmoPagado,
-          ofrendaRecibida,
-          gastosMinisteriales,
-          actividadesOracion,
-          vidaOracion,
-          actividadesMisiones,
-          actividadesLiderazgo,
-          lideresInvolucrados,
-          mejoraMinisterial,
-          miembrosActivos,
-          miembrosSalvos,
-          miembrosSantificados,
-          miembrosBautizadosEs,
-          promedioAsistenciaAdultos,
-          promedioAsistenciaNiJov,
-          ministerioAlcanceSemanal,
-          santaCena,
-          lavatorios,
-          codigoInforme,
+          diezmoseRecibidosIglesia,
+          diezmoEnviadoOficina,
+          diezmosEntregadosPastor,
+          membresiaPatrimonioHistorico,
+          ofrendaMisioneraSegundoDomingo,
+          impulsoMisiones,
+          porcentajeMisionerosOficina,
+          misionesNacionales,
+          entradaFondoLocal,
+          diezmosfondoLocal,
+          fondoRetiroPastoral,
+          dineroOtrosPropositos,
+          ofrendaEmergenciaNacional,
+          fondoSolidarioMinisterial,
+          totalMiembros,
+          masculinos,
+          femeninos,
+          excluidos,
+          trasladados,
+          codigoInforme, //codigo de la cabecera
         ]
       );
       return result;

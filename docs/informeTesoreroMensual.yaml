@@ -51,8 +51,8 @@ paths:
         400:
           description: no se pudo crear por que faltan datos obligatorios
     put:
-      #security:
-      #  - Bearer: []
+      security:
+        - Bearer: []
       tags:
         - Informe Tesorero Mensual
       summary: actualizar el detalle de un Informe Tesorero Mensual con el codigo del informe
@@ -215,5 +215,8 @@ definitions:
         type: integer
         description: cantidad de miembros trasladado a otra iglesias
         example: 19
-      
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
   

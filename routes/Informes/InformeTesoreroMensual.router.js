@@ -7,8 +7,8 @@ module.exports = () => {
 
     router.post("/informe/tesorero/mensual/cabecera", informeTesoreroMensualController.createCabeceraInforme);
     router.post("/informe/tesorero/mensual/detalle", informeTesoreroMensualController.createDetalleInforme);
-   /*  router.put("/informe/tesorero/mensual/detalle", informeTesoreroMensualController.updateDetalleInforme);
-    router.get("/informe/tesorero/mensual/info/:codigo", informeTesoreroMensualController.getByCodigo);
+   router.put("/informe/tesorero/mensual/detalle", informeTesoreroMensualController.updateDetalleInforme);
+    /*router.get("/informe/tesorero/mensual/info/:codigo", informeTesoreroMensualController.getByCodigo);
         */
     return router;
   };
