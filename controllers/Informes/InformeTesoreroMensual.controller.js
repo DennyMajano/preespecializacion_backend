@@ -23,10 +23,10 @@ module.exports = () => {
     }
   };
   informe.createDetalleInforme = async (req, res) => {
-  console.log(req.body);
+    console.log(req.body);
     try {
       const result = await modelInforme.createDetalleInforme(req.body);
-      
+
       controller.validateResultForInsert(result, res, (result) => {
         return { id: result.insertId, code: result.code };
       });
@@ -44,17 +44,15 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  /*
   informe.getByCodigo = async (req, res) => {
     try {
-      const result = await modelInforme.getInfoByCodigo(
-        req.params.codigo
-      );
+      const result = await modelInforme.getInfoByCodigo(req.params.codigo);
+      console.log(result);
       controller.validateResultForSelectOne(result, res);
     } catch (error) {
       controller.sendError(error, res);
     }
-  }; */
- 
+  };
+
   return informe;
 };

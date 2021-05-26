@@ -81,7 +81,7 @@ module.exports = {
       );
 
       let result;
-      if(estado ==2){
+      if (estado == 2) {
         result = await dbConnection.query(
           "INSERT INTO `informe_mesual_tesorero` (`codigo`, `iglesia`, `tesorero`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `telefono`, `direccion`, `correo_electronico`, `usuario_cr`, fecha_procesado, usuario_procesado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,current_date(),?)",
           [
@@ -98,11 +98,10 @@ module.exports = {
             direccion,
             mail,
             usuario,
-            usuarioCodigo[0].persona
+            usuarioCodigo[0].persona,
           ]
         );
-      }
-      else{
+      } else {
         result = await dbConnection.query(
           "INSERT INTO `informe_mesual_tesorero` (`codigo`, `iglesia`, `tesorero`, `nombre_iglesia`, `pastor`, `nombre_pastor`, `gestion`, `mes`, `anio`, `telefono`, `direccion`, `correo_electronico`, `usuario_cr`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
@@ -118,7 +117,7 @@ module.exports = {
             telefono,
             direccion,
             mail,
-            usuario
+            usuario,
           ]
         );
       }
@@ -265,9 +264,8 @@ module.exports = {
 
     //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
-
-      if(estado == 2){
-            //Obtenemos el id del usuario del token.
+      if (estado == 2) {
+        //Obtenemos el id del usuario del token.
         const usuario = Token.decodeToken(usuarioToken).usuario;
         const usuarioCodigo = await dbConnection.query(
           "SELECT persona FROM `usuarios` WHERE id = ?",
@@ -319,15 +317,30 @@ module.exports = {
 
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return dbConnection.query(
-        "SELECT `mensajes`, `convertidos`, `santificados`, `bautismos_agua`, `bautismos_es`, `agregados`, `hogares_miembros_v`, `hogares_prospectos_v`, `diezmo_recibido`, `diezmo_pagado`, `ofrenda_recibida`, `gastos_ministeriales`, `actividades_oracion`, `vida_oracion`, `actividades_misiones`, `actividades_liderazgo`, `liderez_involucrados`, `mejora_ministerial`, `miembros_activos`, `miembros_salvos`, `miembros_santificados`, `miembros_bautizados_es`, `promedio_asistencia_adultos`, `promedio_asitencia_ni_jov`, `ministerio_alcance_semanal`, `santa_cena`, `lavatorio`, `codigo`, `iglesia`, `nombre_iglesia`, `pastor`, `nombre_pastor`, DATE_FORMAT(IMM.fecha_procesado,'%d/%m/%Y') as  `fecha_procesado`, `usuario_procesado`, `gestion`, `mes`, `anio`, `usuario_cr`, `estado`, DATE_FORMAT(IMM.fecha_cr,'%d/%m/%Y') as `fecha_cr`, DATE_FORMAT(IMM.fecha_uac,'%d/%m/%Y')as `fecha_uac` FROM `detalle_informe_ministerial_mensual` as DIMM join informe_ministerial_mensual as IMM on DIMM.informe_ministerial = IMM.codigo where IMM.codigo = ?",
+        `
+        SELECT diezmos_recibidos_iglesia as diezmosRecibidosIglesia,
+        diezmo_enviado_oficina as diezmoEnviadoOficina, 
+        diezmos_entregados_pastor as diezmosentregadosPastor,
+        membresia_patrimonio_historico as membresiaPatrimonioHistorico, ofrenda_misionera_segundo_domingo as ofrendaMisioneraSegundoDomingo, 
+        impulso_misiones as impulsoMisiones, 
+        porcentaje_misioneros_oficina as porcentajeMisionerosOficina, 
+        misiones_nacionales as misionesNacionales, 
+        entrada_fondo_local as entradaFondoLocal, 
+        diezmos_fondo_local as diezmosFondoLocal, 
+        fondo_retiro_pastoral as fondoRetiroPastoral, 
+        dinero_otros_propositos as dineroOtrosPropositos, 
+        ofrenda_emergencia_nacional as ofrendaEmergenciaNacional, 
+        fondo_solidario_ministerial as fondoSolidarioMinisterial, 
+        total_miembros as totalMiembros, 
+        masculinos, femeninos, excluidos, trasladados FROM detalle_informe_mensual_tesorero where informe_mesual_tesorero = ?
+        `,
         [codigoInforme]
       );
     });
   },
-  template: async (data) => {},
 };
 
-async function saveInformesRecibidos(codigoInforme, usuario, estado ) {
+async function saveInformesRecibidos(codigoInforme, usuario, estado) {
   return await model.multipleTransactionQuery(async (dbConnection) => {
     const informeData = await dbConnection.query(
       "select gestion, iglesia from informe_mesual_tesorero where codigo = ?",
@@ -355,4 +368,3 @@ async function saveInformesRecibidos(codigoInforme, usuario, estado ) {
     );
   });
 }
-
