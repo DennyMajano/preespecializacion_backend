@@ -4,7 +4,7 @@ const errors = require("../../helpers/OurErrors");
 const GeneratorCode = require("../../helpers/GeneratorCode");
 const Token = require("../../services/security/Token");
 
-const ID_INFORME_TESORERO_MENSUAL = 2;
+const ID_INFORME_TESORERO_MENSUAL = 3;
 const PREFIJO_INFORME = "IT";
 const IDENTIFICADOR_INFORME_TESORERO_MENSUAL =
   "74a9f3a5-6339-488c-8451-e1c190d41a78";
