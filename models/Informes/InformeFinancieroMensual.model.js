@@ -293,7 +293,7 @@ module.exports = {
       return result;
     });
   },
-  /*
+
   getInfoByCodigo: async (codigoInforme) => {
     if (!comprobations.areFieldsValid([codigoInforme])) {
       return errors.faltanDatosError();
@@ -302,26 +302,29 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return dbConnection.query(
         `
-        SELECT diezmos_recibidos_iglesia as diezmosRecibidosIglesia,
-        diezmo_enviado_oficina as diezmoEnviadoOficina, 
-        diezmos_entregados_pastor as diezmosentregadosPastor,
-        membresia_patrimonio_historico as membresiaPatrimonioHistorico, ofrenda_misionera_segundo_domingo as ofrendaMisioneraSegundoDomingo, 
-        impulso_misiones as impulsoMisiones, 
-        porcentaje_misioneros_oficina as porcentajeMisionerosOficina, 
+        SELECT oficinas_internacionales as oficinas_internacionales, 
+        socios_amip as sociosAmip, 
+        misiones_mundiales as misionesMundiales, 
+        tributos_anuales as tributosAnuales, 
+        ministro_ordenado as ministroOrdenado, 
+        pastor_laico as pastorLaico, 
+        fondo_local as fondoLocal, 
+        retiro_pastoral as retiroPastoral, 
+        segunda_parte_ofrenda_ministerios as segundaParteOfrendaMinisterios, 
+        fondo_emergencia_nacional as fondoEmergenciaNacional, 
         misiones_nacionales as misionesNacionales, 
-        entrada_fondo_local as entradaFondoLocal, 
-        diezmos_fondo_local as diezmosFondoLocal, 
-        fondo_retiro_pastoral as fondoRetiroPastoral, 
-        dinero_otros_propositos as dineroOtrosPropositos, 
-        ofrenda_emergencia_nacional as ofrendaEmergenciaNacional, 
+        diezmos_ministros as diezmosMinistros, 
+        compra_propiedad_nacional as compraPropiedadNacional, 
+        construccion_templos_nuevos as construccionTemplosNuevos, 
+        cotizacion_prestaciones as cotizacionPrestaciones, 
+        seguro_vida as seguroVida, 
         fondo_solidario_ministerial as fondoSolidarioMinisterial, 
-        total_miembros as totalMiembros, 
-        masculinos, femeninos, excluidos, trasladados FROM detalle_informe_mensual_tesorero where informe_mesual_tesorero = ?
+        otros FROM detalle_informe_financiero_mensual WHERE informe_financiero = ?
         `,
         [codigoInforme]
       );
     });
-  }, */
+  },
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {

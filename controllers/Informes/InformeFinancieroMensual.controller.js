@@ -45,7 +45,7 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
-  /*
+
   informe.getByCodigo = async (req, res) => {
     try {
       const result = await modelInforme.getInfoByCodigo(req.params.codigo);
@@ -54,7 +54,7 @@ module.exports = () => {
     } catch (error) {
       controller.sendError(error, res);
     }
-  }; */
+  };
 
   return informe;
 };
