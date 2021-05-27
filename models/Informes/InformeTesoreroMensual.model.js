@@ -130,7 +130,7 @@ module.exports = {
   createDetalleInforme: async (data) => {
     const {
       codigoInforme, //codigo de la cabecera
-      diezmoseRecibidosIglesia,
+      diezmosRecibidosIglesia,
       diezmoEnviadoOficina,
       diezmosEntregadosPastor,
       membresiaPatrimonioHistorico,
@@ -153,7 +153,7 @@ module.exports = {
     if (
       !comprobations.areFieldsValid([
         codigoInforme, //codigo de la cabecera
-        diezmoseRecibidosIglesia,
+        diezmosRecibidosIglesia,
         diezmoEnviadoOficina,
         diezmosEntregadosPastor,
         membresiaPatrimonioHistorico,
@@ -183,7 +183,7 @@ module.exports = {
         "INSERT INTO `detalle_informe_mensual_tesorero`(`informe_mesual_tesorero`, `diezmos_recibidos_iglesia`, `diezmo_enviado_oficina`, `diezmos_entregados_pastor`, `membresia_patrimonio_historico`, `ofrenda_misionera_segundo_domingo`, `impulso_misiones`, `porcentaje_misioneros_oficina`, `misiones_nacionales`, `entrada_fondo_local`, `diezmos_fondo_local`, `fondo_retiro_pastoral`, `dinero_otros_propositos`, `ofrenda_emergencia_nacional`, `fondo_solidario_ministerial`, `total_miembros`, `masculinos`, `femeninos`, `excluidos`, `trasladados`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           codigoInforme, //codigo de la cabecera
-          diezmoseRecibidosIglesia,
+          diezmosRecibidosIglesia,
           diezmoEnviadoOficina,
           diezmosEntregadosPastor,
           membresiaPatrimonioHistorico,
@@ -320,7 +320,7 @@ module.exports = {
         `
         SELECT diezmos_recibidos_iglesia as diezmosRecibidosIglesia,
         diezmo_enviado_oficina as diezmoEnviadoOficina, 
-        diezmos_entregados_pastor as diezmosentregadosPastor,
+        diezmos_entregados_pastor as diezmosEntregadosPastor,
         membresia_patrimonio_historico as membresiaPatrimonioHistorico, ofrenda_misionera_segundo_domingo as ofrendaMisioneraSegundoDomingo, 
         impulso_misiones as impulsoMisiones, 
         porcentaje_misioneros_oficina as porcentajeMisionerosOficina, 
