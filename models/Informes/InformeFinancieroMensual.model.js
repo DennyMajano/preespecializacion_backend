@@ -49,16 +49,6 @@ module.exports = {
       );
       if (iglesiaResult.length == 0)
         return errors.datosNoEncontrados("Iglesia no encontrada");
-      const pastorResult = await dbConnection.query(
-        "select concat(PER.nombres,' ',PER.apellidos) as nombre from pastores as PAS join personas as PER on PAS.persona = PER.codigo where PAS.codigo = ?",
-        [codigoPastor]
-      );
-      if (pastorResult.length == 0)
-        return errors.datosNoEncontrados("Pastor no encontrado");
-      const gestionAnioResult = await dbConnection.query(
-        "select PM.anio,G.codigo, PM.codigo as periodo from periodo_ministerial as PM JOIN gestiones as G on PM.codigo = G.periodo where G.codigo = ?",
-        [codigoGestion]
-      );
       if (gestionAnioResult.length == 0)
         return errors.datosNoEncontrados("Año de gestión no encontrado");
       const gestionMesResult = await dbConnection.query(
