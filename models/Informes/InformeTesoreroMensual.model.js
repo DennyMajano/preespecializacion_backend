@@ -59,12 +59,12 @@ module.exports = {
         "select concat(PER.nombres,' ',PER.apellidos) as nombre from pastores as PAS join personas as PER on PAS.persona = PER.codigo where PAS.codigo = ?",
         [codigoPastor]
       );
-      if (gestionAnioResult.length == 0)
+    /*   if (gestionAnioResult.length == 0)
         return errors.datosNoEncontrados("Año de gestión no encontrado");
       const gestionMesResult = await dbConnection.query(
         "select MGI.mes, GI.informe, GI.gestion from gestiones as G join gestion_informes as GI on G.codigo = GI.gestion join meses_gestion_informe as MGI on MGI.gestion_informe = GI.id where G.codigo=? AND GI.informe = ?",
         [codigoGestion, ID_INFORME_TESORERO_MENSUAL]
-      );
+      ); */
       if (gestionMesResult.length == 0)
         return errors.datosNoEncontrados(
           "Mes del informe para la gestión no encontrado"
