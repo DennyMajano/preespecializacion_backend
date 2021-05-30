@@ -71,13 +71,13 @@ module.exports = {
         "select PM.anio,G.codigo, PM.codigo as periodo from periodo_ministerial as PM JOIN gestiones as G on PM.codigo = G.periodo where G.codigo = ?",
         [codigoGestion]
       );
-  /*     if (gestionAnioResult.length == 0)
+      if (gestionAnioResult.length == 0)
         return errors.datosNoEncontrados("Año de gestión no encontrado");
       const gestionMesResult = await dbConnection.query(
         "select MGI.mes, GI.informe, GI.gestion from gestiones as G join gestion_informes as GI on G.codigo = GI.gestion join meses_gestion_informe as MGI on MGI.gestion_informe = GI.id where G.codigo=? AND GI.informe = ?",
         [codigoGestion, idInformeMinisterialmensual]
       );
- */
+
       if (gestionMesResult.length == 0)
         return errors.datosNoEncontrados(
           "Mes del informe para la gestión no encontrado"
