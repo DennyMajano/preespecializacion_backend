@@ -3,8 +3,10 @@ const IglesiasReportesController = require("../../controllers/Iglesias/IglesiasR
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
-  const iglesiasController = require("../../controllers/Iglesias/Iglesias.controller")();
-  const iglesiasReportes = require("../../controllers/Iglesias/IglesiasReportes.controller")();
+  const iglesiasController =
+    require("../../controllers/Iglesias/Iglesias.controller")();
+  const iglesiasReportes =
+    require("../../controllers/Iglesias/IglesiasReportes.controller")();
 
   //rutas para zonas
   router.get("/iglesias/all", iglesiasController.getAll);
@@ -13,6 +15,14 @@ module.exports = () => {
   router.get("/iglesias/visor/all/:filter", iglesiasController.getAllVisor);
   router.get("/iglesias/select", iglesiasController.getSelect);
   router.get("/iglesias/select/:filter", iglesiasController.getSelect);
+  router.get(
+    "/iglesias/distrito/:distrito",
+    iglesiasController.getSelectByDistrito
+  );
+  router.get(
+    "/iglesias/distrito/:distrito/:filter",
+    iglesiasController.getSelectByDistrito
+  );
   router.get("/iglesias/:code", iglesiasController.getById);
   router.get("/iglesias/detalle/:code", iglesiasController.getDetalleById);
   router.get("/iglesias/informe/:code", iglesiasController.getInformeById);

@@ -110,6 +110,21 @@ module.exports = () => {
       console.log(error);
     }
   };
+  iglesia.getSelectByDistrito = async (req, res) => {
+    const { filter, distrito } = req.params;
+    console.log(filter);
+    try {
+      let result = await modelIglesias.findSelectByDistrito(filter, distrito);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   iglesia.getById = async (req, res) => {
     const { code } = req.params;
     console.log(code);

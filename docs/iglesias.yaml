@@ -165,6 +165,58 @@ paths:
       parameters: # request parameters
         - name: filter
           in: path
+          description: Valor a buscar nombre de la iglesia
+          required: false
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        #get de Iglesias
+  /iglesias/distrito/{distrito}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene todos los Iglesias por distrito para mostrarlas en un select
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: distrito
+          in: path
+          description: Código del distrito
+          required: false
+          type: string
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: zona # name of request, can be any name
+      #     description: codigo de la zona
+      #     required: false # can also be true depending on user preference
+      #     example: ZN-422262260
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+      #get de Iglesias padres
+  /iglesias/distrito/{distrito}/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Iglesias # Value of the tag
+      summary: Obtiene las que coincidan con el filtro de busqueda por el codigo de distrito
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: distrito
+          in: path
+          description: Código del distrito
+          required: false
+          type: string
+        - name: filter
+          in: path
           description: Valor a buscar nombre del distrito
           required: false
           type: string
@@ -465,4 +517,3 @@ definitions: # Schema defination for request body
         type: integer
         description: id del registro de iglesia reporte
         example: 1
-

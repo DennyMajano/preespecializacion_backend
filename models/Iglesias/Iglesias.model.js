@@ -253,6 +253,49 @@ module.exports = {
         : iglesias
       : transaction;
   },
+  findSelectByDistrito: async (filter = "", distrito) => {
+    let iglesias;
+    let transaction;
+    let data_out;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        if (filter != "") {
+          filter = filter.split(" ");
+
+          let query = `SELECT id, codigo, nombre FROM iglesias WHERE condicion=1 AND distrito=? `;
+
+          for (let i = 0; i < filter.length; i++) {
+            query += ` AND (nombre LIKE '%${filter[i]}%')`;
+          }
+
+          iglesias = await db.query(`${query} LIMIT 50`, [distrito]);
+        } else {
+          iglesias = await db.query(
+            `SELECT id, codigo, nombre FROM iglesias WHERE condicion=1 AND distrito=? LIMIT 50`,
+            [distrito]
+          );
+        }
+        if (!iglesias.errno) {
+          data_out = iglesias.map((element) => {
+            return {
+              id: element.id,
+              codigo: element.codigo,
+              nombre: element.nombre,
+            };
+          });
+        }
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return iglesias !== undefined
+      ? !iglesias.errno
+        ? data_out
+        : iglesias
+      : transaction;
+  },
   findById: async (code) => {
     let iglesias;
     let transaction;
