@@ -1,0 +1,381 @@
+paths:
+  /pastores: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: Guardar los datos de un nuevo pastor
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos del nuevo pastor
+          required: true
+          schema:
+            $ref: "#/definitions/createpastor"
+      responses: # server responses
+        201:
+          description: Se creó con éxito el nuevo pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: Actualizar los datos de un pastor
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos a actualizar del pastor
+          required: true
+          schema:
+            $ref: "#/definitions/updatepastor"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /pastores/status:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: Actualizar el status de un pastor
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos a actualizar del pastor
+          required: true
+          schema:
+            $ref: "#/definitions/updatestatuspastor"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /pastores/enable:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: Actualizar el la condicion de un pastor 1=activo, 0=inactivo
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo y estado del del pastor
+          required: true
+          schema:
+            $ref: "#/definitions/updateenablepastor"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito el pastor
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
+          
+          
+
+  /pastores/{code}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: obtener los datos de un pastor por id o por codigo de pastor, sino existe dicho pastor devuelve la propiedad data no se asigna
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: code
+          in: path
+          description: codigo, id o licencia miniesterial del pastor a recuperar
+          required: true
+          
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /pastores/select/{filter}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: obtener registros de pastores para select,filtro buscador por nombres, apellidos, numero_documento, numero licencia ministerial. Sino existe dicho pastor devuelve la propiedad data no se asigna
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: filter
+          in: path
+          description: nombres, apellidos, numero_documento, numero licencia ministeria o codigo de pastor
+          required: true
+          
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /pastores/all/{filter}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: obtener registros de pastores para select,filtro buscador por nombres, apellidos, numero_documento, numero licencia ministerial. Sino existe dicho pastor devuelve la propiedad data no se asigna. Con mas datos que la funcion similar para select
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: filter
+          in: path
+          description: nombres, apellidos, numero_documento, numero licencia ministeria o codigo de pastor
+          required: true
+          
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
+  /pastores/all/:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Pastores # Value of the tag
+      summary: obtener registros de pastores para select,filtro buscador por nombres, apellidos, numero_documento, numero licencia ministerial. Sino existe dicho pastor devuelve la propiedad data no se asigna. Con mas datos que la funcion similar para select
+      consume: application/json
+      produces:
+        - application/json
+      
+          
+      responses: # server responses
+        200:
+          description: Se recuperaron los resultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
+
+definitions:
+  createpastor:
+    type: object
+    properties:
+      personaCode:
+        description: código de la persona del pastor, si no se especifica se creará un registro de personas
+        type: string,
+        example: "P-454354"
+      licenciaMinisterial:
+        description: numero de licencia ministerial del pastor
+        type: string,
+        example: "L-1232324"
+      nivelPastoral:
+        description: id del nivel pastoral
+        type: integer,
+        example: 1
+      nivelAcademico:
+        description: id del nivel académico
+        type: integer,
+        example: 1
+      fechaInicioPastoral:
+        description: fecha de inicio del pastor
+        type: string,
+        example: "1995-03-03"
+      fechaRetiro:
+        description: fecha de retiro del pastor
+        type: string,
+        example: "1995-03-03"
+      fallecido:
+        description: fallecido=1, vivo = 0
+        type: integer
+        example: 1
+      status:
+        description: de baja=0 cuando un pastor se da de baja, activo=1 esto es que está pastoreando, retirado=2 esto es que ya se retiro, con permiso=3 esto es que no está pastoreando y estará asi por un tiempo determinado con un permiso de la oficina nacional.
+        type: integer
+        example: 0
+      biografia:
+        description: Biografia del pastor su historia y logros ministeriales
+        type: string
+        example: Lorem ipsum estri deli...
+      memoria_fallecimiento:
+        description: Reseña para que pueda ser visto por lo miembros o pastores en el futuro cuando el pastor esta fallecido
+        type: string
+        example: Lorem ipsum estri deli...
+      nombre:
+        type: string
+        description: nombre de la persona
+        example: Brenda Ariel 
+      apellido:
+        type: string
+        description: apellido de la persona
+        example: Gómez Claros
+      telefono:
+        type: string
+        description: teléfono de la persona
+        example: 7623-2323
+      sexo:
+        type: integer
+        description: id que indica el sexo de la persona. Es el id que representa el sexo.
+        example: 1
+      fotoPerfil:
+        type: string
+        format: binary
+        description: fotografía de perfil de la personas
+      nacionalidad:
+        type: number
+        description: id de la nacionalidad de la persona
+        example: 1
+      fechaNacimiento:
+        type: string
+        description: fecha de nacimiento de la persona
+        example: "1995-03-03"
+      departamentoNacimiento:
+        type: number
+        description: id del departamento en que nació la persona
+        example: 1
+      municipioNacimiento:
+        type: number
+        description: id del municipio en que nació la persona
+        example: 1        
+      cantonNacimiento:
+        type: number
+        description: id del cantón en que nació la persona
+        example: 1            
+      departamentoResidencia:
+        type: number
+        description: id del departamento en que reside la persona
+        example: 1         
+      municipioResidencia:
+        type: number
+        description: id del municipio en que reside la persona
+        example: 1                 
+      cantonResidencia:
+        type: number
+        description: id del cantón en que reside la persona
+        example: 1  
+      tipoDocumento:
+        type: number
+        description: id del tipo de documento de la persona
+        example: 1    
+      numeroDocumento:
+        type: string
+        description: número de documento de la persona
+        example: 05433223-9                          
+      estadoCivil:
+        type: number
+        description: id del estado civil de la persona
+        example: 1  
+      profesion:
+        type: number
+        description: id de la profesión de la persona
+        example: 1  
+      direccion:
+        type: string
+        description: dirección de la persona
+        example: 1
+      createUser:
+        type: boolean
+        description: indicador para saber si se registrará un usuario para esta persona
+        example: true  
+      iglesia:
+        type: string
+        description: Código de la iglesia donde está el usuario
+        example: IG-213414  
+      correo_electronico:
+        type: string
+        description: correo electrónico del usuario 
+        example: arielbrenda@gmail.com  
+      rol:
+        type: number
+        description: id del rol que se le asigna al usuario
+        example: 1  
+      alias:
+        type: string
+        description: alias para el usuario, este se mostrará en el sistema
+        example: Arienda  
+      id: 
+        type: string
+        description: este campo debe ir si la persona existe
+        example: 12          
+  updatepastor:
+    type: object
+    properties:
+      codigoPastor:
+        description: código del pastor
+        type: string
+        example: "PT-531147314"
+      licenciaMinisterial:
+        description: numero de licencia ministerial del pastor
+        type: string
+        example: "L-1232324"
+      nivelPastoral:
+        description: id del nivel pastoral
+        type: integer
+        example: 1
+      nivelAcademico:
+        description: id del nivel académico
+        type: integer
+        example: 1
+      fechaInicioPastoral:
+        description: fecha de inicio del pastor
+        type: string
+        example: "1995-03-03"
+      fechaRetiro:
+        description: fechan en que el pastor se retiró
+        type: string
+        example: "1995-03-03"
+      fallecido:
+        description: fallecido=1, vivo = 0
+        type: integer
+        example: 1
+      status:
+        description: de baja=0 cuando un pastor se da de baja, activo=1 esto es que está pastoreando, retirado=2 esto es que ya se retiro, con permiso=3 esto es que no está pastoreando y estará asi por un tiempo determinado con un permiso de la oficina nacional.
+        type: integer
+        example: 0
+      biografia:
+        description: Biografia del pastor su historia y logros ministeriales
+        type: string
+        example: Lorem ipsum estri deli...
+      memoriaFallecimiento:
+        description: Reseña para que pueda ser visto por lo miembros o pastores en el futuro cuando el pastor esta fallecido
+        type: string
+        example: Lorem ipsum estri deli...
+  updatestatuspastor:
+    type: object
+    properties:
+      code:
+        description: código del pastor
+        type: string
+        example: "PT-531147314"
+      status:
+        description: de baja=0 cuando un pastor se da de baja, activo=1 esto es que está pastoreando, retirado=2 esto es que ya se retiro, con permiso=3 esto es que no está pastoreando y estará asi por un tiempo determinado con un permiso de la oficina nacional.
+        type: integer
+        example: 0
+  updateenablepastor:
+    type: object
+    properties:
+      code:
+        description: código del pastor
+        type: string
+        example: "PT-531147314"
+      status:
+        description: 1=activo, 0=inactivo
+        type: integer
+        example: 0
+          

@@ -1,0 +1,298 @@
+paths:
+  #get de departamentos
+  /generales/departamentos:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene todos los departamentos
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de estado_civil
+  /generales/estado_civil:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los estados civiles
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de municipios where id departamento
+  /generales/municipios/{dep}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los municipios que coincidan con el id del departamento
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: dep # name of request, can be any name
+          description: Colocar id del departamento
+          required: true # can also be true depending on user preference
+          type: integer
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de municipios filter
+  /generales/municipios/{dep}/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag propeddrty
+        - Generales # Value of the tag
+      summary: Obtiene los municipios que coincidan con el filtro de busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: dep # name of request, can be any name
+          description: Colocar id del departamento
+          required: true # can also be true depending on user preference
+          type: integer
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre del municipio
+          required: true # can also be true depending on user preference
+          type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de cantones where municipios
+  /generales/cantones/{municipio}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los cantones que coincidan con el id de municipio
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: municipio # name of request, can be any name
+          description: Colocar id del municipio
+          required: true # can also be true depending on user preference
+          type: integer
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de cantones where municipios filter
+  /generales/cantones/{municipio}/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los cantones que coincidan con filtro busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: municipio # name of request, can be any name
+          description: Colocar id del municipio
+          required: true # can also be true depending on user preference
+          type: integer
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor a buscar nombre del canton
+          required: true # can also be true depending on user preference
+          type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de nacionalidad
+  /generales/nacionalidad:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene las nacionalidades
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name:  # name of request, can be any name
+      #     description: Colocar id del departamento
+      #     required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de nacionalidades filter
+  /generales/nacionalidad/{filter}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene las nacionalidades que coincidan con la busqueda
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: filter # name of request, can be any name
+          description: Valor nombre de nacionalidad a buscar
+          required: true # can also be true depending on user preference
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de comodin
+  /generales/comodin/{grupo}:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los valores que coincidan con el grupo
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: path # request body
+          name: grupo # name of request, can be any name
+          description: Nombre del grupo
+          required: true # can also be true depending on user preference
+          example: sexo_persona
+          type: string
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de tipo_documento
+  /generales/tipo_documento:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipo de documentos
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name:  # name of request, can be any name
+      #     description: Colocar id del departamento
+      #     required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de tipo_iglesia
+  /generales/tipo_iglesia:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipo de iglesia
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name:  # name of request, can be any name
+      #     description: Colocar id del departamento
+      #     required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de tipo_informe
+  /generales/tipo_informe:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipo de informes
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name:  # name of request, can be any name
+      #     description: Colocar id del departamento
+      #     required: true # can also be true depending on user preference
+
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  #get de meses
+  /generales/meses:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene todos los Meses
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+    #get de tipos gestiones
+  /generales/tipos_gestiones:
+    get: # endpoint request type (put request)
+      tags: # Tag property
+        - Generales # Value of the tag
+      summary: Obtiene los tipos de gestiones
+      produces:
+        - application/json
+      # parameters: # request parameters
+      #   - in: path # request body
+      #     name: code # name of request, can be any name
+      #     description: Id de la zona o el codigo
+      #     required: true # can also be true depending on user preference
+      #     schema: # Schema definition
+      #       type: string
+      responses: # server responses
+        200:
+          description: Datos consultados con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código

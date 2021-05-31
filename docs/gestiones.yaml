@@ -1,0 +1,499 @@
+paths:
+  /gestiones: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Guardar los datos de una nueva gestión
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos de la nueva gestión
+          required: true
+          schema:
+            $ref: "#/definitions/creategestion"
+      responses: # server responses
+        201:
+          description: Se creó con éxito la nueva gestión
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+    put: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Actualizar los datos de una gestión
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos a actualizar
+          required: true
+          schema:
+            $ref: "#/definitions/updategestion"
+      responses: # server responses
+        200:
+          description: Se actualizó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+  /gestion:
+    delete: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: eliminar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/deletegestion"
+
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestion/asignacion:
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Guardar los datos de una nueva asignación
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos de la asignación
+          required: true
+          schema:
+            $ref: "#/definitions/createasignacioninforme"
+      responses: # server responses
+        201:
+          description: Se creó con éxito la nueva gestión
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
+    delete: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: eliminar una asignacion de informe
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo de la gestion y id de la asignacion
+          required: true
+          schema:
+            $ref: "#/definitions/deleteasignaciongestion"
+
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestion/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: id o código
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestion/iglesia/detalle/{codigoGestion}/{codigoIglesia}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene el detalle de los informes de la gestion especificada para la iglesia especificada, estado = 1 es enviado, estado = 0 es no enviado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+
+  /gestion/iglesia/informes/{codigoGestion}/{codigoIglesia}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene los informes que debe enviar la iglesia segun que informes esté en la gestión y los que estan asignados a la iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+
+  /gestion/{codigoGestion}/iglesia/{codigoIglesia}/informes:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtiene los informes que debe enviar la iglesia segun que informes esté en la gestión y los que estan asignados a la iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de gestión
+          required: true
+        - name: codigoIglesia
+          in: path
+          description: código de iglesia
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: No se encuentran los registros buscados
+
+  /gestion/iglesias/enviado/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener las iglesias que han enviado informes por codigo de la gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código de gestion
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestiones/informes/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Obtiene la lista de informes asignados para la gestión especificada
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código o id
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestiones/informes/iglesias/enviados/{codigoGestion}/{idInforme}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Obtiene una lista de iglesias que han enviado un informe en una gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de la gestion
+          required: true
+        - name: idInforme
+          in: path
+          description: id del informe
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestiones/informes/iglesias/no_enviados/{codigoGestion}/{idInforme}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Obtiene una lista de iglesias que no han enviado un informe en una gestion
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigoGestion
+          in: path
+          description: código de la gestion
+          required: true
+        - name: idInforme
+          in: path
+          description: id del informe
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: El informe no esta asignado a la gestión o ninguna iglesia tiene asignado el informe especificado.
+
+  /gestiones/activas:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener lista de gestiones actualmente publicadas estado = 2
+      consume: application/json
+      produces:
+        - application/json
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /gestiones/inactivas:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener lista de gestiones actualmente no publicadas, estado = 1
+      consume: application/json
+      produces:
+        - application/json
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+  /gestiones/disponibles/iglesia/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: obtener las gestiones disponibles para cada iglesia
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código iglesia
+          required: true
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+  /gestion/cerrar:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: cerrar o finalizar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/idOrCodigo"
+
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+  /gestion/publicar:
+    put: # endpoint request type (post request)
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: publicar una gestion por codigo o id
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: codigo o id de la gestion
+          required: true
+          schema:
+            $ref: "#/definitions/idOrCodigo"
+
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  creategestion:
+    type: object
+    properties:
+      descripcion:
+        description: descripción de la nueva gestión
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      tipo:
+        description: id del tipo de gestión
+        type: integer,
+        example: 1
+      fechaRecibirFin:
+        description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
+        type: string,
+        example: "2021-05-03"
+      fechaRecibirInicio:
+        description: fecha en la que incia el espacio para recibir los reportes de las iglesias
+        type: string,
+        example: "2021-05-03"
+      periodo:
+        description: codigo del periodo al que pertenece la gestión
+        type: string
+        example: "PM-12212121"
+  updategestion:
+    type: object
+    properties:
+      descripcion:
+        description: descripción de la gestión
+        type: string,
+        example: "Lorem ipsum estri deli..."
+      tipo:
+        description: id del tipo de gestión
+        type: integer,
+        example: 1
+      fechaRecibirFin:
+        description: fecha en la que finaliza el espacio para recibir los reportes de las iglesias
+        type: string
+        example: "2021-05-03"
+      fechaRecibirInicio:
+        description: fecha en la que inicia el espacio para recibir los reportes de las iglesias
+        type: string
+        example: "2021-05-03"
+      codigoGestion:
+        description: codigo de la gestión
+        type: string
+        example: "GE-12212121"
+  deletegestion:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo o id de la gestion
+        type: string,
+        example: "GE-121212"
+  deleteasignaciongestion:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo de la gestion
+        type: string
+        example: "GE-121212"
+      idGestionInforme:
+        description: id de la asignacion
+        type: integer
+        example: 1
+  createasignacioninforme:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo de la gestión
+        type: string
+        example: "GE-121212"
+      informeId:
+        description: id del infome a asignar
+        type: integer
+        example: 1
+      mesId:
+        description: id del mes del informe
+        type: integer
+        example: 5
+  idOrCodigo:
+    type: object
+    properties:
+      codigoGestion:
+        description: codigo o id de la gestion
+        type: string,
+        example: "GE-121212"

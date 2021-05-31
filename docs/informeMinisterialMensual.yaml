@@ -1,0 +1,397 @@
+paths:
+  #Create maestro_de_informes
+  /informe/ministerial/mensual/cabecera: # path of the user from your endpoint
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Informe Ministerial Mensual
+      summary: Crear la cabecera de un informe ministerial mensual
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/createInformeMinisterialMensualCabecera"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+        404:
+          description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
+  /informe/ministerial/mensual/detalle: # path of the user from your endpoint
+    post:
+      #security:
+      #  - Bearer: []
+      tags:
+        - Informe Ministerial Mensual
+      summary: Crear el detalle de un informe ministerial mensual
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/createInformeMinisterialMensualDetalle"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+    put:
+      security:
+        - Bearer: []
+      #security:
+      #  - Bearer: []
+      tags:
+        - Informe Ministerial Mensual
+      summary: actualizar el detalle de un informe ministerial mensual con el codigo del informe
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para actualizar el detalle de un informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/updateInformeMinisterialMensualDetalle"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+  /informe/ministerial/mensual/info/{codigo}:
+    get: # endpoint request type (post request)
+      tags: # Tag property
+        - Informe Ministerial Mensual # Value of the tag
+      summary: obtener la informacion de un informe por codigo del informe
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: path
+          description: código 
+          required: true       
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+        404:
+          description: informe no encontrado
+  /informe/ministerial/enviar/:
+    put: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Informe Ministerial Mensual # Value of the tag
+      summary: (SERÁ REMOVIDO) establece el informe como enviado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: body
+          description: código del informe
+          required: true
+          schema: # Schema definition
+            $ref: "#/definitions/setProcesado"
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+definitions:
+  createInformeMinisterialMensualCabecera:
+    type: object
+    properties:
+      codigoIglesia:
+        type: string
+        description: codigo del iglesia
+        example: IGLE-121212
+      codigoPastor:
+        type: string
+        description: codigo del pastor
+        example: PAS-121212
+      codigoGestion:
+        type: string
+        description: codigo de la gestión
+        example: GE-121212
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+
+
+  createInformeMinisterialMensualDetalle:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo de la cabecera del reporte
+        example: I-12121212
+      mensajes:
+        type: integer
+        description: cantidad de predicaciones que ha hecho el pastor
+        example: 12
+      convertidos:
+        type: integer
+        description: cantidad de personas que aceptaron a Dios
+        example: 12
+      santificados:
+        type: integer
+        description: cantidad de personas santificadas en el mes
+        example: 12
+      bautismosAgua:
+        type: integer
+        description: cantidad de personas que se han bautizado en agua en ese mes
+        example: 12
+      bautismosEs:
+        type: integer
+        description: cantidad de personas que han sido bautizadas por el espiritu santo
+        example: 12
+      agregados:
+        type: integer
+        description: cantidad de nuevos miembros agreado a la iglesia en ese mes
+        example: 12
+      hogaresMiembrosV:
+        type: integer
+        description: cantidad de hogares de miembros que visito el pastor en ese mes
+        example: 12
+      hogaresProspectosV:
+        type: integer
+        description: cantidad de hogares a personas que no son miembros pero pueden llegar a serlo
+        example: 12
+      diezmoRecibido:
+        type: decimal
+        description: cantidad monetaria de deizmos recibidos por el pasto
+        example: 12.12
+      diezmoPagado:
+        type: decimal
+        description: cantidad monetaria de deizmos pagados por el pasto
+        example: 12.12
+      ofrendaRecibida:
+        type: decimal
+        description: cantidad monetaria de ofrenda recibida por el pastor
+        example: 12.12
+      gastosMinisteriales:
+        type: decimal
+        description: cantidad monetaria de gastos ministeriales por el pastor
+        example: 12.12
+      actividadesOracion:
+        type: integer
+        description: cantidad de actividades de oracion relizadas en la iglesia por el pastor
+        example: 12
+      vidaOracion:
+        type: integer
+        description: booleano para saber si el pastor lleva una vida de oracion
+        example: 1
+      actividadesMisiones:
+        type: integer
+        description: cantidad de actividades de misiones al mes
+        example: 12
+      actividadesLiderazgo:
+        type: integer
+        description: cantidad de actividades de liderazgo al mes
+        example: 12
+      lideresInvolucrados:
+        type: integer
+        description: cantidad de liderez que se han involucrado en actividades de liderazgo al mes
+        example: 12
+      mejoraMinisterial:
+        type: integer
+        description: booleano para determinar si el pastor mejora cada mes
+        example: 1
+      miembrosActivos:
+        type: integer
+        description: cantidad de miembros activos cada mes
+        example: 12
+      miembrosSalvos:
+        type: integer
+        description: cantidad miembros salvos en el mes
+        example: 12
+      miembrosSantificados:
+        type: integer
+        description: cantidad de miembros santificados en el mes
+        example: 12
+      miembrosBautizadosEs:
+        type: integer
+        description: cantidad de miembros bautizados por el espititu santo en el mes
+        example: 12
+      promedioAsistenciaAdultos:
+        type: decimal
+        description: cantidad promedico de asitencia de adultos
+        example: 12.12
+      promedioAsistenciaNiJov:
+        type: decimal
+        description: cantidad promedio de asistencia de niños y jovenes en el mes
+        example: 12.12
+      ministerioAlcanceSemanal:
+        type: integer
+        description: booleano para saber si el ministro lleva un ministerio de alcance semanal
+        example: 1
+      santaCena:
+        type: integer
+        description: cantidad de santa cenas que realizo en el mes
+        example: 12
+      lavatorios:
+        type: integer
+        description: cantidad de lavatorios de pies que se realizaron en el mes
+        example: 12
+      diezmosIncluidosInforme:
+        type: number
+        description: diezmos incluidos en el informe
+        example: 1
+
+  updateInformeMinisterialMensualDetalle:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo de la cabecera del reporte
+        example: I-12121212
+      mensajes:
+        type: integer
+        description: cantidad de predicaciones que ha hecho el pastor
+        example: 12
+      convertidos:
+        type: integer
+        description: cantidad de personas que aceptaron a Dios
+        example: 12
+      santificados:
+        type: integer
+        description: cantidad de personas santificadas en el mes
+        example: 12
+      bautismosAgua:
+        type: integer
+        description: cantidad de personas que se han bautizado en agua en ese mes
+        example: 12
+      bautismosEs:
+        type: integer
+        description: cantidad de personas que han sido bautizadas por el espiritu santo
+        example: 12
+      agregados:
+        type: integer
+        description: cantidad de nuevos miembros agreado a la iglesia en ese mes
+        example: 12
+      hogaresMiembrosV:
+        type: integer
+        description: cantidad de hogares de miembros que visito el pastor en ese mes
+        example: 12
+      hogaresProspectosV:
+        type: integer
+        description: cantidad de hogares a personas que no son miembros pero pueden llegar a serlo
+        example: 12
+      diezmoRecibido:
+        type: decimal
+        description: cantidad monetaria de deizmos recibidos por el pasto
+        example: 12.12
+      diezmoPagado:
+        type: decimal
+        description: cantidad monetaria de deizmos pagados por el pasto
+        example: 12.12
+      ofrendaRecibida:
+        type: decimal
+        description: cantidad monetaria de ofrenda recibida por el pastor
+        example: 12.12
+      gastosMinisteriales:
+        type: decimal
+        description: cantidad monetaria de gastos ministeriales por el pastor
+        example: 12.12
+      actividadesOracion:
+        type: integer
+        description: cantidad de actividades de oracion relizadas en la iglesia por el pastor
+        example: 12
+      vidaOracion:
+        type: integer
+        description: booleano para saber si el pastor lleva una vida de oracion
+        example: 1
+      actividadesMisiones:
+        type: integer
+        description: cantidad de actividades de misiones al mes
+        example: 12
+      actividadesLiderazgo:
+        type: integer
+        description: cantidad de actividades de liderazgo al mes
+        example: 12
+      lideresInvolucrados:
+        type: integer
+        description: cantidad de liderez que se han involucrado en actividades de liderazgo al mes
+        example: 12
+      mejoraMinisterial:
+        type: integer
+        description: booleano para determinar si el pastor mejora cada mes
+        example: 1
+      miembrosActivos:
+        type: integer
+        description: cantidad de miembros activos cada mes
+        example: 12
+      miembrosSalvos:
+        type: integer
+        description: cantidad miembros salvos en el mes
+        example: 12
+      miembrosSantificados:
+        type: integer
+        description: cantidad de miembros santificados en el mes
+        example: 12
+      miembrosBautizadosEs:
+        type: integer
+        description: cantidad de miembros bautizados por el espititu santo en el mes
+        example: 12
+      promedioAsistenciaAdultos:
+        type: decimal
+        description: cantidad promedico de asitencia de adultos
+        example: 12.12
+      promedioAsistenciaNiJov:
+        type: decimal
+        description: cantidad promedio de asistencia de niños y jovenes en el mes
+        example: 12.12
+      ministerioAlcanceSemanal:
+        type: integer
+        description: booleano para saber si el ministro lleva un ministerio de alcance semanal
+        example: 1
+      santaCena:
+        type: integer
+        description: cantidad de santa cenas que realizo en el mes
+        example: 12
+      lavatorios:
+        type: integer
+        description: cantidad de lavatorios de pies que se realizaron en el mes
+        example: 12
+      estado:
+        type: number
+        description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+        example: 1
+      diezmosIncluidosInforme:
+        type: number
+        description: diezmos incluidos en el informe
+        example: 1
+
+  setProcesado:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo del reporte
+        example: IM-12121212

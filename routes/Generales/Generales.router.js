@@ -4,48 +4,68 @@ module.exports = () => {
   const generalesController = require("../../controllers/Generales/Generales.controller")();
 
   router.get(
-    "/generales/estado_civil/all",
+    "/generales/estado_civil",
     generalesController.getSelectEstadoCivil
   );
   router.get(
-    "/generales/departamentos/all",
+    "/generales/departamentos",
     generalesController.getSelectDepartamento
   );
   router.get(
-    "/generales/comodin/all/:grupo",
+    "/generales/municipios/:dep",
+    generalesController.getSelectMunicipio
+  );
+  router.get(
+    "/generales/municipios/:dep/:filter",
+    generalesController.getSelectMunicipio
+  );
+  // CANTONES
+  router.get("/generales/cantones", generalesController.getSelectCanton);
+  router.get(
+    "/generales/cantones/:municipio",
+    generalesController.getSelectCanton
+  );
+  router.get(
+    "/generales/cantones/:municipio/:filter",
+    generalesController.getSelectCanton
+  );
+  // NACIONALIDADES
+  router.get(
+    "/generales/nacionalidad",
+    generalesController.getSelectNacionalidad
+  );
+  router.get(
+    "/generales/nacionalidad/:filter",
+    generalesController.getSelectNacionalidad
+  );
+  router.get(
+    "/generales/comodin/:grupo",
     generalesController.getSelectMiselanea
   );
-
-  router.get("/generales/sexo/all", generalesController.getSelectSexo);
   router.get(
-    "/generales/tipo_documento_identificacion/all",
-    generalesController.getSelectTipoDocumentoIdentificacion
+    "/generales/tipo_documento",
+    generalesController.getSelectTipoDocumento
   );
   router.get(
-    "/generales/motivos_baja/all",
-    generalesController.getSelectMotivosBaja
+    "/generales/tipo_iglesia",
+    generalesController.getSelectTipoIglesia
   );
   router.get(
-    "/generales/tipos_saldos/all",
-    generalesController.getSelectTiposSaldos
-  );
-
-  router.get(
-    "/generales/tipo_cuenta/all",
-    generalesController.getSelectTipoCuenta
+    "/generales/profesiones",
+    generalesController.getSelectProfesiones
   );
   router.get(
-    "/generales/tipo_proyecto/all",
-    generalesController.getSelectTipoProyecto
+    "/generales/profesiones/:filter",
+    generalesController.getSelectProfesiones
   );
-  router.get("/generales/mail/:mensaje/:correo", generalesController.mail);
-  // router.get("/cargos/all/:filter", generalesController.getAll);
-  // router.get("/cargos/select", generalesController.getSelect);
-  // router.get("/cargos/select/:filter", generalesController.getSelect);
-  // router.get("/cargos/:code", generalesController.getById);
-  // router.post("/cargos", generalesController.insertOne);
-  // router.put("/cargos", generalesController.updateOne);
-  // router.delete("/cargos", generalesController.DisableOrEnable);
-
+  router.get(
+    "/generales/tipo_informe",
+    generalesController.getSelectTipoInforme
+  );
+  router.get("/generales/meses", generalesController.getSelectMeses);
+  router.get(
+    "/generales/tipos_gestiones",
+    generalesController.getSelectTiposGestiones
+  );
   return router;
 };

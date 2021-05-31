@@ -90,6 +90,23 @@ module.exports = () => {
       console.log(error);
     }
   };
+  usuarios.getIglesiasUsuario = async (req, res) => {
+    const { code } = req.params;
+    console.log(code);
+    try {
+      let result = await modelUsuarios.getIglesiasUser(code);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length > 0) {
+        res.status(200).json(result.length > 0 ? result : result);
+      } else {
+        res.status(404).send();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   usuarios.getAll = async (req, res) => {
     const { filter } = req.params;
 
@@ -196,6 +213,7 @@ module.exports = () => {
         } else if (result.affectedRows === 1) {
           res.status(200).json("Proceso se realizó con exito");
         } else {
+          console.log(result);
           res.status(400).json("No se pudo realizar el proceso");
         }
       } else {
@@ -231,7 +249,7 @@ module.exports = () => {
       if (
         !isUndefinedOrNull(data.email) &&
         !isNaN(parseInt(type)) &&
-        (type == 1 || type == 3 || type ==2)
+        (type == 1 || type == 3 || type == 2)
       ) {
         result = await modelUsuarios.requestEmailToChangePassword(data);
         console.log(result);
@@ -250,43 +268,102 @@ module.exports = () => {
       console.log(error);
       res.status(500).json("Error de servidor");
     }
-  }; 
+  };
 
   usuarios.changePassword = async (req, res) => {
     const data = req.body;
     console.log("datos----------------------------");
     console.log(data);
     try {
-      if(!isUndefinedOrNull(data.token) && !isUndefinedOrNull(data.type) && !isUndefinedOrNull(data.newPassword)){
-        const isTokenValid = await modelAcceso.checkTokenToChangePassword(data.token);
-        console.log("Token valido:"+isTokenValid);
-        if(isTokenValid.estado === 1){ //Si el token es valido
+      if (
+        !isUndefinedOrNull(data.token) &&
+        !isUndefinedOrNull(data.type) &&
+        !isUndefinedOrNull(data.newPassword)
+      ) {
+        const isTokenValid = await modelAcceso.checkTokenToChangePassword(
+          data.token
+        );
+        console.log("Token valido:" + isTokenValid);
+        if (isTokenValid.estado === 1) {
+          //Si el token es valido
           const changePasswordResult = await modelUsuarios.changePassword(data);
           console.log("Resultado de cambio de contraseña");
           console.log(changePasswordResult);
           //Se devolvio un booleano? que es el caso si las operaciones siguieron el curso normal
-          if(typeof changePasswordResult === 'boolean'){
+          if (typeof changePasswordResult === "boolean") {
             //Dependiendo si se cambio la contraseña o no se manda 201 (modificado) o 200 (Ejecutado pero no cambiado por que el codigo temporal incorrecto)
-            res.status((changePasswordResult?201:200)).json({estado: changePasswordResult});
+            res
+              .status(changePasswordResult ? 201 : 200)
+              .json({ estado: changePasswordResult });
+          } else {
+            throw changePasswordResult; // Error devuelto desde modelo
           }
-          else{
-            
-           throw  changePasswordResult; // Error devuelto desde modelo
-          }
-        }
-        else{
+        } else {
           res.status(403).json("Sin autorización"); // El token no es valido
         }
-       
+      } else {
+        res.status(400).json("Solicitud mal formada"); //solicitud con datos incompletos
       }
-      else{
-        res.status(400).json("Solicitud mal formada");; //solicitud con datos incompletos
-      }
-
     } catch (error) {
       console.log("FINAl");
       console.log(error);
       res.status(500).json("Error de servidor");
+    }
+  };
+  usuarios.AsignarIglesia = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (
+        !isUndefinedOrNull(data.persona) &&
+        !isUndefinedOrNull(data.iglesia)
+      ) {
+        let result = await modelUsuarios.asignar_iglesia(data);
+        if (result.errno) {
+          switch (result.errno) {
+            case 1062:
+              res.status(409).json("Iglesia ya fue asignada");
+
+              break;
+
+            default:
+              console.log(result);
+              res.status(500).json("Error de servidor");
+
+              break;
+          }
+        } else if (result.affectedRows > 0) {
+          res.status(201).json("Se creo con exito");
+        } else {
+          res.status(400).json("No se pudo crear");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  usuarios.delete_iglesia_asignada = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (!isUndefinedOrNull(data.code)) {
+        let result = await modelUsuarios.delete_iglesia_asignada(data);
+        if (result.errno) {
+          res.status(500).json("Error de servidor");
+        } else if (result.affectedRows === 1) {
+          res.status(200).json("Proceso se realizó con exito");
+        } else {
+          console.log(result);
+          res.status(400).json("No se pudo realizar el proceso");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   return usuarios;

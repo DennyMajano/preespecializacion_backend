@@ -1,0 +1,35 @@
+paths:
+  #Create maestro_de_informes
+  /informe/enviar/:
+    put: # endpoint request type (post request)
+      security:
+        - Bearer: []
+      tags: # Tag property
+        - Informes # Value of the tag
+      summary: establece el informe como enviado
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: codigo
+          in: body
+          description: código del informe
+          required: true
+          schema: # Schema definition
+            $ref: "#/definitions/setInformeProcesado"
+      responses: # server responses
+        200:
+          description: Se ejecutó la consulta con éxito.
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar la consulta
+
+definitions:
+  setInformeProcesado:
+    type: object
+    properties:
+      codigoInforme:
+        type: string
+        description: codigo del reporte
+        example: IM-12121212
