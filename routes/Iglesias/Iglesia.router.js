@@ -23,6 +23,15 @@ module.exports = () => {
     "/iglesias/distrito/:distrito/:filter",
     iglesiasController.getSelectByDistrito
   );
+
+  router.get(
+    "/iglesias/asignadas/:usuario",
+    iglesiasController.getIglesiasAsignadas
+  );
+  router.get(
+    "/iglesias/asignadas/:usuario/:filter",
+    iglesiasController.getIglesiasAsignadas
+  );
   router.get("/iglesias/:code", iglesiasController.getById);
   router.get("/iglesias/detalle/:code", iglesiasController.getDetalleById);
   router.get("/iglesias/informe/:code", iglesiasController.getInformeById);

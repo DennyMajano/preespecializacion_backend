@@ -232,5 +232,21 @@ module.exports = () => {
       console.log(error);
     }
   };
+
+  iglesia.getIglesiasAsignadas = async (req, res) => {
+    const { filter, usuario } = req.params;
+
+    try {
+      let result = await modelIglesias.findIglesiasAsignadas(filter, usuario);
+      console.log(result);
+      if (result.errno) {
+        res.status(500).json("Error de servidor");
+      } else if (result.length >= 0) {
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return iglesia;
 };

@@ -69,7 +69,6 @@ module.exports = {
       return error;
     }
 
-    console.log(transaction);
     return usuario !== undefined ? usuario : transaction;
   },
 
@@ -536,5 +535,45 @@ module.exports = {
     } catch (error) {
       return error;
     }
+  },
+
+  asignar_iglesia: async (data) => {
+    const { persona, iglesia } = data;
+
+    let iglesia_asignacion;
+
+    let transaction;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        iglesia_asignacion = await db.query(
+          `INSERT INTO administracion_iglesias(persona, iglesia) VALUES (?,?)`,
+          [persona, iglesia]
+        );
+      });
+    } catch (error) {
+      return error;
+    }
+    return iglesia_asignacion !== undefined ? iglesia_asignacion : transaction;
+  },
+
+  delete_iglesia_asignada: async (data) => {
+    const { code } = data;
+    let iglesia_asignada;
+    let log_pass;
+    let transaction;
+
+    try {
+      transaction = await database.Transaction(db, async () => {
+        iglesia_asignada = await db.query(
+          `DELETE FROM administracion_iglesias WHERE id=?`,
+          [code]
+        );
+      });
+    } catch (error) {
+      return error;
+    }
+
+    return iglesia_asignada !== undefined ? iglesia_asignada : transaction;
   },
 };
