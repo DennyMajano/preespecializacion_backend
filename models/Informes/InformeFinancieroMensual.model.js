@@ -315,6 +315,102 @@ module.exports = {
       );
     });
   },
+  create: async (data) =>{
+    const {
+      estado,
+      usuarioToken,
+      codigoIglesia,
+      nombreTesorero,
+      codigoPastor,
+      codigoGestion,
+      //idInformeMinisterialmensual
+    } = data.cabecera;
+    const {
+      oficinasInternacionales,
+      sociosAmip,
+      misionesMundiales,
+      tributosAnuales,
+      ministroOrdenado,
+      pastorLaico,
+      fondoLocal,
+      retiroPastoral,
+      segundaParteOfrendaministerios,
+      fondoEmergenciaNacional,
+      misionesNacionales,
+      diezmosMinistros,
+      compraPropiedadNacional,
+      construccionTemplosNuevos,
+      cotizacionPrestaciones,
+      seguroVida,
+      fondoSolidarioMinisterial,
+      otros,
+    } = data.detalle;
+
+    if (
+      !comprobations.areFieldsValid([
+        //Campos de cabecera
+        estado,
+        usuarioToken,
+        codigoIglesia,
+        nombreTesorero,
+        codigoGestion,
+        //Campos de detalle
+        oficinasInternacionales,
+        sociosAmip,
+        misionesMundiales,
+        tributosAnuales,
+        ministroOrdenado,
+        pastorLaico,
+        fondoLocal,
+        retiroPastoral,
+        segundaParteOfrendaministerios,
+        fondoEmergenciaNacional,
+        misionesNacionales,
+        diezmosMinistros,
+        compraPropiedadNacional,
+        construccionTemplosNuevos,
+        cotizacionPrestaciones,
+        seguroVida,
+        fondoSolidarioMinisterial,
+        otros,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //generados el codigo
+    const codigoInforme = GeneratorCode(PREFIJO_INFORME);
+    //Obtenemos el id del usuario del token.
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    const result = await model.connection.query(
+      `call crearInformeFinancieroMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        usuario,codigoPastor,codigoGestion,codigoIglesia,estado,codigoInforme,nombreTesorero,
+      //Campos para detalle
+      oficinasInternacionales,
+      sociosAmip,
+      misionesMundiales,
+      tributosAnuales,
+      ministroOrdenado,
+      pastorLaico,
+      fondoLocal,
+      retiroPastoral,
+      segundaParteOfrendaministerios,
+      fondoEmergenciaNacional,
+      misionesNacionales,
+      diezmosMinistros,
+      compraPropiedadNacional,
+      construccionTemplosNuevos,
+      cotizacionPrestaciones,
+      seguroVida,
+      fondoSolidarioMinisterial,
+      otros
+      ]
+      )
+    console.log("---------");
+    console.log(result[0][0].codigoInforme);
+    console.log("----------");
+    return result[0][0];
+  }
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {

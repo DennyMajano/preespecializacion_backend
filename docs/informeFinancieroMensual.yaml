@@ -26,6 +26,34 @@ paths:
           description: no se pudo crear por que faltan datos obligatorios
         404:
           description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
+  
+  /informe/financiero/mensual/: # path of the user from your endpoint
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Informe Financiero Mensual
+      summary: Crear la cabecera de un Informe Financiero Mensual
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para crear un nuevo informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/createInformeFinancieroMensual"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+        404:
+          description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
+
   /informe/financiero/mensual/detalle: # path of the user from your endpoint
     post:
       #security:
@@ -72,7 +100,7 @@ paths:
 
         400:
           description: no se pudo crear por que faltan datos obligatorios
-/informe/financiero/mensual/info/{codigo}:
+  /informe/financiero/mensual/info/{codigo}:
     get: # endpoint request type (post request)
       tags: # Tag property
         - Informe Financiero Mensual # Value of the tag
@@ -119,6 +147,128 @@ definitions:
         type: number
         description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
         example: 1
+  
+
+  createInformeFinancieroMensual:
+    type: object
+    properties:
+      cabecera:
+        type: object
+        properties:
+          codigoIglesia:
+            type: string
+            description: codigo del iglesia
+            example: IGLE-TEST
+          codigoPastor:
+            type: string
+            description: codigo del pastor
+            example: PAS-TEST
+          codigoGestion:
+            type: string
+            description: codigo de la gestión
+            example: GE-TEST
+          nombreTesorero:
+            type: string
+            description: nombre del tesorero
+            example: Brendariel del campo
+          estado:
+            type: number
+            description: estado del informe 1- llenando datos, 2-procedado, 3-recibido
+            example: 1
+      detalle:
+        type: object
+        properties:
+          oficinasInternacionales: 
+            type: number
+            format: float
+            description: cantidad monetaria para oficinas nacionales
+            example: 1
+          sociosAmip:
+            type: number
+            format: float
+            description: cantidad monetaria para socios amip
+            example: 2
+          misionesMundiales:
+            type: number
+            format: float
+            description: cantidad monetaria para misiones mundiales
+            example: 3
+          tributosAnuales:
+            type: number
+            format: float
+            description: cantidad monetaria para tributos anuales
+            example: 4
+          ministroOrdenado:
+            type: number
+            format: float
+            description: cantidad monetaria reportada por ministro ordenado
+            example: 5
+          pastorLaico:
+            type: number
+            format: float
+            description: cantidad monetaria a reportar por pastor laico
+            example: 6
+          fondoLocal:
+            type: number
+            format: float
+            description: cantidad monetaria de fondo local
+            example: 7
+          retiroPastoral:
+            type: number
+            format: float
+            description: cantidad monetaria de retiro pastoral
+            example: 8
+          segundaParteOfrendaministerios:
+            type: number
+            format: float
+            description: cantidad monetaria de segunda parde de ofrenda ministerial
+            example: 9
+          fondoEmergenciaNacional:
+            type: number
+            format: float
+            description: cantidad monetaria para fondo emergencia nacional
+            example: 10
+          misionesNacionales:
+            type: number
+            format: float
+            description: cantidad monetaria para miniones nacionales
+            example: 11
+          diezmosMinistros:
+            type: number
+            format: float
+            description: cantidad monetaria de diezmos para ministros
+            example: 12
+          compraPropiedadNacional:
+            type: number
+            format: float
+            description: cantidad monetaria para compra de propiedad naciones
+            example: 13
+          construccionTemplosNuevos:
+            type: number
+            format: float
+            description: cantidad monetaria para construccion de templos
+            example: 14
+          cotizacionPrestaciones:
+            type: number
+            format: float
+            description: cantidad monetaria para prestacion isss y afp
+            example: 15
+          seguroVida:
+            type: number
+            format: float
+            description: cantidad monetaria para seguro de vida
+            example: 16
+          fondoSolidarioMinisterial:
+            type: number
+            format: float
+            description: cantidad monetaria para fondo solidario ministerial
+            example: 17
+          otros:
+            type: number
+            format: float
+            description: cantidad monetaria para otros
+            example: 18
+
   createInformeFinancieroMensualDetalle:
     type: object
     properties:

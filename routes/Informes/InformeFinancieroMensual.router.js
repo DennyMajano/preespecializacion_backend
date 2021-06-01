@@ -9,6 +9,10 @@ module.exports = () => {
     informeFinancieroMensualController.createCabeceraInforme
   );
   router.post(
+    "/informe/financiero/mensual/",
+    informeFinancieroMensualController.create
+  );
+  router.post(
     "/informe/financiero/mensual/detalle",
     informeFinancieroMensualController.createDetalleInforme
   );
