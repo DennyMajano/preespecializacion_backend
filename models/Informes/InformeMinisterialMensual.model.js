@@ -494,7 +494,6 @@ module.exports = {
         estado,
         usuarioToken,
         codigoIglesia,
-        codigoPastor,
         codigoGestion,
         //Campos de detalle
         mensajes,
