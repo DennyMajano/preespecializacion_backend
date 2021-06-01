@@ -60,6 +60,18 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  informe.create = async(req, res)=>{
+    console.log(req.body);
+    try {
+     
+      req.body.cabecera.usuarioToken = req.headers.authorization.split(" ")[1];
+      const result = await modelInforme.create(req.body);
+
+      controller.validateResultForGeneral(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  }
  
   return informe;
 };

@@ -447,6 +447,132 @@ module.exports = {
     });
   },
   template: async (data) => {},
+
+  create: async (data) =>{
+    const {
+      estado,
+      usuarioToken,
+      codigoIglesia,
+      codigoPastor,
+      codigoGestion,
+      //idInformeMinqwisterialmensual
+    } = data.cabecera;
+    const {
+      mensajes,
+      convertidos,
+      santificados,
+      bautismosAgua,
+      bautismosEs,
+      agregados,
+      hogaresMiembrosV,
+      hogaresProspectosV,
+      diezmoRecibido,
+      diezmoPagado,
+      ofrendaRecibida,
+      gastosMinisteriales,
+      actividadesOracion,
+      vidaOracion,
+      actividadesMisiones,
+      actividadesLiderazgo,
+      lideresInvolucrados,
+      mejoraMinisterial,
+      miembrosActivos,
+      miembrosSalvos,
+      miembrosSantificados,
+      miembrosBautizadosEs,
+      promedioAsistenciaAdultos,
+      promedioAsistenciaNiJov,
+      ministerioAlcanceSemanal,
+      santaCena,
+      lavatorios,
+      diezmosIncluidosInforme,
+    } = data.detalle;
+
+    if (
+      !comprobations.areFieldsValid([
+        //Campos de cabecera
+        estado,
+        usuarioToken,
+        codigoIglesia,
+        codigoPastor,
+        codigoGestion,
+        //Campos de detalle
+        mensajes,
+        convertidos,
+        santificados,
+        bautismosAgua,
+        bautismosEs,
+        agregados,
+        hogaresMiembrosV,
+        hogaresProspectosV,
+        diezmoRecibido,
+        diezmoPagado,
+        ofrendaRecibida,
+        gastosMinisteriales,
+        actividadesOracion,
+        vidaOracion,
+        actividadesMisiones,
+        actividadesLiderazgo,
+        lideresInvolucrados,
+        mejoraMinisterial,
+        miembrosActivos,
+        miembrosSalvos,
+        miembrosSantificados,
+        miembrosBautizadosEs,
+        promedioAsistenciaAdultos,
+        promedioAsistenciaNiJov,
+        ministerioAlcanceSemanal,
+        santaCena,
+        lavatorios,
+        diezmosIncluidosInforme,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //generados el codigo
+    const codigoInforme = GeneratorCode(prefijoDeInforme);
+    //Obtenemos el id del usuario del token.
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    const result = await model.connection.query(
+      `call crearInformeMinisterialMensual(?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        usuario,codigoPastor,codigoGestion,codigoIglesia,estado,codigoInforme,
+      //Campos para detalle
+      mensajes,
+      convertidos,
+      santificados,
+      bautismosAgua,
+      bautismosEs,
+      agregados,
+      hogaresMiembrosV,
+      hogaresProspectosV,
+      diezmoRecibido,
+      diezmoPagado,
+      ofrendaRecibida,
+      gastosMinisteriales,
+      actividadesOracion,
+      vidaOracion,
+      actividadesMisiones,
+      actividadesLiderazgo,
+      lideresInvolucrados,
+      mejoraMinisterial,
+      miembrosActivos,
+      miembrosSalvos,
+      miembrosSantificados,
+      miembrosBautizadosEs,
+      promedioAsistenciaAdultos,
+      promedioAsistenciaNiJov,
+      ministerioAlcanceSemanal,
+      santaCena,
+      lavatorios,
+      diezmosIncluidosInforme
+      ]
+      )
+    console.log("---------");
+    console.log(result[0][0].codigoInforme);
+    console.log("----------");
+    return result[0][0];
+  }
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {
