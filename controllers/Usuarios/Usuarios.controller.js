@@ -310,5 +310,61 @@ module.exports = () => {
       res.status(500).json("Error de servidor");
     }
   };
+  usuarios.AsignarIglesia = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (
+        !isUndefinedOrNull(data.persona) &&
+        !isUndefinedOrNull(data.iglesia)
+      ) {
+        let result = await modelUsuarios.asignar_iglesia(data);
+        if (result.errno) {
+          switch (result.errno) {
+            case 1062:
+              res.status(409).json("Iglesia ya fue asignada");
+
+              break;
+
+            default:
+              console.log(result);
+              res.status(500).json("Error de servidor");
+
+              break;
+          }
+        } else if (result.affectedRows > 0) {
+          res.status(201).json("Se creo con exito");
+        } else {
+          res.status(400).json("No se pudo crear");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  usuarios.delete_iglesia_asignada = async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (!isUndefinedOrNull(data.code)) {
+        let result = await modelUsuarios.delete_iglesia_asignada(data);
+        if (result.errno) {
+          res.status(500).json("Error de servidor");
+        } else if (result.affectedRows === 1) {
+          res.status(200).json("Proceso se realizó con exito");
+        } else {
+          console.log(result);
+          res.status(400).json("No se pudo realizar el proceso");
+        }
+      } else {
+        res.status(400).json("faltan datos para realizar el proceso");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return usuarios;
 };

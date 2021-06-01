@@ -169,6 +169,51 @@ paths:
           description: Datos con valor del numero de registros
         500:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
+  /usuarios/asignar_iglesia: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Asignar iglesia a usario
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es la data para asignar iglesia
+          required: false # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/asignar_iglesia_usuario"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
+
+  /usuarios/iglesia_asignada:
+    delete: # endpoint request type (put request)
+      tags: # Tag property
+        - Usuarios # Value of the tag
+      summary: Eliminar la iglesia asignada
+      produces:
+        - application/json
+      parameters: # request parameters
+        - in: body # request body
+          name: Delete # name of request, can be any name
+          description: objeto para eliminar el usuarios de la iglesia asignada
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/delete_iglesia_asignada"
+      responses: # server responses
+        200:
+          description: se elimino con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
 
   #     #get de módulos padres
   # /modulos/select/{filter}:
@@ -380,6 +425,12 @@ definitions: # Schema defination for request body
       code:
         type: integer
         description: Código del usuario a borrar
+  delete_iglesia_asignada:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: id asignacion
   requestMail:
     type: object
     properties:
@@ -424,3 +475,14 @@ definitions: # Schema defination for request body
         type: boolean
         description: es verdadero si se envió, falso si no encontró el correo
         example: true
+  asignar_iglesia_usuario:
+    type: object
+    properties:
+      persona:
+        type: string
+        description: nombre del código generado por el sistema de la persona
+        example: P-454354
+      iglesia:
+        type: string
+        description: Codigo generado por el sistema de la iglesia
+        example: IG_TEST
