@@ -151,14 +151,14 @@ module.exports = {
       return await dbConnection.query(
         `
         select informe as informe_id, 
-        (select nombre from maestro_de_informes where id = informe) as informe_nombre, 
+        (select nombre from maestro_de_informes where id = informe) as informe_nombre,
+        (select identificador from maestro_de_informes where id = informe) as identificador,
         mes as mes_id, 
         (select nombre from meses where id = MGI.mes) as mes_nombre, 
         gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion, 
         (select count(*) as total from iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where GI.gestion = ? and GI.informe = informe_id group by GI.informe) as total, 
         (select count(*) from informes_recibidos_gestion as IRG where IRG.gestion = ? and IRG.informe_maestro = informe_id) as recibidos 
-        from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion 
-        where GI.gestion = ? OR G.id = ?
+        from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo =GI.gestion where GI.gestion = ? OR G.id = ?
         `,
         [codigoGestion, codigoGestion, codigoGestion, codigoGestion]
       );
@@ -342,12 +342,10 @@ module.exports = {
     }
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        `SELECT I.codigo, I.nombre, I.telefono,
+        `SELECT I.codigo, I.nombre, I.telefono, IRG.informe_maestro, IRG.informe_ide,
         (select nombre from departamentos where I.departamento = id) as departamento,
         (select nombre from municipios where I.municipio = id) as municipio,
         (select nombre from cantones where I.canton = id) as canton,
-        I.direccion,
-        I.src_google,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
         (select nombre from zonas where I.zona = id) as zona
