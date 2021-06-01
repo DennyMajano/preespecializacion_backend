@@ -342,14 +342,14 @@ module.exports = {
     }
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        `SELECT I.codigo, I.nombre, I.telefono, IRG.informe_maestro, IRG.informe_ide,
+        `SELECT IRG.id, I.codigo, I.nombre, I.telefono, IRG.informe_maestro, IRG.informe_ide,
         (select nombre from departamentos where I.departamento = id) as departamento,
         (select nombre from municipios where I.municipio = id) as municipio,
         (select nombre from cantones where I.canton = id) as canton,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
         (select nombre from zonas where I.zona = id) as zona
-        FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE gestion = ? AND informe_maestro = ? LIMIT 10`,
+        FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE IRG.estado=2 AND (gestion = ? AND informe_maestro = ?)`,
         [codigoGestion, idInforme]
       );
     });
@@ -395,7 +395,7 @@ module.exports = {
         I.src_google,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
-        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? ) LIMIT 10`,
+        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? )`,
         [idInforme, codigoGestion, idInforme]
       );
     });
