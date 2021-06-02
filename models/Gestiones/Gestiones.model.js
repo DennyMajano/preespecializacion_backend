@@ -157,7 +157,7 @@ module.exports = {
         (select nombre from meses where id = MGI.mes) as mes_nombre, 
         gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion, 
         (select count(*) as total from iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where GI.gestion = ? and GI.informe = informe_id group by GI.informe) as total, 
-        (select count(*) from informes_recibidos_gestion as IRG where IRG.gestion = ? and IRG.informe_maestro = informe_id) as recibidos 
+        (select count(*) from informes_recibidos_gestion as IRG where (IRG.gestion = ? and IRG.informe_maestro = informe_id) AND IRG.estado=2) as recibidos 
         from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo =GI.gestion where GI.gestion = ? OR G.id = ?
         `,
         [codigoGestion, codigoGestion, codigoGestion, codigoGestion]
@@ -395,7 +395,7 @@ module.exports = {
         I.src_google,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
-        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? )`,
+        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where (gestion = ? AND informe_maestro = ?) AND estado=2 )`,
         [idInforme, codigoGestion, idInforme]
       );
     });
