@@ -107,7 +107,7 @@ module.exports = {
     //Si los datos de entrada son validos y no se devolvio error entonces
     console.log(result);
     if(onComprobation(result)){
-      res.status(200).json(onSucces(result));
+      res.status(201).json(onSucces(result));
     }
     else{
       onFail();
