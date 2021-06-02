@@ -20,6 +20,10 @@ module.exports = () => {
     "/informe/tesorero/mensual/detalle",
     informeTesoreroMensualController.updateDetalleInforme
   );
+  router.put(
+    "/informe/tesorero/mensual",
+    informeTesoreroMensualController.update
+  );
   router.get(
     "/informe/tesorero/mensual/info/:codigo",
     informeTesoreroMensualController.getByCodigo

@@ -571,7 +571,119 @@ module.exports = {
     console.log(result[0][0].codigoInforme);
     console.log("----------");
     return result[0][0];
-  }
+  },
+  update: async (data) => {
+    const {
+      usuarioToken,
+      codigoInforme,
+      mensajes,
+      convertidos,
+      santificados,
+      bautismosAgua,
+      bautismosEs,
+      agregados,
+      hogaresMiembrosV,
+      hogaresProspectosV,
+      diezmoRecibido,
+      diezmoPagado,
+      ofrendaRecibida,
+      gastosMinisteriales,
+      actividadesOracion,
+      vidaOracion,
+      actividadesMisiones,
+      actividadesLiderazgo,
+      lideresInvolucrados,
+      mejoraMinisterial,
+      miembrosActivos,
+      miembrosSalvos,
+      miembrosSantificados,
+      miembrosBautizadosEs,
+      promedioAsistenciaAdultos,
+      promedioAsistenciaNiJov,
+      ministerioAlcanceSemanal,
+      santaCena,
+      lavatorios,
+      estado,
+      diezmosIncluidosInforme,
+    } = data;
+    if (
+      !comprobations.areFieldsValid([
+        usuarioToken,
+        codigoInforme,
+        mensajes,
+        convertidos,
+        santificados,
+        bautismosAgua,
+        bautismosEs,
+        agregados,
+        hogaresMiembrosV,
+        hogaresProspectosV,
+        diezmoRecibido,
+        diezmoPagado,
+        ofrendaRecibida,
+        gastosMinisteriales,
+        actividadesOracion,
+        vidaOracion,
+        actividadesMisiones,
+        actividadesLiderazgo,
+        lideresInvolucrados,
+        mejoraMinisterial,
+        miembrosActivos,
+        miembrosSalvos,
+        miembrosSantificados,
+        miembrosBautizadosEs,
+        promedioAsistenciaAdultos,
+        promedioAsistenciaNiJov,
+        ministerioAlcanceSemanal,
+        santaCena,
+        lavatorios,
+        estado,
+        diezmosIncluidosInforme,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    //llamamos el procedimiento
+    const result = await model.connection.query(
+      "call actualizarInformeMinisterialMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        usuario,
+        estado,
+        codigoInforme,
+        mensajes,
+        convertidos,
+        santificados,
+        bautismosAgua,
+        bautismosEs,
+        agregados,
+        hogaresMiembrosV,
+        hogaresProspectosV,
+        diezmoRecibido,
+        diezmoPagado,
+        ofrendaRecibida,
+        gastosMinisteriales,
+        actividadesOracion,
+        vidaOracion,
+        actividadesMisiones,
+        actividadesLiderazgo,
+        lideresInvolucrados,
+        mejoraMinisterial,
+        miembrosActivos,
+        miembrosSalvos,
+        miembrosSantificados,
+        miembrosBautizadosEs,
+        promedioAsistenciaAdultos,
+        promedioAsistenciaNiJov,
+        ministerioAlcanceSemanal,
+        santaCena,
+        lavatorios,
+        diezmosIncluidosInforme,
+      ]
+    );
+    console.log(result);
+    return result; 
+  },
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {

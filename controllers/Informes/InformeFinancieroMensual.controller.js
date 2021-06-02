@@ -66,7 +66,17 @@ module.exports = () => {
     } catch (error) {
       controller.sendError(error, res);
     }
-  }
+  };
+  informe.update = async (req, res) => {
+    try {
+      console.log(req.body);
+      req.body.usuarioToken = req.headers.authorization.split(" ")[1];
+      const result = await modelInforme.update(req.body);
+      controller.validateResultForGeneral(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
  
 
   return informe;

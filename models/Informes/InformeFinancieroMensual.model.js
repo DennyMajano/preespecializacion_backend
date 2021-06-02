@@ -410,7 +410,89 @@ module.exports = {
     console.log(result[0][0].codigoInforme);
     console.log("----------");
     return result[0][0];
-  }
+  },
+  update: async (data) => {
+    const {
+      usuarioToken,
+        estado,
+        codigoInforme, //codigo de la cabecera
+        oficinasInternacionales,
+        sociosAmip,
+        misionesMundiales,
+        tributosAnuales,
+        ministroOrdenado,
+        pastorLaico,
+        fondoLocal,
+        retiroPastoral,
+        segundaParteOfrendaministerios,
+        fondoEmergenciaNacional,
+        misionesNacionales,
+        diezmosMinistros,
+        compraPropiedadNacional,
+        construccionTemplosNuevos,
+        cotizacionPrestaciones,
+        seguroVida,
+        fondoSolidarioMinisterial,
+        otros,
+    } = data;
+    if (
+      !comprobations.areFieldsValid([
+        usuarioToken,
+        estado,
+        codigoInforme, //codigo de la cabecera
+        oficinasInternacionales,
+        sociosAmip,
+        misionesMundiales,
+        tributosAnuales,
+        ministroOrdenado,
+        pastorLaico,
+        fondoLocal,
+        retiroPastoral,
+        segundaParteOfrendaministerios,
+        fondoEmergenciaNacional,
+        misionesNacionales,
+        diezmosMinistros,
+        compraPropiedadNacional,
+        construccionTemplosNuevos,
+        cotizacionPrestaciones,
+        seguroVida,
+        fondoSolidarioMinisterial,
+        otros,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    //llamamos el procedimiento
+    const result = await model.connection.query(
+      "call actualizarInformeFinancieroMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        usuario,
+        estado,
+        codigoInforme,
+        oficinasInternacionales,
+        sociosAmip,
+        misionesMundiales,
+        tributosAnuales,
+        ministroOrdenado,
+        pastorLaico,
+        fondoLocal,
+        retiroPastoral,
+        segundaParteOfrendaministerios,
+        fondoEmergenciaNacional,
+        misionesNacionales,
+        diezmosMinistros,
+        compraPropiedadNacional,
+        construccionTemplosNuevos,
+        cotizacionPrestaciones,
+        seguroVida,
+        fondoSolidarioMinisterial,
+        otros,
+      ]
+    );
+    console.log(result);
+    return result; 
+  },
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {

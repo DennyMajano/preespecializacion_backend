@@ -6,7 +6,7 @@ paths:
         - Bearer: []
       tags:
         - Informe Tesorero Mensual
-      summary: Crear la cabecera de un Informe Tesorero Mensual
+      summary: (DESAPARECERÁ) Crear la cabecera de un Informe Tesorero Mensual
       produces:
         - application/json
       parameters:
@@ -54,6 +54,29 @@ paths:
           description: no se pudo crear por que faltan datos obligatorios
         404:
           description: aglunos de los datos proporcionados o recursos solicitados no fueron encontrados, quiza un codigo enviado no es encontrado.
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Informe Tesorero Mensual
+      summary: actualizar un Informe Tesorero Mensual con el codigo del informe
+      produces:
+        - application/json
+      parameters:
+        - in: body # request body
+          name: Create # name of request, can be any name
+          description: Esto es para actualizar el detalle de un informe
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/updateInformeTesoreroMensualDetalle"
+      responses: # server responses
+        201:
+          description: se creó con éxito
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+
+        400:
+          description: no se pudo crear por que faltan datos obligatorios
 
   /informe/tesorero/mensual/detalle: # path of the user from your endpoint
     post:
@@ -61,7 +84,7 @@ paths:
       #  - Bearer: []
       tags:
         - Informe Tesorero Mensual
-      summary: Crear el detalle de un Informe Tesorero Mensual
+      summary: (DESAPARECERÁ) Crear el detalle de un Informe Tesorero Mensual
       produces:
         - application/json
       parameters:
@@ -84,7 +107,7 @@ paths:
         - Bearer: []
       tags:
         - Informe Tesorero Mensual
-      summary: actualizar el detalle de un Informe Tesorero Mensual con el codigo del informe
+      summary: (DESAPARECERÁ) actualizar el detalle de un Informe Tesorero Mensual con el codigo del informe
       produces:
         - application/json
       parameters:

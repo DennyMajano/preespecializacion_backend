@@ -332,7 +332,7 @@ module.exports = {
       );
     });
   },
-  create: async (data) =>{
+  create: async (data) => {
     const {
       estado,
       usuarioToken,
@@ -342,7 +342,7 @@ module.exports = {
       codigoGestion,
       telefono,
       direccion,
-      mail
+      mail,
     } = data.cabecera;
     const {
       diezmosRecibidosIglesia,
@@ -379,24 +379,24 @@ module.exports = {
         mail,
         //Campos de detalle
         diezmosRecibidosIglesia,
-      diezmoEnviadoOficina,
-      diezmosEntregadosPastor,
-      membresiaPatrimonioHistorico,
-      ofrendaMisioneraSegundoDomingo,
-      impulsoMisiones,
-      porcentajeMisionerosOficina,
-      misionesNacionales,
-      entradaFondoLocal,
-      diezmosFondoLocal,
-      fondoRetiroPastoral,
-      dineroOtrosPropositos,
-      ofrendaEmergenciaNacional,
-      fondoSolidarioMinisterial,
-      totalMiembros,
-      masculinos,
-      femeninos,
-      excluidos,
-      trasladados
+        diezmoEnviadoOficina,
+        diezmosEntregadosPastor,
+        membresiaPatrimonioHistorico,
+        ofrendaMisioneraSegundoDomingo,
+        impulsoMisiones,
+        porcentajeMisionerosOficina,
+        misionesNacionales,
+        entradaFondoLocal,
+        diezmosFondoLocal,
+        fondoRetiroPastoral,
+        dineroOtrosPropositos,
+        ofrendaEmergenciaNacional,
+        fondoSolidarioMinisterial,
+        totalMiembros,
+        masculinos,
+        femeninos,
+        excluidos,
+        trasladados,
       ])
     ) {
       return errors.faltanDatosError();
@@ -408,18 +408,49 @@ module.exports = {
     const result = await model.connection.query(
       `call crearInformeTesoreroMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
-      usuario,
-      codigoPastor,
-      codigoGestion,
-      codigoIglesia,
+        usuario,
+        codigoPastor,
+        codigoGestion,
+        codigoIglesia,
+        estado,
+        codigoInforme,
+        nombreTesorero,
+
+        telefono,
+        direccion,
+        mail,
+        //Campos para detalle
+        diezmosRecibidosIglesia,
+        diezmoEnviadoOficina,
+        diezmosEntregadosPastor,
+        membresiaPatrimonioHistorico,
+        ofrendaMisioneraSegundoDomingo,
+        impulsoMisiones,
+        porcentajeMisionerosOficina,
+        misionesNacionales,
+        entradaFondoLocal,
+        diezmosFondoLocal,
+        fondoRetiroPastoral,
+        dineroOtrosPropositos,
+        ofrendaEmergenciaNacional,
+        fondoSolidarioMinisterial,
+        totalMiembros,
+        masculinos,
+        femeninos,
+        excluidos,
+        trasladados,
+      ]
+    );
+    console.log("---------");
+    console.log(result[0][0].codigoInforme);
+    console.log("----------");
+    return result[0][0];
+  },
+  update: async (data) => {
+    const {
+      usuarioToken,
       estado,
-      codigoInforme,
-      nombreTesorero,
-      
-      telefono,
-      direccion,
-      mail,
-      //Campos para detalle
+      codigoInforme, //codigo de la cabecera
       diezmosRecibidosIglesia,
       diezmoEnviadoOficina,
       diezmosEntregadosPastor,
@@ -438,14 +469,68 @@ module.exports = {
       masculinos,
       femeninos,
       excluidos,
-      trasladados
+      trasladados,
+    } = data;
+    if (
+      !comprobations.areFieldsValid([
+        usuarioToken,
+        estado,
+        codigoInforme, //codigo de la cabecera
+        diezmosRecibidosIglesia,
+        diezmoEnviadoOficina,
+        diezmosEntregadosPastor,
+        membresiaPatrimonioHistorico,
+        ofrendaMisioneraSegundoDomingo,
+        impulsoMisiones,
+        porcentajeMisionerosOficina,
+        misionesNacionales,
+        entradaFondoLocal,
+        diezmosFondoLocal,
+        fondoRetiroPastoral,
+        dineroOtrosPropositos,
+        ofrendaEmergenciaNacional,
+        fondoSolidarioMinisterial,
+        totalMiembros,
+        masculinos,
+        femeninos,
+        excluidos,
+        trasladados,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    //llamamos el procedimiento
+    const result = await model.connection.query(
+      "call actualizarInformeTesoreroMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        usuario,
+        estado,
+        codigoInforme,
+        diezmosRecibidosIglesia,
+        diezmoEnviadoOficina,
+        diezmosEntregadosPastor,
+        membresiaPatrimonioHistorico,
+        ofrendaMisioneraSegundoDomingo,
+        impulsoMisiones,
+        porcentajeMisionerosOficina,
+        misionesNacionales,
+        entradaFondoLocal,
+        diezmosFondoLocal,
+        fondoRetiroPastoral,
+        dineroOtrosPropositos,
+        ofrendaEmergenciaNacional,
+        fondoSolidarioMinisterial,
+        totalMiembros,
+        masculinos,
+        femeninos,
+        excluidos,
+        trasladados,
       ]
-      )
-    console.log("---------");
-    console.log(result[0][0].codigoInforme);
-    console.log("----------");
-    return result[0][0];
-  }
+    );
+    console.log(result);
+    return result;
+  },
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {
