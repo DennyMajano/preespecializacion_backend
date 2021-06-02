@@ -332,6 +332,120 @@ module.exports = {
       );
     });
   },
+  create: async (data) =>{
+    const {
+      estado,
+      usuarioToken,
+      codigoIglesia,
+      nombreTesorero,
+      codigoPastor,
+      codigoGestion,
+      telefono,
+      direccion,
+      mail
+    } = data.cabecera;
+    const {
+      diezmosRecibidosIglesia,
+      diezmoEnviadoOficina,
+      diezmosEntregadosPastor,
+      membresiaPatrimonioHistorico,
+      ofrendaMisioneraSegundoDomingo,
+      impulsoMisiones,
+      porcentajeMisionerosOficina,
+      misionesNacionales,
+      entradaFondoLocal,
+      diezmosFondoLocal,
+      fondoRetiroPastoral,
+      dineroOtrosPropositos,
+      ofrendaEmergenciaNacional,
+      fondoSolidarioMinisterial,
+      totalMiembros,
+      masculinos,
+      femeninos,
+      excluidos,
+      trasladados,
+    } = data.detalle;
+
+    if (
+      !comprobations.areFieldsValid([
+        //Campos de cabecera
+        estado,
+        usuarioToken,
+        codigoIglesia,
+        nombreTesorero,
+        codigoGestion,
+        telefono,
+        direccion,
+        mail,
+        //Campos de detalle
+        diezmosRecibidosIglesia,
+      diezmoEnviadoOficina,
+      diezmosEntregadosPastor,
+      membresiaPatrimonioHistorico,
+      ofrendaMisioneraSegundoDomingo,
+      impulsoMisiones,
+      porcentajeMisionerosOficina,
+      misionesNacionales,
+      entradaFondoLocal,
+      diezmosFondoLocal,
+      fondoRetiroPastoral,
+      dineroOtrosPropositos,
+      ofrendaEmergenciaNacional,
+      fondoSolidarioMinisterial,
+      totalMiembros,
+      masculinos,
+      femeninos,
+      excluidos,
+      trasladados
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //generados el codigo
+    const codigoInforme = GeneratorCode(PREFIJO_INFORME);
+    //Obtenemos el id del usuario del token.
+    const usuario = Token.decodeToken(usuarioToken).usuario;
+    const result = await model.connection.query(
+      `call crearInformeTesoreroMensual(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+      usuario,
+      codigoPastor,
+      codigoGestion,
+      codigoIglesia,
+      estado,
+      codigoInforme,
+      nombreTesorero,
+      
+      telefono,
+      direccion,
+      mail,
+      //Campos para detalle
+      diezmosRecibidosIglesia,
+      diezmoEnviadoOficina,
+      diezmosEntregadosPastor,
+      membresiaPatrimonioHistorico,
+      ofrendaMisioneraSegundoDomingo,
+      impulsoMisiones,
+      porcentajeMisionerosOficina,
+      misionesNacionales,
+      entradaFondoLocal,
+      diezmosFondoLocal,
+      fondoRetiroPastoral,
+      dineroOtrosPropositos,
+      ofrendaEmergenciaNacional,
+      fondoSolidarioMinisterial,
+      totalMiembros,
+      masculinos,
+      femeninos,
+      excluidos,
+      trasladados
+      ]
+      )
+    console.log("---------");
+    console.log(result[0][0].codigoInforme);
+    console.log("----------");
+    return result[0][0];
+  }
 };
 
 async function saveInformesRecibidos(codigoInforme, usuario, estado) {
