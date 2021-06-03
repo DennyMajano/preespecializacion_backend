@@ -280,6 +280,17 @@ module.exports = {
     }
     console.log(codigoGestion);
     //llamamos la transaccion
+    const result = await model.connection.query("call cerrarGestion(?)",[codigoGestion]);
+    console.log(result);
+    return result;
+    
+  },
+/*   cerrarGestion: async (codigoGestion) => {
+    if (!comprobations.areFieldsValid([codigoGestion])) {
+      return errors.faltanDatosError();
+    }
+    console.log(codigoGestion);
+    //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ?",
@@ -287,7 +298,8 @@ module.exports = {
       );
       return result;
     });
-  },
+
+  }, */
 
   getActivasEnvioDeIglesias: async (data, persona) => {
     const { codigoIglesia } = data;
