@@ -348,7 +348,8 @@ module.exports = {
         (select nombre from cantones where I.canton = id) as canton,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
-        (select nombre from zonas where I.zona = id) as zona
+        (select nombre from zonas where I.zona = id) as zona,
+        DATE_FORMAT(fecha_procesamiento,'%d/%m/%Y') as fechaProcesamiento
         FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE IRG.estado=2 AND (gestion = ? AND informe_maestro = ?)`,
         [codigoGestion, idInforme]
       );
