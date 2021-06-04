@@ -281,7 +281,7 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT avatar FROM usuarios WHERE id=?`, [
+        data = await db.query(`SELECT avatar FROM personas  join usuarios on personas.codigo = usuarios.persona WHERE usuarios.id = ?`, [
           usuario,
         ]);
 

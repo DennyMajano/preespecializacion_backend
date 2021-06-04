@@ -252,7 +252,7 @@ module.exports = {
         async ()=>{
           const updateAvatarResult = await db.query(
             "UPDATE `personas` SET `avatar`= ?  WHERE `id`=?",
-            [avatar.path, user.id]
+            [avatar.filename, user.id]
           );
           console.log("-------------------aaa");
           console.log(updateAvatarResult);

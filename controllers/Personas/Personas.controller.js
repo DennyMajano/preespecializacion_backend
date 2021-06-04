@@ -11,7 +11,7 @@ module.exports = () => {
     try {
       const data = req.body;
       console.log(data);
-      data.avatar = req.file?req.file.path:"recursos/images/usuarios/profile_default.png";
+      data.avatar = req.file?req.file.filename:"profile_default.png";
       console.log(req.file);
       if (!isUndefinedOrNull(data.nombre) &&!isUndefinedOrNull(data.apellido) && !isUndefinedOrNull(data.direccion)) {
         const result = await modelPersonas.create(
@@ -81,6 +81,8 @@ module.exports = () => {
 
         const data = req.body;
         data.avatar = req.file;
+        console.log("$$$$$$$$$$$$$$$$$$$$$$$$");
+        console.log(req.file);
         data.user = await modelPersonas.findById(req.body.userId);
         console.log(data);
         const result = await modelPersonas.updateProfilePicture(data);
