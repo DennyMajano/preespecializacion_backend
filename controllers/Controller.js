@@ -117,28 +117,6 @@ module.exports = {
     }
     
   },
-  validateResultForGeneral: (
-    result,
-    res,
-    onSucces = (result) => {
-      return result;
-    },
-    onFail = ()=>{
-      throw new Error("Error en el proceso");
-    }
-  ) => {
-    //Verificacion de error devuelto
-    resultErrorComprobation(result);
-    //Si los datos de entrada son validos y no se devolvio error entonces
-    console.log(result);
-    if(onComprobation(result)){
-      res.status(201).json(onSucces(result));
-    }
-    else{
-      onFail();
-    }
-    
-  },
   sendError: (error, res) => {
     //Mostramos el error en consola de node
     console.log(error);
