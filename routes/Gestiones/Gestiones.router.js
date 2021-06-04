@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const gestionesController =
   require("../../controllers/Gestiones/Gestiones.controller")();
-
+const FilesUpload = require("../../middlewares/FilesUpload");
 module.exports = () => {
   router.post("/gestiones", gestionesController.create);
   router.post("/gestion/asignacion", gestionesController.asignarInforme);
@@ -27,10 +27,6 @@ module.exports = () => {
     "/gestiones/disponibles/iglesia/:codigoIglesia",
     gestionesController.getActivasEnvioDeIglesias
   );
-  /*   router.get(
-    "/gestion/:codigoGestion/iglesia/:codigoIglesia/informes",
-    gestionesController.getDetalleDeInformesDeIglesia
-  ); */
   router.get("/gestiones/activas", gestionesController.getGestionesActivas);
   router.get("/gestiones/inactivas", gestionesController.getGestionesInactivas);
   router.get(
@@ -48,6 +44,14 @@ module.exports = () => {
   router.get(
     "/gestion/iglesias/enviado/:codigo",
     gestionesController.getIglesiasQueHanReportado
+  );
+  router.post(
+    "/gestion/comprobante",
+    FilesUpload.uploadSingle(
+      process.env.PATH_GESTIONES_FOLDER_COMPROBANTES_DEPOSITOS,
+      "imagenComprobante"
+    ),
+    gestionesController.guardarComprobanteDeposito
   );
   return router;
 };

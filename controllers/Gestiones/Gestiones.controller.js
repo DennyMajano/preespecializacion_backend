@@ -152,6 +152,20 @@ module.exports = () => {
       controller.sendError(error, res);
     }
   };
+  gestiones.guardarComprobanteDeposito = async (req, res) => {
+    try {
+      console.log("---------------1");
+      console.log(req.body);
+      //Obtenemos la ruta donde fue guardado el comprobante
+      req.body.rutaImagen = req.file?req.file.path:"error_al_subir.png";
+      //Llamamos el modelo
+      const result = await modelGestiones.guardarComprobanteDeposito(req.body);
+      //Validamos el resultado
+      controller.validateResultForInsert(result, res);
+    } catch (error) {
+      controller.sendError(error, res);
+    }
+  };
   gestiones.getIglesiasConInformeEnviadoEnGestion = async (req, res) => {
     try {
       const result = await modelGestiones.getIglesiasConInformeEnviadoEnGestion(

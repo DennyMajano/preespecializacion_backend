@@ -280,12 +280,13 @@ module.exports = {
     }
     console.log(codigoGestion);
     //llamamos la transaccion
-    const result = await model.connection.query("call cerrarGestion(?)",[codigoGestion]);
+    const result = await model.connection.query("call cerrarGestion(?)", [
+      codigoGestion,
+    ]);
     console.log(result);
     return result;
-    
   },
-/*   cerrarGestion: async (codigoGestion) => {
+  /*   cerrarGestion: async (codigoGestion) => {
     if (!comprobations.areFieldsValid([codigoGestion])) {
       return errors.faltanDatosError();
     }
@@ -412,6 +413,28 @@ module.exports = {
         [idInforme, codigoGestion, idInforme]
       );
     });
+  },
+  guardarComprobanteDeposito: async (data) => {
+    console.log("---------------------------------------------------------------1");
+    console.log(data);
+    if (
+      !comprobations.areFieldsValid([
+        data.codigoGestion,
+        data.codigoIglesia,
+        data.rutaImagen,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //console.log(codigoGestion);
+    //llamamos la transaccion
+    
+    const result = await model.connection.query(
+      "call guardarComprobanteDepositoGestion(?,?,?)",
+      [data.codigoGestion, data.codigoIglesia, data.rutaImagen]
+    );
+    console.log(result);
+    return result;
   },
   template: async (data) => {},
 };
