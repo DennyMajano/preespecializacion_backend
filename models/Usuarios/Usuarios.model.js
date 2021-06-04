@@ -228,7 +228,7 @@ module.exports = {
                 gestiones_activas.map(async (informes) => {
                   const informes_pendientes = await db.query(
                     `SELECT GI.gestion, MI.nombre as informe, MI.ruta, IRG.informe_ide, IF(IRG.estado is NULL,0,IRG.estado) as estado FROM  gestion_informes as GI  left join maestro_de_informes MI ON GI.informe=MI.id left join informes_recibidos_gestion as IRG on (IRG.gestion = GI.gestion AND IRG.iglesia=?) AND IRG.informe_maestro=MI.id where GI.gestion =? AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)`,
-                    [informes.codigo, informes.codigo, element.codigo]
+                    [element.codigo, informes.codigo, element.codigo]
                   );
                   return {
                     gestion_code: informes.codigo,
@@ -259,6 +259,9 @@ module.exports = {
                   },
                   0
                 ),
+                testeo: informes_de_gestiones.map(
+                  (x) => x.informes_no_enviados
+                ),
               };
             })
           );
@@ -281,9 +284,10 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT avatar FROM personas  join usuarios on personas.codigo = usuarios.persona WHERE usuarios.id = ?`, [
-          usuario,
-        ]);
+        data = await db.query(
+          `SELECT avatar FROM personas  join usuarios on personas.codigo = usuarios.persona WHERE usuarios.id = ?`,
+          [usuario]
+        );
 
         if (!data.errno) {
           data_final = data[0].avatar;
