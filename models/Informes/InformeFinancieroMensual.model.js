@@ -14,7 +14,7 @@ module.exports = {
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return dbConnection.query(
         `
-        SELECT oficinas_internacionales as oficinas_internacionales, 
+        SELECT oficinas_internacionales as oficinasInternacionales, 
         socios_amip as sociosAmip, 
         misiones_mundiales as misionesMundiales, 
         tributos_anuales as tributosAnuales, 
