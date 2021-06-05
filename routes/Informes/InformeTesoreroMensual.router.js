@@ -5,16 +5,12 @@ module.exports = () => {
     require("../../controllers/Informes/InformeTesoreroMensual.controller")();
 
   router.post(
-    "/informe/tesorero/mensual/cabecera",
-    informeTesoreroMensualController.createCabeceraInforme
-  );
-  router.post(
-    "/informe/tesorero/mensual/detalle",
-    informeTesoreroMensualController.createDetalleInforme
+    "/informe/tesorero/mensual",
+    informeTesoreroMensualController.create
   );
   router.put(
-    "/informe/tesorero/mensual/detalle",
-    informeTesoreroMensualController.updateDetalleInforme
+    "/informe/tesorero/mensual",
+    informeTesoreroMensualController.update
   );
   router.get(
     "/informe/tesorero/mensual/info/:codigo",

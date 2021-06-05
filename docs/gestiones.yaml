@@ -46,6 +46,31 @@ paths:
           description: Error de servidor ya sea por problemas de base de datos o logica en código
         400:
           description: Faltan datos para realizar el proceso
+  /gestion/comprobante: # path of the user from your endpoint
+    post: # endpoint request type (post request)
+      #security:
+      #  - Bearer: []
+      tags: # Tag property
+        - Gestiones # Value of the tag
+      summary: Guarda un comprobante de deposito
+      consume: application/json
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: data
+          in: body
+          description: Datos del comprobante
+          required: true
+          schema:
+            $ref: "#/definitions/saveComprobante"
+      responses: # server responses
+        201:
+          description: Se guardo correctamente
+        500:
+          description: Error de servidor ya sea por problemas de base de datos o logica en código
+        400:
+          description: Faltan datos para realizar el proceso
+
   /gestion:
     delete: # endpoint request type (post request)
       tags: # Tag property
@@ -497,3 +522,18 @@ definitions:
         description: codigo o id de la gestion
         type: string,
         example: "GE-121212"
+  saveComprobante:
+    type: object
+    properties:
+      codigoGestion:
+        description: Código de la gestión
+        type: string,
+        example: GE-1111
+      codigoIglesia:
+        description: Código de la iglesia
+        type: string,
+        example: IGLE-1111
+      imagenComprobante:
+        description: Imagen del comprobante
+        type: string
+        format: binary  

@@ -151,14 +151,14 @@ module.exports = {
       return await dbConnection.query(
         `
         select informe as informe_id, 
-        (select nombre from maestro_de_informes where id = informe) as informe_nombre, 
+        (select nombre from maestro_de_informes where id = informe) as informe_nombre,
+        (select identificador from maestro_de_informes where id = informe) as identificador,
         mes as mes_id, 
         (select nombre from meses where id = MGI.mes) as mes_nombre, 
         gestion_informe, DATE_FORMAT(fecha_agregacion,'%d/%m/%Y %r') as fecha_agregacion, 
         (select count(*) as total from iglesias_informes as II join gestion_informes as GI on II.informe = GI.informe where GI.gestion = ? and GI.informe = informe_id group by GI.informe) as total, 
-        (select count(*) from informes_recibidos_gestion as IRG where IRG.gestion = ? and IRG.informe_maestro = informe_id) as recibidos 
-        from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo = GI.gestion 
-        where GI.gestion = ? OR G.id = ?
+        (select count(*) from informes_recibidos_gestion as IRG where (IRG.gestion = ? and IRG.informe_maestro = informe_id) AND IRG.estado=2) as recibidos 
+        from gestion_informes as GI join meses_gestion_informe as MGI on GI.id = MGI.gestion_informe join gestiones as G on G.codigo =GI.gestion where GI.gestion = ? OR G.id = ?
         `,
         [codigoGestion, codigoGestion, codigoGestion, codigoGestion]
       );
@@ -280,6 +280,18 @@ module.exports = {
     }
     console.log(codigoGestion);
     //llamamos la transaccion
+    const result = await model.connection.query("call cerrarGestion(?)", [
+      codigoGestion,
+    ]);
+    console.log(result);
+    return result;
+  },
+  /*   cerrarGestion: async (codigoGestion) => {
+    if (!comprobations.areFieldsValid([codigoGestion])) {
+      return errors.faltanDatosError();
+    }
+    console.log(codigoGestion);
+    //llamamos la transaccion
     return await model.multipleTransactionQuery(async (dbConnection) => {
       const result = await dbConnection.query(
         "UPDATE `gestiones` SET `estado`=3 WHERE `codigo` = ?",
@@ -287,7 +299,8 @@ module.exports = {
       );
       return result;
     });
-  },
+
+  }, */
 
   getActivasEnvioDeIglesias: async (data, persona) => {
     const { codigoIglesia } = data;
@@ -342,16 +355,15 @@ module.exports = {
     }
     return await model.multipleTransactionQuery(async (dbConnection) => {
       return await dbConnection.query(
-        `SELECT I.codigo, I.nombre, I.telefono,
+        `SELECT IRG.id, I.codigo, I.nombre, I.telefono, IRG.informe_maestro, IRG.informe_ide,
         (select nombre from departamentos where I.departamento = id) as departamento,
         (select nombre from municipios where I.municipio = id) as municipio,
         (select nombre from cantones where I.canton = id) as canton,
-        I.direccion,
-        I.src_google,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
-        (select nombre from zonas where I.zona = id) as zona
-        FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE gestion = ? AND informe_maestro = ? LIMIT 10`,
+        (select nombre from zonas where I.zona = id) as zona,
+        DATE_FORMAT(fecha_procesamiento,'%d/%m/%Y') as fechaProcesamiento
+        FROM informes_recibidos_gestion as IRG join iglesias as I on IRG.iglesia = I.codigo  WHERE IRG.estado=2 AND (gestion = ? AND informe_maestro = ?)`,
         [codigoGestion, idInforme]
       );
     });
@@ -397,10 +409,32 @@ module.exports = {
         I.src_google,
         I.distrito,
         (select nombre from tipo_iglesias where I.tipo_iglesia = id) as tipo_iglesia,
-        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where gestion = ? AND informe_maestro = ? ) LIMIT 10`,
+        (select nombre from zonas where I.zona = id) as zona FROM iglesias_informes as II join iglesias as I on I.codigo = II.iglesia  where informe = ? AND  II.iglesia not IN (select iglesia from informes_recibidos_gestion where (gestion = ? AND informe_maestro = ?) AND estado=2 )`,
         [idInforme, codigoGestion, idInforme]
       );
     });
+  },
+  guardarComprobanteDeposito: async (data) => {
+    console.log("---------------------------------------------------------------1");
+    console.log(data);
+    if (
+      !comprobations.areFieldsValid([
+        data.codigoGestion,
+        data.codigoIglesia,
+        data.rutaImagen,
+      ])
+    ) {
+      return errors.faltanDatosError();
+    }
+    //console.log(codigoGestion);
+    //llamamos la transaccion
+    
+    const result = await model.connection.query(
+      "call guardarComprobanteDepositoGestion(?,?,?)",
+      [data.codigoGestion, data.codigoIglesia, data.rutaImagen]
+    );
+    console.log(result);
+    return result;
   },
   template: async (data) => {},
 };

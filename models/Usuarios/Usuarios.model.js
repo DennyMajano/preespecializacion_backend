@@ -208,28 +208,63 @@ module.exports = {
   getIglesiasUser: async (code) => {
     let iglesia;
     let transaction;
+    let gestiones_activas;
     let data_iglesias;
     try {
       transaction = await database.Transaction(db, async () => {
+        gestiones_activas = await db.query(
+          `select id, codigo, descripcion, (select nombre from tipo_gestiones where id = gestiones.tipo_gestion) as tipo_gestion_name, estado, DATE_FORMAT(fecha_publicacion,'%d/%m/%Y') as fecha_publicacion,DATE_FORMAT(fecha_recibir_inicio,'%d/%m/%Y %r') as fecha_recibir_inicio, DATE_FORMAT(fecha_recibir_fin,'%d/%m/%Y %r') as fecha_recibir_fin, DATE_FORMAT(fecha_cr,'%d/%m/%Y %r') as fecha_cr from gestiones where estado = 2 AND tipo_gestion=1 ORDER BY fecha_cr`
+        );
+
         iglesia = await db.query(
           `SELECT I.id, I.codigo, I.nombre AS iglesia, CONCAT(P.nombres,' ',P.apellidos) AS pastor, D.nombre AS departamento, M.nombre AS municipio, C.nombre AS canton, Z.nombre AS zona, DIS.nombre AS distrito FROM administracion_iglesias AI LEFT JOIN iglesias I ON AI.iglesia=I.codigo LEFT JOIN nombramientos_pastorales NP ON NP.estado=2 AND NP.condicion=1 LEFT JOIN detalle_nombramientos_pastorales DNP ON NP.id= DNP.nombramiento AND DNP.iglesia=I.codigo LEFT JOIN pastores PS ON PS.codigo= DNP.pastor LEFT JOIN personas P ON PS.persona=P.codigo LEFT JOIN departamentos D ON D.id=I.departamento LEFT JOIN municipios M ON M.id = I.municipio LEFT JOIN cantones C ON C.id = I.canton LEFT JOIN zonas Z ON Z.codigo=I.zona LEFT JOIN distritos DIS ON DIS.codigo=I.distrito WHERE AI.persona=?`,
           [code]
         );
 
         if (!iglesia.errno) {
-          data_iglesias = iglesia.map((element) => {
-            return {
-              id: element.id,
-              codigo: element.codigo,
-              iglesia: element.iglesia,
-              pastor: element.pastor,
-              departamento: element.departamento,
-              municipio: element.municipio,
-              canton: element.canton,
-              zona: element.zona,
-              distrito: element.distrito,
-            };
-          });
+          data_iglesias = await Promise.all(
+            iglesia.map(async (element) => {
+              const informes_de_gestiones = await Promise.all(
+                gestiones_activas.map(async (informes) => {
+                  const informes_pendientes = await db.query(
+                    `SELECT GI.gestion, MI.nombre as informe, MI.ruta, IRG.informe_ide, IF(IRG.estado is NULL,0,IRG.estado) as estado FROM  gestion_informes as GI  left join maestro_de_informes MI ON GI.informe=MI.id left join informes_recibidos_gestion as IRG on (IRG.gestion = GI.gestion AND IRG.iglesia=?) AND IRG.informe_maestro=MI.id where GI.gestion =? AND GI.informe IN (SELECT informe from iglesias_informes where iglesia = ?)`,
+                    [element.codigo, informes.codigo, element.codigo]
+                  );
+                  return {
+                    gestion_code: informes.codigo,
+                    gestion_name: informes.descripcion,
+                    informes_no_enviados: informes_pendientes.filter(
+                      (x) => x.estado === 0
+                    ),
+                  };
+                })
+              );
+              return {
+                id: element.id,
+                codigo: element.codigo,
+                iglesia: element.iglesia,
+                pastor: element.pastor,
+                departamento: element.departamento,
+                municipio: element.municipio,
+                canton: element.canton,
+                zona: element.zona,
+                distrito: element.distrito,
+                informes_pendientes: informes_de_gestiones,
+                cantidad_informes_pendientes: informes_de_gestiones.reduce(
+                  (prev, curr) => {
+                    return (
+                      parseInt(prev) +
+                      parseInt(curr.informes_no_enviados.length)
+                    );
+                  },
+                  0
+                ),
+                testeo: informes_de_gestiones.map(
+                  (x) => x.informes_no_enviados
+                ),
+              };
+            })
+          );
         }
       });
     } catch (error) {
@@ -249,9 +284,10 @@ module.exports = {
 
     try {
       transaction = await database.Transaction(db, async () => {
-        data = await db.query(`SELECT avatar FROM usuarios WHERE id=?`, [
-          usuario,
-        ]);
+        data = await db.query(
+          `SELECT avatar FROM personas  join usuarios on personas.codigo = usuarios.persona WHERE usuarios.id = ?`,
+          [usuario]
+        );
 
         if (!data.errno) {
           data_final = data[0].avatar;

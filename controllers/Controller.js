@@ -23,13 +23,16 @@ module.exports = {
     res,
     onSucces = (result) => {
       return { message: "Datos actualizados" };
+    },
+    onComprobation = (result)=>{
+      return result.affectedRows >= 0;
     }
   ) => {
     //Verificacion de error devuelto
     resultErrorComprobation(result);
     //Si los datos de entrada son validos y no se devolvio error entonces
     console.log(result);
-    if (result.affectedRows >= 0) {
+    if (onComprobation(result)) {
       res.status(200).json(onSucces(result));
     } else {
       throw new Error(
@@ -107,7 +110,7 @@ module.exports = {
     //Si los datos de entrada son validos y no se devolvio error entonces
     console.log(result);
     if(onComprobation(result)){
-      res.status(200).json(onSucces(result));
+      res.status(201).json(onSucces(result));
     }
     else{
       onFail();
