@@ -12,7 +12,7 @@ module.exports = {
     }
 
     return await model.multipleTransactionQuery(async (dbConnection) => {
-      return dbConnection.query(
+      const data = await dbConnection.query(
         `
         SELECT oficinas_internacionales as oficinasInternacionales, 
         socios_amip as sociosAmip, 
@@ -35,6 +35,15 @@ module.exports = {
         `,
         [codigoInforme]
       );
+      const dataF = data.map((row)=>{
+        for(let property in row){
+          row[property]=parseFloat(row[property]).toFixed(2);
+        }
+        return row;
+      });
+
+      return dataF;
+     
     });
   },
   create: async (data) => {
